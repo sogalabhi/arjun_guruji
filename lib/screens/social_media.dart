@@ -1,5 +1,4 @@
-import 'package:arjun_guruji/customwidgets/Heading.dart';
-import 'package:arjun_guruji/screens/webview.dart';
+import 'package:arjun_guruji/customwidgets/heading.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -11,7 +10,7 @@ class SocialMedia extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Heading('Social Media Links', 0),
+          title: const Heading('Social Media Links', 0),
           centerTitle: true,
           backgroundColor: Colors.transparent,
           elevation: 0,

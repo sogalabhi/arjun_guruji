@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class WebViewScreen extends StatefulWidget {
-  WebViewScreen({super.key, required this.url});
-  String url;
+  const WebViewScreen({super.key, required this.url});
+  final String url;
 
   @override
   State<WebViewScreen> createState() => _WebViewScreenState();

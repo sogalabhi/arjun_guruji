@@ -1,17 +1,16 @@
-import 'package:arjun_guruji/screens/pdfView.dart';
+import 'package:arjun_guruji/screens/pdf_view.dart';
 import 'package:arjun_guruji/utils/models.dart';
 import 'package:flutter/material.dart';
-import 'package:pdfx/pdfx.dart';
 
 class GridLayout extends StatefulWidget {
-  String name;
-  GridLayout(this.name);
+  final String name;
+  const GridLayout(this.name, {super.key});
 
   @override
-  _GridLayoutState createState() => _GridLayoutState();
+  GridLayoutState createState() => GridLayoutState();
 }
 
-class _GridLayoutState extends State<GridLayout> {
+class GridLayoutState extends State<GridLayout> {
   @override
   Widget build(BuildContext context) {
     List<Items> myList = [];
@@ -62,9 +61,9 @@ class _GridLayoutState extends State<GridLayout> {
           "ಅವಧೂತ ರತ್ನ", "avadhutaratna", 'assets/avadhutaratna.jpg', 'pdf'));
       myList.add(Items("ಅನುಭಾವ", "anubhava", 'assets/anubhava.jpg', 'pdf'));
       myList.add(Items("ಗುರುಚರಿತ್ರೆ", "gc_kan", 'assets/anubhava.jpg', 'pdf'));
-      myList.add(Items("Guru Charitre", "gc_eng", 'assets/anubhava.jpg', 'pdf'));
+      myList
+          .add(Items("Guru Charitre", "gc_eng", 'assets/anubhava.jpg', 'pdf'));
     } else if (widget.name == "Astottara") {
-      
       _width = 120;
       _ratio = 0.7;
       _color = Colors.white;
@@ -110,8 +109,8 @@ class _GridLayoutState extends State<GridLayout> {
                     });
                   } else {
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => pdfView(
-                              fileurl: 'raw/' + data.url + '.pdf',
+                        builder: (context) => PdfView(
+                              fileurl: 'raw/${data.url}.pdf',
                               name: data.title,
                             )));
 
@@ -135,8 +134,7 @@ class _GridLayoutState extends State<GridLayout> {
                           data.img,
                           width: _width,
                         );
-                      }
-                      else{
+                      } else {
                         return Image.asset(
                           data.img,
                         );

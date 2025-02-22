@@ -1,13 +1,15 @@
-import 'package:arjun_guruji/customwidgets/Heading.dart';
-import 'package:arjun_guruji/customwidgets/Gridlayout.dart';
+import 'package:arjun_guruji/customwidgets/heading.dart';
+import 'package:arjun_guruji/customwidgets/grid_layout.dart';
 import 'package:flutter/material.dart';
 
 class AstottaraSection extends StatelessWidget {
+  const AstottaraSection({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Heading('Astottara Section', 0),
+        title: const Heading('Astottara Section', 0),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,

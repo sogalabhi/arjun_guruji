@@ -1,14 +1,13 @@
-import 'package:arjun_guruji/customwidgets/Heading.dart';
+import 'package:arjun_guruji/customwidgets/heading.dart';
 import 'package:flutter/material.dart';
-import 'package:just_audio/just_audio.dart';
-import 'package:just_audio_background/just_audio_background.dart';
-
 class ListViewScreen extends StatefulWidget {
+  const ListViewScreen({super.key});
+
   @override
-  _ListViewScreenState createState() => _ListViewScreenState();
+  ListViewScreenState createState() => ListViewScreenState();
 }
 
-class _ListViewScreenState extends State<ListViewScreen> {
+class ListViewScreenState extends State<ListViewScreen> {
   Map heading = {};
   List<Model> chaps = [];
 

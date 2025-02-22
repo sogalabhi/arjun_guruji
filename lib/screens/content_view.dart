@@ -1,13 +1,15 @@
-import 'package:arjun_guruji/customwidgets/Heading.dart';
+import 'package:arjun_guruji/customwidgets/heading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
 class ContentView extends StatefulWidget {
+  const ContentView({super.key});
+
   @override
-  _ContentViewState createState() => _ContentViewState();
+  ContentViewState createState() => ContentViewState();
 }
 
-class _ContentViewState extends State<ContentView> {
+class ContentViewState extends State<ContentView> {
   late IconData data;
   IconData icon = Icons.dark_mode_outlined;
   late Color bgcolor;

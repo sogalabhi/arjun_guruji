@@ -1,5 +1,5 @@
-import 'package:arjun_guruji/customwidgets/Gridlayout.dart';
-import 'package:arjun_guruji/customwidgets/Heading.dart';
+import 'package:arjun_guruji/customwidgets/grid_layout.dart';
+import 'package:arjun_guruji/customwidgets/heading.dart';
 import 'package:flutter/material.dart';
 
 class Audio extends StatelessWidget {
@@ -9,7 +9,7 @@ class Audio extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Heading('Audio Section', 0),
+        title: const Heading('Audio Section', 0),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,

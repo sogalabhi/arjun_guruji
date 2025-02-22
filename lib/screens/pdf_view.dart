@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:pdfx/pdfx.dart';
 
-import '../customwidgets/Heading.dart';
+import '../customwidgets/heading.dart';
 
-class pdfView extends StatefulWidget {
-  pdfView({super.key, required this.fileurl, required this.name});
-  String fileurl, name;
+class PdfView extends StatefulWidget {
+  const PdfView({super.key, required this.fileurl, required this.name});
+  final String fileurl, name;
   @override
-  State<pdfView> createState() => _pdfViewState();
+  State<PdfView> createState() => _PdfViewState();
 }
 
-class _pdfViewState extends State<pdfView> {
+class _PdfViewState extends State<PdfView> {
   Map heading = {};
 
   late PdfControllerPinch pdfControllerPinch;
@@ -55,12 +55,12 @@ class _pdfViewState extends State<pdfView> {
           children: [
             Text("Total Pages: $totalPageCount"),
             IconButton(onPressed: () {
-              pdfControllerPinch.previousPage(duration: Duration(milliseconds: 250), curve: Curves.easeOut);
+              pdfControllerPinch.previousPage(duration: const Duration(milliseconds: 250), curve: Curves.easeOut);
 
             }, icon: const Icon(Icons.arrow_back)),
             Text("Current Page: $currentPageCount"),
             IconButton(onPressed: () {
-              pdfControllerPinch.nextPage(duration: Duration(milliseconds: 250), curve: Curves.easeIn);
+              pdfControllerPinch.nextPage(duration: const Duration(milliseconds: 250), curve: Curves.easeIn);
 
             }, icon: const Icon(Icons.arrow_forward)),
           ],

@@ -1,4 +1,4 @@
-import 'package:arjun_guruji/customwidgets/Heading.dart';
+import 'package:arjun_guruji/customwidgets/heading.dart';
 import 'package:arjun_guruji/customwidgets/galleryview.dart';
 import 'package:flutter/material.dart';
 

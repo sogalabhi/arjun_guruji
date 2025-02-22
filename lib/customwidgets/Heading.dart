@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Heading extends StatelessWidget {
-  String name;
-  int i;
-  Heading(this.name, this.i, {super.key});
+  final String name;
+  final int i;
+  const Heading(this.name, this.i, {super.key});
   @override
   Widget build(BuildContext context) {
     Color color = Colors.white;

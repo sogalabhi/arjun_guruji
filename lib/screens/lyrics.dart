@@ -1,5 +1,5 @@
-import 'package:arjun_guruji/customwidgets/Gridlayout.dart';
-import 'package:arjun_guruji/customwidgets/Heading.dart';
+import 'package:arjun_guruji/customwidgets/grid_layout.dart';
+import 'package:arjun_guruji/customwidgets/heading.dart';
 import 'package:flutter/material.dart';
 
 class Lyrics extends StatelessWidget {
@@ -10,7 +10,7 @@ class Lyrics extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Heading("Lyrics Section", 0),
+          title: const Heading("Lyrics Section", 0),
           centerTitle: true,
           backgroundColor: Colors.transparent,
           elevation: 0,
@@ -30,7 +30,7 @@ class Lyrics extends StatelessWidget {
                     height: 300,
                   )),
             ),
-            GridLayout("Lyrics")
+            const GridLayout("Lyrics")
           ],
         ),
       ),

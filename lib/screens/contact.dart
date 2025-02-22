@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-const _url = 'https://flutter.dev';
-
 class Contact extends StatelessWidget {
+  const Contact({super.key});
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -117,11 +117,5 @@ class Contact extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  void _launchURL(url) async {
-    await canLaunchUrl(url)
-        ? await launchUrl(url)
-        : throw 'Could not launch $url';
   }
 }

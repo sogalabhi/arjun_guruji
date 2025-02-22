@@ -2,13 +2,14 @@ import 'package:arjun_guruji/utils/models.dart';
 import 'package:flutter/material.dart';
 
 class CardHome extends StatelessWidget {
-  CardHome(
-      {super.key,
-      required this.pagename,
-      required this.width,
-      required this.height});
-  Items pagename;
-  double width, height;
+  final Items pagename;
+  final double width, height;
+  const CardHome({
+    super.key,
+    required this.pagename,
+    required this.width,
+    required this.height,
+  });
 
   @override
   Widget build(BuildContext context) {
