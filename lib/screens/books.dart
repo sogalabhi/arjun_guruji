@@ -16,9 +16,9 @@ class BooksSection extends StatelessWidget {
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       backgroundColor: Colors.blue[900],
-      body: Column(
+      body: const Column(
         children: [
-          const SizedBox(
+          SizedBox(
             height: 10,
           ),
           GridLayout("Books")

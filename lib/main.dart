@@ -47,13 +47,13 @@ class MyApp extends StatelessWidget {
           case "/Books":
             return MaterialPageRoute(builder: (_) => const BooksSection());
           case "/Astottara":
-            return MaterialPageRoute(builder: (_) => AstottaraSection());
+            return MaterialPageRoute(builder: (_) => const AstottaraSection());
           case "/Audio":
             return MaterialPageRoute(builder: (_) => const Audio());
           case "/ContentView":
-            return MaterialPageRoute(builder: (_) => ContentView());
+            return MaterialPageRoute(builder: (_) => const ContentView());
           case "/ListView":
-            return MaterialPageRoute(builder: (_) => ListViewScreen());
+            return MaterialPageRoute(builder: (_) => const ListViewScreen());
           case "/MusicPlayer":
             return MaterialPageRoute(builder: (_) => const AudioPlayerScreen());
           case "/Gallery":
@@ -63,7 +63,7 @@ class MyApp extends StatelessWidget {
           case "/Contact":
             return MaterialPageRoute(builder: (_) => const SocialMedia());
           case "/ContactPage":
-            return MaterialPageRoute(builder: (_) => Contact());
+            return MaterialPageRoute(builder: (_) => const Contact());
           default:
             return MaterialPageRoute(
               builder: (_) => const Scaffold(

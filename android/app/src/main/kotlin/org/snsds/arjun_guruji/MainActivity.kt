@@ -1,6 +1,5 @@
-package org.snsds.arjun_guruji
+package org.snsds.arjunguruji
 
-import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.android.FlutterApplication
 
-class MainActivity: FlutterActivity() {
-}
+class MainApplication : FlutterApplication()
