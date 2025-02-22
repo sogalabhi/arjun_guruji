@@ -1,4 +1,4 @@
-import 'package:arjun_guruji/utils/models.dart';
+import 'package:arjun_guruji/features/Home/models.dart';
 import 'package:flutter/material.dart';
 
 class CardHome extends StatelessWidget {

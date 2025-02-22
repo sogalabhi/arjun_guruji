@@ -5,7 +5,9 @@
         <application
             android:label="Arjun Guruji"
             android:name="org.snsds.arjunguruji.MainApplication"
-            android:icon="@mipmap/launcher_icon">
+            android:icon="@mipmap/launcher_icon"
+            android:hardwareAccelerated="true"
+            android:usesCleartextTraffic="true">
             
             <activity
                 android:name="com.ryanheise.audioservice.AudioServiceActivity"

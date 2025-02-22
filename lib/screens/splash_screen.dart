@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:arjun_guruji/screens/home.dart';
+import 'package:arjun_guruji/features/Home/presentation/pages/home_page.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -19,7 +19,7 @@ class _SplashScreenState extends State<SplashScreen> {
       () => Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => const Home(),
+          builder: (context) => const HomePage(),
         ),
       ),
     );
