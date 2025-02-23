@@ -1,12 +1,12 @@
-import 'package:arjun_guruji/features/Books/domain/entity/book.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ContentViewPage extends StatefulWidget {
-  final Book book;
-
-  const ContentViewPage({Key? key, required this.book}) : super(key: key);
+  final String title;
+  final String content;
+  const ContentViewPage({Key? key, required this.title, required this.content})
+      : super(key: key);
 
   @override
   ContentViewPageState createState() => ContentViewPageState();
@@ -17,6 +17,7 @@ class ContentViewPageState extends State<ContentViewPage> {
   bool _isDarkMode = false;
   String _searchQuery = "";
   final TextEditingController _searchController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +25,7 @@ class ContentViewPageState extends State<ContentViewPage> {
       backgroundColor: _isDarkMode ? Colors.black : Colors.white,
       appBar: AppBar(
         title: Text(
-          widget.book.title,
+          widget.title,
           style: GoogleFonts.poppins(
             color: _isDarkMode ? Colors.white : Colors.black,
           ),
@@ -50,10 +51,11 @@ class ContentViewPageState extends State<ContentViewPage> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
         child: SingleChildScrollView(
+          controller: _scrollController,
           child: Html(
             data: _searchQuery.isEmpty
-                ? widget.book.content
-                : widget.book.content?.replaceAll(
+                ? widget.content
+                : widget.content.replaceAll(
                     RegExp(_searchQuery, caseSensitive: false),
                     '<mark>$_searchQuery</mark>'),
             style: {
@@ -115,6 +117,7 @@ class ContentViewPageState extends State<ContentViewPage> {
                     _searchQuery = _searchController.text;
                   });
                   Navigator.pop(context);
+                  _scrollToSearchQuery();
                 },
                 child: const Text("Search"),
               ),
@@ -123,6 +126,21 @@ class ContentViewPageState extends State<ContentViewPage> {
         );
       },
     );
+  }
+
+  void _scrollToSearchQuery() {
+    final content = widget.content ?? "";
+    final index = content.toLowerCase().indexOf(_searchQuery.toLowerCase());
+    if (index != -1) {
+      final textBefore = content.substring(0, index);
+      final linesBefore = textBefore.split('\n').length;
+      final offset = linesBefore * _fontSize * 1.5; // Approximate line height
+      _scrollController.animateTo(
+        offset,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 
   // ⚙️ Settings Bottom Sheet

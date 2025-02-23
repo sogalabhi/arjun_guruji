@@ -19,7 +19,8 @@ class AllBooksPage extends StatelessWidget {
       create: (context) => BooksBloc(
         fetchBooksUseCase: sl<
             FetchBooksUseCase>(), // FetchBooksUseCase from your service locator
-        booksBox: Hive.box<BookModel>('booksBox'), connectivity: sl(), // Hive box for books
+        booksBox: Hive.box<BookModel>('booksBox'),
+        connectivity: sl(), // Hive box for books
       )..add(
           const FetchAllBooks()), // Trigger the FetchAllBooks event immediately
       child: Scaffold(
@@ -64,8 +65,7 @@ class AllBooksPage extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => ContentViewPage(
-                                  book: data,
-                                ),
+                                    title: data.title, content: data.content!),
                               ),
                             );
                           } else {
