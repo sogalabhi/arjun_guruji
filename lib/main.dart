@@ -1,10 +1,11 @@
+import 'package:arjun_guruji/features/Books/data/model/book_model.dart';
 import 'package:arjun_guruji/features/Books/presentation/pages/all_books_page.dart';
 import 'package:arjun_guruji/features/Home/presentation/pages/home_page.dart';
 import 'package:arjun_guruji/injection_container.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio_background/just_audio_background.dart';
-
+import 'package:hive_flutter/hive_flutter.dart';
 // Screens
 import 'package:arjun_guruji/screens/audio_player.dart';
 import 'package:arjun_guruji/screens/contact.dart';
@@ -16,7 +17,12 @@ import 'package:arjun_guruji/screens/splash_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
+  //hive
+  await Hive.initFlutter();
+  Hive.registerAdapter(BookModelAdapter());
+  await Hive.openBox<BookModel>('booksBox');
+
   setupLocator();
   // Initialize Firebase (only if you're using Firebase)
   await Firebase.initializeApp();

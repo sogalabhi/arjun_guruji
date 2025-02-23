@@ -1,4 +1,6 @@
 import 'package:arjun_guruji/core/widgets/gradient_background.dart';
+import 'package:arjun_guruji/features/Books/data/model/book_model.dart';
+import 'package:arjun_guruji/features/Books/domain/usecases/FetchBooksUseCase.dart';
 import 'package:arjun_guruji/features/Books/presentation/bloc/books_bloc.dart';
 import 'package:arjun_guruji/features/Books/presentation/pages/chapters_list_page.dart';
 import 'package:arjun_guruji/features/Books/presentation/pages/content_view_page.dart';
@@ -6,6 +8,7 @@ import 'package:arjun_guruji/features/Books/presentation/pages/pdf_view_page.dar
 import 'package:arjun_guruji/injection_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class AllBooksPage extends StatelessWidget {
   const AllBooksPage({super.key});
@@ -13,7 +16,12 @@ class AllBooksPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => sl<BooksBloc>()..add(const FetchAllBooks()),
+      create: (context) => BooksBloc(
+        fetchBooksUseCase: sl<
+            FetchBooksUseCase>(), // FetchBooksUseCase from your service locator
+        booksBox: Hive.box<BookModel>('booksBox'), connectivity: sl(), // Hive box for books
+      )..add(
+          const FetchAllBooks()), // Trigger the FetchAllBooks event immediately
       child: Scaffold(
         appBar: AppBar(
           title: const Text('All Books'),
@@ -24,7 +32,10 @@ class AllBooksPage extends StatelessWidget {
             child: BlocBuilder<BooksBloc, BooksState>(
               builder: (context, state) {
                 if (state is Loading) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(
+                      child: CircularProgressIndicator(
+                    color: Colors.white,
+                  ));
                 } else if (state is BooksLoaded) {
                   return GridView.builder(
                     gridDelegate:
@@ -40,7 +51,6 @@ class AllBooksPage extends StatelessWidget {
                       return InkWell(
                         onTap: () {
                           if (data.bookType == 'txt' && data.chapters != null) {
-                            // print(data.chapters);
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -50,20 +60,20 @@ class AllBooksPage extends StatelessWidget {
                               ),
                             );
                           } else if (data.bookType == 'html') {
-                            // print(data.chapters);
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => ContentViewPage(book: data,
+                                builder: (context) => ContentViewPage(
+                                  book: data,
                                 ),
                               ),
                             );
-                          }
-                          else{
-                             Navigator.push(
+                          } else {
+                            Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => PDFViewerPage(book: data,
+                                builder: (context) => PDFViewerPage(
+                                  book: data,
                                 ),
                               ),
                             );

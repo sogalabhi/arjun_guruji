@@ -1,19 +1,32 @@
 import 'package:arjun_guruji/features/Books/domain/entity/book.dart';
+import 'package:hive/hive.dart';
 
-class BookModel extends Book {
+part 'book_model.g.dart'; // Generated file
+
+@HiveType(typeId: 0)
+class BookModel extends HiveObject {
+  @HiveField(0)
+  final String title;
+
+  @HiveField(1)
+  final String imageUrl;
+
+  @HiveField(2)
+  final String bookType;
+
+  @HiveField(3)
+  final String? content;
+
+  @HiveField(4)
+  final List<Map<String, dynamic>>? chapters;
+
   BookModel({
-    required String title,
-    required String imageUrl,
-    required String bookType,
-    String? content,
-    List<Map<String, dynamic>>? chapters,
-  }) : super(
-          title: title,
-          imageUrl: imageUrl,
-          bookType: bookType,
-          content: content,
-          chapters: chapters,
-        );
+    required this.title,
+    required this.imageUrl,
+    required this.bookType,
+    this.content,
+    this.chapters,
+  });
 
   factory BookModel.fromJson(Map<String, dynamic> json) {
     return BookModel(
@@ -22,11 +35,11 @@ class BookModel extends Book {
       bookType: json['bookType'],
       content: json['content'],
       chapters: (json['chapters'] as List<dynamic>?)
-        ?.map((chapter) => {
-              'chapterName': chapter['chapterName'] as String? ?? '',
-              'content': chapter['content'] as String? ?? '',
-            })
-        .toList() ?? [],
+          ?.map((chapter) => {
+                'chapterName': chapter['chapterName'] as String? ?? '',
+                'content': chapter['content'] as String? ?? '',
+              })
+          .toList() ?? [],
     );
   }
 
