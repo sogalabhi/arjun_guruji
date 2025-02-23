@@ -4,8 +4,10 @@ import 'package:google_fonts/google_fonts.dart';
 
 class ContentViewPage extends StatefulWidget {
   final String title;
+  final String? chapterName;
   final String content;
-  const ContentViewPage({Key? key, required this.title, required this.content})
+  const ContentViewPage(
+      {Key? key, required this.title, required this.content, this.chapterName})
       : super(key: key);
 
   @override
@@ -129,7 +131,7 @@ class ContentViewPageState extends State<ContentViewPage> {
   }
 
   void _scrollToSearchQuery() {
-    final content = widget.content ?? "";
+    final content = widget.content;
     final index = content.toLowerCase().indexOf(_searchQuery.toLowerCase());
     if (index != -1) {
       final textBefore = content.substring(0, index);
