@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class ContentViewPage extends StatefulWidget {
   final String title;
@@ -28,7 +27,7 @@ class ContentViewPageState extends State<ContentViewPage> {
       appBar: AppBar(
         title: Text(
           widget.title,
-          style: GoogleFonts.poppins(
+          style: TextStyle(
             color: _isDarkMode ? Colors.white : Colors.black,
           ),
         ),
@@ -44,34 +43,54 @@ class ContentViewPageState extends State<ContentViewPage> {
             onPressed: _showSearchDialog,
           ),
           IconButton(
-            icon: Icon(Icons.more_vert,
+            icon: Icon(_isDarkMode ? Icons.dark_mode : Icons.light_mode,
                 color: _isDarkMode ? Colors.white : Colors.black),
-            onPressed: _showSettingsSheet,
+            onPressed: () {
+              setState(() {
+                _isDarkMode = !_isDarkMode;
+              });
+            },
           ),
         ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-        child: SingleChildScrollView(
-          controller: _scrollController,
-          child: Html(
-            data: _searchQuery.isEmpty
-                ? widget.content
-                : widget.content.replaceAll(
-                    RegExp(_searchQuery, caseSensitive: false),
-                    '<mark>$_searchQuery</mark>'),
-            style: {
-              "body": Style(
-                fontSize: FontSize(_fontSize),
-                color: _isDarkMode ? Colors.white : Colors.black,
-                fontFamily: GoogleFonts.poppins().fontFamily,
+        child: Column(
+          children: [
+            Slider(
+              min: 12,
+              max: 24,
+              value: _fontSize,
+              activeColor: Colors.blue,
+              onChanged: (value) {
+                setState(() {
+                  _fontSize = value;
+                });
+              },
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                child: Html(
+                  data: _searchQuery.isEmpty
+                      ? widget.content
+                      : widget.content.replaceAll(
+                          RegExp(_searchQuery, caseSensitive: false),
+                          '<mark>$_searchQuery</mark>'),
+                  style: {
+                    "body": Style(
+                      fontSize: FontSize(_fontSize),
+                      color: _isDarkMode ? Colors.white : Colors.black,
+                    ),
+                    "mark": Style(
+                      backgroundColor: Colors.yellow,
+                      color: _isDarkMode ? Colors.black : Colors.black,
+                    ),
+                  },
+                ),
               ),
-              "mark": Style(
-                backgroundColor: Colors.yellow,
-                color: _isDarkMode ? Colors.black : Colors.black,
-              ),
-            },
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -92,9 +111,11 @@ class ContentViewPageState extends State<ContentViewPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text("Search",
-                  style: GoogleFonts.poppins(
-                      fontSize: 18, fontWeight: FontWeight.bold)),
+              const Text("Search",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  )),
               const SizedBox(height: 10),
               TextField(
                 controller: _searchController,
@@ -113,6 +134,8 @@ class ContentViewPageState extends State<ContentViewPage> {
                   backgroundColor: Colors.blue,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
                 ),
                 onPressed: () {
                   setState(() {
@@ -121,7 +144,8 @@ class ContentViewPageState extends State<ContentViewPage> {
                   Navigator.pop(context);
                   _scrollToSearchQuery();
                 },
-                child: const Text("Search"),
+                child: const Text("Search",
+                    style: TextStyle(fontSize: 16, color: Colors.white)),
               ),
             ],
           ),
@@ -143,58 +167,5 @@ class ContentViewPageState extends State<ContentViewPage> {
         curve: Curves.easeInOut,
       );
     }
-  }
-
-  // ⚙️ Settings Bottom Sheet
-  void _showSettingsSheet() {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (context) {
-        return Container(
-          padding: const EdgeInsets.all(15),
-          decoration: BoxDecoration(
-            color: _isDarkMode ? Colors.grey[900] : Colors.white,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text("Settings",
-                  style: GoogleFonts.poppins(
-                      fontSize: 18, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 10),
-              // 🔠 Font Size Adjuster
-              ListTile(
-                title: Text("Font Size", style: GoogleFonts.poppins()),
-                subtitle: Slider(
-                  min: 12,
-                  max: 24,
-                  value: _fontSize,
-                  activeColor: Colors.blue,
-                  onChanged: (value) {
-                    setState(() {
-                      _fontSize = value;
-                    });
-                  },
-                ),
-              ),
-              // 🌗 Dark Mode Toggle
-              SwitchListTile(
-                title: Text("Dark Mode", style: GoogleFonts.poppins()),
-                value: _isDarkMode,
-                activeColor: Colors.blue,
-                onChanged: (value) {
-                  setState(() {
-                    _isDarkMode = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 10),
-            ],
-          ),
-        );
-      },
-    );
   }
 }

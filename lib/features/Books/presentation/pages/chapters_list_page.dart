@@ -1,6 +1,6 @@
+import 'package:arjun_guruji/core/widgets/content_view_page.dart';
 import 'package:arjun_guruji/core/widgets/gradient_background.dart';
 import 'package:arjun_guruji/features/Books/domain/entity/book.dart';
-import 'package:arjun_guruji/features/Books/presentation/pages/content_view_page.dart';
 import 'package:flutter/material.dart';
 
 class ChaptersListPage extends StatefulWidget {

@@ -20,7 +20,7 @@ class Contact extends StatelessWidget {
               "Contact Info",
               style: TextStyle(
                 fontSize: 30,
-                fontFamily: 'Poppins',
+                
                 color: Colors.white,
               ),
             ),
@@ -38,7 +38,7 @@ class Contact extends StatelessWidget {
               '#36, "ಗೀತನಿಕೇತನ", ಸೋನಾರ್ ಬೀದಿ, ಚಾಮರಾಜ ಮೊಹಲ್ಲಾ, ಮೈಸೂರು - 570024',
               style: TextStyle(
                 fontSize: 16,
-                fontFamily: 'Poppins',
+                
                 color: Colors.white,
               ),
               textAlign: TextAlign.center,
@@ -50,7 +50,7 @@ class Contact extends StatelessWidget {
               "Phone: +91-9141075552",
               style: TextStyle(
                 fontSize: 16,
-                fontFamily: 'Poppins',
+                
                 color: Colors.white,
               ),
             ),

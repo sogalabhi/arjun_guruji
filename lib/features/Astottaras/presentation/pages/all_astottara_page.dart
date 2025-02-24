@@ -1,37 +1,35 @@
 import 'package:arjun_guruji/core/widgets/content_view_page.dart';
 import 'package:arjun_guruji/core/widgets/gradient_background.dart';
-import 'package:arjun_guruji/features/Books/data/model/book_model.dart';
-import 'package:arjun_guruji/features/Books/domain/usecases/FetchBooksUseCase.dart';
-import 'package:arjun_guruji/features/Books/presentation/bloc/books_bloc.dart';
-import 'package:arjun_guruji/features/Books/presentation/pages/chapters_list_page.dart';
-import 'package:arjun_guruji/features/Books/presentation/pages/pdf_view_page.dart';
+import 'package:arjun_guruji/features/Astottaras/data/model/astottara_model.dart';
+import 'package:arjun_guruji/features/Astottaras/domain/usecases/FetchAstottarasUseCase.dart';
+import 'package:arjun_guruji/features/Astottaras/presentation/bloc/astottara_bloc.dart';
 import 'package:arjun_guruji/injection_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-class AllBooksPage extends StatefulWidget {
-  const AllBooksPage({super.key});
+class AllAstottaraPage extends StatefulWidget {
+  const AllAstottaraPage({super.key});
 
   @override
-  AllBooksPageState createState() => AllBooksPageState();
+  AllAstottaraPageState createState() => AllAstottaraPageState();
 }
 
-class AllBooksPageState extends State<AllBooksPage> {
+class AllAstottaraPageState extends State<AllAstottaraPage> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => BooksBloc(
-        fetchBooksUseCase: sl<FetchBooksUseCase>(),
-        booksBox: Hive.box<BookModel>('booksBox'),
+      create: (context) => AstottarasBloc(
+        fetchAstottarasUseCase: sl<FetchAstottarasUseCase>(),
+        astottarasBox: Hive.box<AstottaraModel>('astottarasBox'),
         connectivity: sl(),
-      )..add(const FetchAllBooks()),
+      )..add(const FetchAllAstottaras()),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('All Books'),
+          title: const Text('All Astottara'),
         ),
         body: GradientBackground(
           child: Padding(
@@ -41,7 +39,7 @@ class AllBooksPageState extends State<AllBooksPage> {
                 TextField(
                   controller: _searchController,
                   decoration: InputDecoration(
-                    hintText: 'Search books...',
+                    hintText: 'Search astottaras...',
                     hintStyle: TextStyle(color: Colors.grey[400]),
                     prefixIcon: Icon(Icons.search, color: Colors.grey[400]),
                     filled: true,
@@ -60,7 +58,7 @@ class AllBooksPageState extends State<AllBooksPage> {
                 ),
                 const SizedBox(height: 20),
                 Expanded(
-                  child: BlocBuilder<BooksBloc, BooksState>(
+                  child: BlocBuilder<AstottarasBloc, AstottarasState>(
                     builder: (context, state) {
                       if (state is Loading) {
                         return const Center(
@@ -68,10 +66,11 @@ class AllBooksPageState extends State<AllBooksPage> {
                             color: Colors.white,
                           ),
                         );
-                      } else if (state is BooksLoaded) {
-                        final filteredBooks = state.books
-                            .where((book) =>
-                                book.title.toLowerCase().contains(_searchQuery))
+                      } else if (state is AstottarasLoaded) {
+                        final filteredAstottara = state.astottaras
+                            .where((astottara) => astottara.title
+                                .toLowerCase()
+                                .contains(_searchQuery))
                             .toList();
                         return GridView.builder(
                           gridDelegate:
@@ -81,38 +80,18 @@ class AllBooksPageState extends State<AllBooksPage> {
                             mainAxisSpacing: 10,
                             childAspectRatio: 0.7,
                           ),
-                          itemCount: filteredBooks.length,
+                          itemCount: filteredAstottara.length,
                           itemBuilder: (context, index) {
-                            final data = filteredBooks[index];
+                            final data = filteredAstottara[index];
                             return InkWell(
                               onTap: () {
-                                if (data.bookType == 'chapters' &&
-                                    data.chapters != null) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => ChaptersListPage(
-                                        book: data,
-                                      ),
-                                    ),
-                                  );
-                                } else if (data.bookType == 'html' &&
-                                    data.content != null) {
+                                if (data.content != null) {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => ContentViewPage(
                                         title: data.title,
                                         content: data.content!,
-                                      ),
-                                    ),
-                                  );
-                                } else {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => PDFViewerPage(
-                                        book: data,
                                       ),
                                     ),
                                   );

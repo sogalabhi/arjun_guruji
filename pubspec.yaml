@@ -120,6 +120,9 @@ flutter:
     - family: samarkan
       fonts:
         - asset: fonts/samarkan.ttf
+    - family: poppins
+      fonts:
+        - asset: fonts/poppins_medium.ttf
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

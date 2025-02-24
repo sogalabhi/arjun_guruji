@@ -16,7 +16,7 @@ class HomePage extends StatelessWidget {
         Navigator.pushNamed(context, '/Books');
       }),
       Items("Astottara", "Astottara", 'assets/mainastottaras.png', 'txt', () {
-        Navigator.pushNamed(context, '/astottara');
+        Navigator.pushNamed(context, '/Astottara');
       }),
       Items("Audio", "Audio", 'assets/mainaudio.png', 'txt', () {
         Navigator.pushNamed(context, '/audio');

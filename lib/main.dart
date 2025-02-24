@@ -1,3 +1,5 @@
+import 'package:arjun_guruji/features/Astottaras/data/model/astottara_model.dart';
+import 'package:arjun_guruji/features/Astottaras/presentation/pages/all_astottara_page.dart';
 import 'package:arjun_guruji/features/Books/data/model/book_model.dart';
 import 'package:arjun_guruji/features/Books/presentation/pages/all_books_page.dart';
 import 'package:arjun_guruji/features/Home/presentation/pages/home_page.dart';
@@ -21,7 +23,7 @@ Future<void> main() async {
   //hive
   await Hive.initFlutter();
   Hive.registerAdapter(BookModelAdapter());
-  await Hive.openBox<BookModel>('booksBox');
+  Hive.registerAdapter(AstottaraModelAdapter());
 
   setupLocator();
   // Initialize Firebase (only if you're using Firebase)
@@ -44,6 +46,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
+        fontFamily: 'poppins',
       ),
       initialRoute: "/",
       onGenerateRoute: (settings) {
@@ -54,6 +57,8 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute(builder: (_) => const HomePage());
           case "/Books":
             return MaterialPageRoute(builder: (_) => const AllBooksPage());
+          case "/Astottara":
+            return MaterialPageRoute(builder: (_) => const AllAstottaraPage());
           case "/ContentView":
             return MaterialPageRoute(builder: (_) => const ContentView());
           case "/ListView":

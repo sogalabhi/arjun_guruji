@@ -13,8 +13,8 @@ class Heading extends StatelessWidget {
     }
     return Text(
       name,
-      style: GoogleFonts.poppins(color: color),
-      // style: TextStyle(fontFamily: 'Poppins', color: color),
+      style: TextStyle( color: color),
+      // style: TextStyle( color: color),
     );
   }
 }
