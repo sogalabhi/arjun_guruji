@@ -1,8 +1,9 @@
+import 'package:arjun_guruji/core/widgets/gradient_background.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class Contact extends StatelessWidget {
-  const Contact({super.key});
+class ContactPage extends StatelessWidget {
+  const ContactPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,20 +12,16 @@ class Contact extends StatelessWidget {
         appBar: AppBar(
           title: const Text("Contact Info"),
         ),
-        body: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.blue, Colors.blueAccent],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-          ),
+        body: GradientBackground(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Image.asset('assets/snsdslogo.png'),
+                Padding(
+                  padding: const EdgeInsets.all(40.0),
+                  child: Image.asset('assets/snsdslogo.png'),
+                ),
                 const SizedBox(height: 20),
                 const Text(
                   '#36, "ಗೀತನಿಕೇತನ", ಸೋನಾರ್ ಬೀದಿ, ಚಾಮರಾಜ ಮೊಹಲ್ಲಾ, ಮೈಸೂರು - 570024',

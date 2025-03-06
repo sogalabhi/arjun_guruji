@@ -1,6 +1,10 @@
 import 'package:arjun_guruji/core/widgets/gradient_background.dart';
-import 'package:arjun_guruji/features/Home/presentation/widgets/build_grid.dart';
-import 'package:arjun_guruji/features/Home/models.dart';
+import 'package:arjun_guruji/features/Astottaras/presentation/pages/all_astottara_page.dart';
+import 'package:arjun_guruji/features/AudioPlayer/presentation/pages/audio_categories_page.dart';
+import 'package:arjun_guruji/features/Books/presentation/pages/all_books_page.dart';
+import 'package:arjun_guruji/features/Contact/presentation/pages/social_media_page.dart';
+import 'package:arjun_guruji/screens/content_view.dart';
+import 'package:arjun_guruji/screens/gallery.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -8,35 +12,71 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double width = MediaQuery.of(context).size.width;
-    final double height = MediaQuery.of(context).size.height;
-
-    final List<Items> myList = [
-      Items("Books", "Books", 'assets/mainbook.png', 'txt', () {
-        Navigator.pushNamed(context, '/Books');
-      }),
-      Items("Astottara", "Astottara", 'assets/mainastottaras.png', 'txt', () {
-        Navigator.pushNamed(context, '/Astottara');
-      }),
-      Items("Audio", "Audio", 'assets/mainaudio.png', 'txt', () {
-        Navigator.pushNamed(context, '/audio');
-      }),
-      Items("Lyrics", "Lyrics", 'assets/mainlyrics.png', 'txt', () {
-        Navigator.pushNamed(context, '/lyrics');
-      }),
-      Items("Gallery", "Gallery", 'assets/maingallery.png', 'txt', () {
-        Navigator.pushNamed(context, '/gallery');
-      }),
-      Items("Contact", "Contact", 'assets/mainlinks.png', 'txt', () {
-        Navigator.pushNamed(context, '/contact');
-      }),
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final List<Map<String, dynamic>> menuItems = [
+      {
+        "title": "Books",
+        "subtitle": "Books",
+        "imagePath": 'assets/mainbook.png',
+        "route": () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (_) => const AllBooksPage()));
+        }
+      },
+      {
+        "title": "Astottara",
+        "subtitle": "Astottara",
+        "imagePath": 'assets/mainastottaras.png',
+        "route": () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (_) => const AllAstottaraPage()));
+        }
+      },
+      {
+        "title": "Audio",
+        "subtitle": "Audio",
+        "imagePath": 'assets/mainaudio.png',
+        "route": () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => AudioCategoriesPage()));
+        }
+      },
+      {
+        "title": "Lyrics",
+        "subtitle": "Lyrics",
+        "imagePath": 'assets/mainlyrics.png',
+        "route": () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (_) => const ContentView()));
+        }
+      },
+      {
+        "title": "Gallery",
+        "subtitle": "Gallery",
+        "imagePath": 'assets/maingallery.png',
+        "route": () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (_) => const Gallery()));
+        }
+      },
+      {
+        "title": "Contact",
+        "subtitle": "Contact",
+        "imagePath": 'assets/mainlinks.png',
+        "route": () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (_) => const SocialMediaPage()));
+        }
+      },
     ];
 
     return Scaffold(
       body: GradientBackground(
         child: SafeArea(
-          child: ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
             children: [
               const SizedBox(height: 20),
               const Center(
@@ -53,13 +93,57 @@ class HomePage extends StatelessWidget {
               Center(
                 child: Image.asset(
                   "assets/mainimg.png",
-                  height: height / 3.4,
-                  width: width / 1.4,
+                  height: screenHeight / 3.4,
+                  width: screenWidth / 1.4,
                   fit: BoxFit.contain,
                 ),
               ),
               const SizedBox(height: 30),
-              buildGrid(myList, width, height),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 60),
+                  child: GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: screenWidth < 600 ? 2 : 4,
+                      crossAxisSpacing: 5,
+                      mainAxisSpacing: 5,
+                      childAspectRatio: 1,
+                    ),
+                    itemCount: menuItems.length,
+                    itemBuilder: (context, index) {
+                      final item = menuItems[index];
+                      return GestureDetector(
+                        onTap: item['route'],
+                        child: Card(
+                          color: const Color.fromARGB(255, 255, 209, 70),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                item['imagePath'],
+                                height: 50,
+                                width: 50,
+                                fit: BoxFit.contain,
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                item['title'],
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
               const SizedBox(height: 20),
             ],
           ),

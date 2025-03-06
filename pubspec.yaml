@@ -41,8 +41,8 @@ dependencies:
       url: 'https://github.com/ScerIO/packages.flutter' 
       ref: '4be9de9ffed5398fd7d5f44bbb07dcd3d3f1711b'  
       path: packages/pdfx
-  just_audio: ^0.9.36
-  just_audio_background: ^0.0.1-beta.11
+  just_audio: ^0.9.46
+  just_audio_background: ^0.0.1-beta.15
   audio_video_progress_bar: ^2.0.1
   cached_network_image: ^3.3.1
   rxdart: ^0.27.7
@@ -63,7 +63,7 @@ dependencies:
   hive_flutter: ^1.1.0
   path_provider: ^2.1.2
   connectivity_plus: ^5.0.2
-
+  lottie: ^3.3.1
 
 dev_dependencies:
   flutter_test:
