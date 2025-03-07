@@ -1,6 +1,8 @@
-import 'package:arjun_guruji/features/AudioPlayer/domain/entity/category.dart';
+import 'package:arjun_guruji/core/widgets/gradient_background.dart';
 import 'package:arjun_guruji/features/AudioPlayer/presentation/pages/audio_player_page.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:arjun_guruji/features/AudioPlayer/domain/entity/category.dart';
 
 class AudioListPage extends StatelessWidget {
   final CategoryEntity category;
@@ -9,68 +11,79 @@ class AudioListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDarkMode = theme.brightness == Brightness.dark;
-
     return Scaffold(
       appBar: AppBar(
         title: Text(category.name),
+        centerTitle: true,
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: category.audios.length,
-        itemBuilder: (context, index) {
-          final track = category.audios[index];
-          return GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AudioPlayerPage(audio: track, category:category, index:index),
-                ),
-              );
-            },
-            child: Container(
-              margin: const EdgeInsets.only(bottom: 10),
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: isDarkMode ? Colors.grey[800] : Colors.grey[200],
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Row(
-                children: [
-                  Image.asset(
-                    track.imageUrl,
-                    width: 50,
-                    height: 50,
+      body: GradientBackground(
+        child: Column(
+          children: [
+            const SizedBox(height: 16.0),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Hero(
+                tag: 'category-image-${category.id}',
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16.0),
+                  child: CachedNetworkImage(
+                    imageUrl: category.imageUrl,
                     fit: BoxFit.cover,
+                    height: 200,
+                    width: double.infinity,
+                    placeholder: (context, url) =>
+                        const CircularProgressIndicator(),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
                   ),
-                  const SizedBox(width: 15),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        track.title,
-                        style: TextStyle(
-                          color: isDarkMode ? Colors.white : Colors.black,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        track.category,
-                        style: TextStyle(
-                          color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                ),
               ),
             ),
-          );
-        },
+            Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.all(16.0),
+                itemCount: category.audios.length,
+                itemBuilder: (context, index) {
+                  final audio = category.audios[index];
+                  return Column(
+                    children: [
+                      ListTile(
+                        leading: const Icon(
+                          Icons.audiotrack,
+                          color: Colors.white,
+                        ),
+                        title: Text(
+                          audio.title,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        subtitle: Text(
+                          audio.category,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        onTap: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (_) {
+                            return AudioPlayerPage(audio: audio, category: category, index: index,);
+                          }));
+                        },
+                        tileColor: Colors.grey[800],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        hoverColor: Colors.grey[700],
+                        splashColor: Colors.blueAccent,
+                      ),
+                      const Divider(
+                        color: Colors.white,
+                        thickness: 1.0,
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
