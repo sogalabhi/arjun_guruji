@@ -1,7 +1,7 @@
 import 'package:arjun_guruji/core/widgets/content_view_page.dart';
 import 'package:arjun_guruji/core/widgets/gradient_background.dart';
 import 'package:arjun_guruji/features/Books/data/model/book_model.dart';
-import 'package:arjun_guruji/features/Books/domain/usecases/FetchBooksUseCase.dart';
+import 'package:arjun_guruji/features/Books/domain/usecases/books_usecase.dart';
 import 'package:arjun_guruji/features/Books/presentation/bloc/books_bloc.dart';
 import 'package:arjun_guruji/features/Books/presentation/pages/chapters_list_page.dart';
 import 'package:arjun_guruji/features/Books/presentation/pages/pdf_view_page.dart';

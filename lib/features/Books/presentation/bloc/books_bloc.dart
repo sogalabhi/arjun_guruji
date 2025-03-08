@@ -1,7 +1,7 @@
 import 'package:arjun_guruji/core/usecases/usecase.dart';
 import 'package:arjun_guruji/features/Books/data/model/book_model.dart';
 import 'package:arjun_guruji/features/Books/domain/entity/book.dart';
-import 'package:arjun_guruji/features/Books/domain/usecases/FetchBooksUseCase.dart';
+import 'package:arjun_guruji/features/Books/domain/usecases/books_usecase.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dartz/dartz.dart';
