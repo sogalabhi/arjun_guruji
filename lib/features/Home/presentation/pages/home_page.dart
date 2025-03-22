@@ -1,10 +1,10 @@
 import 'package:arjun_guruji/core/widgets/gradient_background.dart';
+import 'package:arjun_guruji/features/Admin/presentation/pages/admin_login_page.dart';
 import 'package:arjun_guruji/features/Astottaras/presentation/pages/all_astottara_page.dart';
 import 'package:arjun_guruji/features/AudioPlayer/presentation/pages/audio_categories_page.dart';
 import 'package:arjun_guruji/features/Books/presentation/pages/all_books_page.dart';
 import 'package:arjun_guruji/features/Contact/presentation/pages/social_media_page.dart';
-import 'package:arjun_guruji/screens/content_view.dart';
-import 'package:arjun_guruji/screens/gallery.dart';
+import 'package:arjun_guruji/features/Gallery/presentation/pages/gallery_page.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -41,7 +41,7 @@ class HomePage extends StatelessWidget {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => AudioCategoriesPage()));
+                  builder: (context) => const AudioCategoriesPage()));
         }
       },
       {
@@ -49,8 +49,8 @@ class HomePage extends StatelessWidget {
         "subtitle": "Lyrics",
         "imagePath": 'assets/mainlyrics.png',
         "route": () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (_) => const ContentView()));
+          // Navigator.push(
+          //     context, MaterialPageRoute(builder: (_) => const LyricsPage()));
         }
       },
       {
@@ -59,7 +59,7 @@ class HomePage extends StatelessWidget {
         "imagePath": 'assets/maingallery.png',
         "route": () {
           Navigator.push(
-              context, MaterialPageRoute(builder: (_) => const Gallery()));
+              context, MaterialPageRoute(builder: (_) => GalleryPage()));
         }
       },
       {
@@ -91,11 +91,17 @@ class HomePage extends StatelessWidget {
               ),
               const SizedBox(height: 30),
               Center(
-                child: Image.asset(
-                  "assets/mainimg.png",
-                  height: screenHeight / 3.4,
-                  width: screenWidth / 1.4,
-                  fit: BoxFit.contain,
+                child: GestureDetector(
+                  onDoubleTapDown: (details) {
+                    Navigator.push(
+                        context, MaterialPageRoute(builder: (_) => const AdminLoginPage()));
+                  },
+                  child: Image.asset(
+                    "assets/mainimg.png",
+                    height: screenHeight / 3.4,
+                    width: screenWidth / 1.4,
+                    fit: BoxFit.contain,
+                  ),
                 ),
               ),
               const SizedBox(height: 30),

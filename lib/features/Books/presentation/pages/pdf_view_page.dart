@@ -62,7 +62,7 @@ class PdfViewerPageState extends State<PDFViewerPage> {
     return Scaffold(
       appBar: AppBar(title: Text(widget.book.title)),
       body: localFilePath == null
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : PDFView(
               filePath: localFilePath!,
               enableSwipe: true,

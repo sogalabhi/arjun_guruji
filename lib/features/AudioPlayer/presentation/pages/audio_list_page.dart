@@ -28,9 +28,7 @@ class AudioListPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(16.0),
                   child: CachedNetworkImage(
                     imageUrl: category.imageUrl,
-                    fit: BoxFit.cover,
-                    height: 200,
-                    width: double.infinity,
+                    fit: BoxFit.contain,
                     placeholder: (context, url) =>
                         const CircularProgressIndicator(),
                     errorWidget: (context, url, error) =>
@@ -39,6 +37,7 @@ class AudioListPage extends StatelessWidget {
                 ),
               ),
             ),
+            const SizedBox(height: 16.0),
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.all(16.0),
@@ -63,7 +62,11 @@ class AudioListPage extends StatelessWidget {
                         onTap: () {
                           Navigator.push(context,
                               MaterialPageRoute(builder: (_) {
-                            return AudioPlayerPage(audio: audio, category: category, index: index,);
+                            return AudioPlayerPage(
+                              audio: audio,
+                              category: category,
+                              index: index,
+                            );
                           }));
                         },
                         tileColor: Colors.grey[800],

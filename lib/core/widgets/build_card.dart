@@ -22,7 +22,7 @@ class BuildCard extends StatelessWidget {
           child: Row(
             children: [
               Icon(icon),
-              SizedBox(width: 16.0),
+              const SizedBox(width: 16.0),
               Text(text),
             ],
           ),

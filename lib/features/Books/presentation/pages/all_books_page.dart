@@ -1,5 +1,7 @@
 import 'package:arjun_guruji/core/widgets/content_view_page.dart';
 import 'package:arjun_guruji/core/widgets/gradient_background.dart';
+import 'package:arjun_guruji/core/widgets/image_grid_view.dart';
+import 'package:arjun_guruji/core/widgets/search_bar.dart';
 import 'package:arjun_guruji/features/Books/data/model/book_model.dart';
 import 'package:arjun_guruji/features/Books/domain/usecases/books_usecase.dart';
 import 'package:arjun_guruji/features/Books/presentation/bloc/books_bloc.dart';
@@ -9,6 +11,7 @@ import 'package:arjun_guruji/injection_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:shimmer/shimmer.dart';
 
 class AllBooksPage extends StatefulWidget {
   const AllBooksPage({super.key});
@@ -38,42 +41,22 @@ class AllBooksPageState extends State<AllBooksPage> {
             padding: const EdgeInsets.all(24.0),
             child: Column(
               children: [
-                TextField(
+                SearchBarWidget(
                   controller: _searchController,
-                  decoration: InputDecoration(
-                    hintText: 'Search books...',
-                    hintStyle: TextStyle(color: Colors.grey[400]),
-                    prefixIcon: Icon(Icons.search, color: Colors.grey[400]),
-                    filled: true,
-                    fillColor: Colors.white.withAlpha((0.1 * 255).toInt()),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                  style: const TextStyle(color: Colors.white),
                   onChanged: (value) {
                     setState(() {
                       _searchQuery = value.toLowerCase();
                     });
                   },
+                  hintText: 'Search books...',
                 ),
                 const SizedBox(height: 20),
                 Expanded(
                   child: BlocBuilder<BooksBloc, BooksState>(
                     builder: (context, state) {
                       if (state is Loading) {
-                        return const Center(
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
-                          ),
-                        );
-                      } else if (state is BooksLoaded) {
-                        final filteredBooks = state.books
-                            .where((book) =>
-                                book.title.toLowerCase().contains(_searchQuery))
-                            .toList();
                         return GridView.builder(
+                          itemCount: 6,
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
@@ -81,75 +64,64 @@ class AllBooksPageState extends State<AllBooksPage> {
                             mainAxisSpacing: 10,
                             childAspectRatio: 0.7,
                           ),
-                          itemCount: filteredBooks.length,
-                          itemBuilder: (context, index) {
-                            final data = filteredBooks[index];
-                            return InkWell(
-                              onTap: () {
-                                if (data.bookType == 'chapters' &&
-                                    data.chapters != null) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => ChaptersListPage(
-                                        book: data,
-                                      ),
-                                    ),
-                                  );
-                                } else if (data.bookType == 'html' &&
-                                    data.content != null) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => ContentViewPage(
-                                        title: data.title,
-                                        content: data.content!,
-                                      ),
-                                    ),
-                                  );
-                                } else {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => PDFViewerPage(
-                                        book: data,
-                                      ),
-                                    ),
-                                  );
-                                }
-                              },
+                            itemBuilder: (context, index) {
+                            return Shimmer.fromColors(
+                              baseColor: Colors.grey[300]!,
+                              highlightColor: Colors.grey[100]!,
                               child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey
-                                          .withAlpha((0.5 * 255).toInt()),
-                                      spreadRadius: 2,
-                                      blurRadius: 5,
-                                      offset: const Offset(0, 3),
-                                    ),
-                                  ],
-                                ),
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: <Widget>[
-                                    Image.asset(data.imageUrl),
-                                    Text(
-                                      data.title,
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(
-                                        fontFamily: "Poppins",
-                                        color: Colors.black,
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
                               ),
                             );
+                            },
+                        );
+                      } else if (state is BooksLoaded) {
+                        final filteredBooks = state.books
+                            .where((book) =>
+                                book.title.toLowerCase().contains(_searchQuery))
+                            .toList();
+                        return ImageGridView(
+                          items: filteredBooks,
+                          getImageUrl: (book) => book.imageUrl,
+                          getTitle: (book) => book.title,
+                          getOnTap: (book) {
+                            if (book.bookType == 'chapters' &&
+                                book.chapters != null) {
+                              return () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        ChaptersListPage(book: book),
+                                  ),
+                                );
+                              };
+                            } else if (book.bookType == 'html' &&
+                                book.content != null) {
+                              return () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ContentViewPage(
+                                      title: book.title,
+                                      content: book.content!,
+                                    ),
+                                  ),
+                                );
+                              };
+                            } else {
+                              return () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        PDFViewerPage(book: book),
+                                  ),
+                                );
+                              };
+                            }
                           },
                         );
                       } else if (state is Error) {

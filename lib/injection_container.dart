@@ -2,7 +2,7 @@ import 'package:arjun_guruji/features/Astottaras/data/datasource/ast_remote_ds.d
 import 'package:arjun_guruji/features/Astottaras/data/model/astottara_model.dart';
 import 'package:arjun_guruji/features/Astottaras/data/repository/astottara_repository_impl.dart';
 import 'package:arjun_guruji/features/Astottaras/domain/repository/astottaras_repository.dart';
-import 'package:arjun_guruji/features/Astottaras/domain/usecases/FetchAstottarasUseCase.dart';
+import 'package:arjun_guruji/features/Astottaras/domain/usecases/fetch_astottaras_usecase.dart';
 import 'package:arjun_guruji/features/Astottaras/presentation/bloc/astottara_bloc.dart';
 import 'package:arjun_guruji/features/AudioPlayer/data/datasource/audio_remote_datasource.dart';
 import 'package:arjun_guruji/features/AudioPlayer/data/repository/audio_repository_impl.dart';
@@ -55,6 +55,26 @@ void books() async {
 }
 
 void astottaras() async {
+  sl.registerLazySingleton<AstottaraRepository>(
+    () => AstottarasRepositoryImpl(
+      remoteDataSource: sl(),
+    ),
+  );
+
+  sl.registerLazySingleton<AstottarasRemoteDataSource>(
+      () => AstottarasRemoteDataSourceImpl(firestore: sl()));
+
+  sl.registerFactory(() => FetchAstottarasUseCase(sl()));
+
+  // Register Hive Box instance
+  final Box<AstottaraModel> astottaraBox =
+      await Hive.openBox<AstottaraModel>('astottarasBox');
+  sl.registerLazySingleton<Box<AstottaraModel>>(() => astottaraBox);
+
+  sl.registerFactory(() => AstottarasBloc(
+      fetchAstottarasUseCase: sl(), astottarasBox: sl(), connectivity: sl()));
+}
+void lyrics() async {
   sl.registerLazySingleton<AstottaraRepository>(
     () => AstottarasRepositoryImpl(
       remoteDataSource: sl(),

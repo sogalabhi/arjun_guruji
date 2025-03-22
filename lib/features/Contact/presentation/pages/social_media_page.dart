@@ -75,7 +75,7 @@ class SocialMediaPage extends StatelessWidget {
       onTap: () async {
         if (name == "Contact") {
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => ContactPage()));
+              context, MaterialPageRoute(builder: (context) => const ContactPage()));
         } else {
           Uri webUrl = Uri.parse(url);
           if (!await launchUrl(webUrl)) {

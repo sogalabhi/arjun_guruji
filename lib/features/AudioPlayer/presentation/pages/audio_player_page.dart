@@ -183,7 +183,8 @@ class AudioPlayerPageState extends State<AudioPlayerPage>
 
   void _toggleLoopMode() {
     setState(() {
-      _loopMode = LoopMode.values[(_loopMode.index + 1) % LoopMode.values.length];
+      _loopMode =
+          LoopMode.values[(_loopMode.index + 1) % LoopMode.values.length];
     });
   }
 
@@ -216,7 +217,8 @@ class AudioPlayerPageState extends State<AudioPlayerPage>
           Positioned.fill(
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-              child: Container(color: Colors.black.withOpacity(0.5)),
+              child:
+                  Container(color: Colors.black.withAlpha((0.5 * 255).toInt())),
             ),
           ),
           Column(
@@ -249,11 +251,13 @@ class AudioPlayerPageState extends State<AudioPlayerPage>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      _formatDuration(Duration(milliseconds: _sliderValue.toInt())),
+                      _formatDuration(
+                          Duration(milliseconds: _sliderValue.toInt())),
                       style: const TextStyle(color: Colors.white),
                     ),
                     Text(
-                      _formatDuration(Duration(milliseconds: _maxSliderValue.toInt())),
+                      _formatDuration(
+                          Duration(milliseconds: _maxSliderValue.toInt())),
                       style: const TextStyle(color: Colors.white),
                     ),
                   ],
@@ -273,23 +277,28 @@ class AudioPlayerPageState extends State<AudioPlayerPage>
                     onPressed: _toggleShuffle,
                   ),
                   IconButton(
-                    icon: const Icon(Icons.skip_previous, color: Colors.white, size: 40),
+                    icon: const Icon(Icons.skip_previous,
+                        color: Colors.white, size: 40),
                     onPressed: _playPrevious,
                   ),
                   IconButton(
-                    icon: const Icon(Icons.replay_10, color: Colors.white, size: 40),
+                    icon: const Icon(Icons.replay_10,
+                        color: Colors.white, size: 40),
                     onPressed: () => _seekAudio(_sliderValue - 10000),
                   ),
                   AnimatedSwitcher(
                     duration: const Duration(milliseconds: 300),
                     child: _isLoading
                         ? const CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
                           )
                         : IconButton(
                             key: ValueKey<bool>(_isPlaying),
                             icon: Icon(
-                              _isPlaying ? Icons.pause_circle_filled : Icons.play_circle_fill,
+                              _isPlaying
+                                  ? Icons.pause_circle_filled
+                                  : Icons.play_circle_fill,
                               color: Colors.white,
                               size: 60,
                             ),
@@ -303,11 +312,13 @@ class AudioPlayerPageState extends State<AudioPlayerPage>
                           ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.forward_10, color: Colors.white, size: 40),
+                    icon: const Icon(Icons.forward_10,
+                        color: Colors.white, size: 40),
                     onPressed: () => _seekAudio(_sliderValue + 10000),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.skip_next, color: Colors.white, size: 40),
+                    icon: const Icon(Icons.skip_next,
+                        color: Colors.white, size: 40),
                     onPressed: _playNext,
                   ),
                   // Loop Button
@@ -316,7 +327,9 @@ class AudioPlayerPageState extends State<AudioPlayerPage>
                       _loopMode == LoopMode.one
                           ? Icons.repeat_one
                           : Icons.repeat,
-                      color: _loopMode != LoopMode.off ? Colors.blue : Colors.white,
+                      color: _loopMode != LoopMode.off
+                          ? Colors.blue
+                          : Colors.white,
                     ),
                     onPressed: _toggleLoopMode,
                   ),
