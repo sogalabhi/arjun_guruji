@@ -4,6 +4,7 @@ import 'package:arjun_guruji/features/Astottaras/presentation/pages/all_astottar
 import 'package:arjun_guruji/features/AudioPlayer/presentation/pages/audio_categories_page.dart';
 import 'package:arjun_guruji/features/Books/presentation/pages/all_books_page.dart';
 import 'package:arjun_guruji/features/Contact/presentation/pages/social_media_page.dart';
+import 'package:arjun_guruji/features/EventManagement/presentation/pages/event_list_page.dart';
 import 'package:arjun_guruji/features/Gallery/presentation/pages/gallery_page.dart';
 import 'package:arjun_guruji/features/Lyrics/presentation/pages/lyrics_categories_page.dart';
 import 'package:flutter/material.dart';
@@ -50,22 +51,22 @@ class HomePage extends StatelessWidget {
         "subtitle": "Lyrics",
         "imagePath": 'assets/mainlyrics.png',
         "route": () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (_) => const AllLyricsPage()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (_) => const AllLyricsPage()));
         }
       },
       {
-        "title": "Gallery",
-        "subtitle": "Gallery",
+        "title": "Events",
+        "subtitle": "Events",
         "imagePath": 'assets/maingallery.png',
         "route": () {
           Navigator.push(
-              context, MaterialPageRoute(builder: (_) => GalleryPage()));
+              context, MaterialPageRoute(builder: (_) => EventListPage()));
         }
       },
       {
-        "title": "Contact",
-        "subtitle": "Contact",
+        "title": "About",
+        "subtitle": "About",
         "imagePath": 'assets/mainlinks.png',
         "route": () {
           Navigator.push(context,
@@ -95,7 +96,9 @@ class HomePage extends StatelessWidget {
                 child: GestureDetector(
                   onDoubleTapDown: (details) {
                     Navigator.push(
-                        context, MaterialPageRoute(builder: (_) => const AdminLoginPage()));
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const AdminLoginPage()));
                   },
                   child: Image.asset(
                     "assets/mainimg.png",
