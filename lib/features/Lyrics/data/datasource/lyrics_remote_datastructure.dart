@@ -1,20 +1,30 @@
-import 'package:arjun_guruji/features/Astottaras/data/model/astottara_model.dart';
+import 'package:arjun_guruji/features/Lyrics/data/model/lyrics_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-abstract class AstottarasRemoteDataSource {
-  Future<List<AstottaraModel>> fetchAllAstottaras();
+abstract class LyricsRemoteDataSource {
+  Future<List<LyricsModel>> fetchAllLyrics();
 }
 
-class AstottarasRemoteDataSourceImpl implements AstottarasRemoteDataSource {
+class LyricsRemoteDataSourceImpl implements LyricsRemoteDataSource {
   final FirebaseFirestore firestore;
-  AstottarasRemoteDataSourceImpl({required this.firestore});
+
+  LyricsRemoteDataSourceImpl({required this.firestore});
+
   @override
-  Future<List<AstottaraModel>> fetchAllAstottaras() async {
-    final astottaraCollection = firestore.collection('Astottara');
-    final querySnapshot = await astottaraCollection.get();
-    var astottaras = querySnapshot.docs
-        .map((doc) => AstottaraModel.fromJson(doc.data()))
-        .toList();
-    return astottaras;
+  Future<List<LyricsModel>> fetchAllLyrics() async {
+    final lyricsCollection = firestore.collection('Lyrics');
+    final querySnapshot = await lyricsCollection.get();
+
+    var lyrics = querySnapshot.docs.map((doc) {
+      var data = doc.data();
+      return LyricsModel.fromJson({
+        'docId': doc.id, // Include document ID
+        'category': data['category'] ?? 'Unknown',
+        'content': data['content'] ?? '',
+        'title': data['title'] ?? 'Untitled',
+      });
+    }).toList();
+
+    return lyrics;
   }
 }

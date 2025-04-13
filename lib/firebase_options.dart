@@ -51,11 +51,12 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDGsJWH4U91GZdXxBKESJZ5veToJWa5C70',
-    appId: '1:970283442139:android:b97ca92242d8262bab51fe',
-    messagingSenderId: '970283442139',
-    projectId: 'arjun-guruji-app-d6da1',
-    storageBucket: 'arjun-guruji-app-d6da1.firebasestorage.app',
+    apiKey: 'AIzaSyATTVnl8E0gIyrbuqYFu7niyDHiImn_-dI',
+    appId: '1:699085946848:android:e19da417a9720287557585',
+    messagingSenderId: '699085946848',
+    projectId: 'arjun-guruji-app',
+    databaseURL: 'https://arjun-guruji-app-default-rtdb.firebaseio.com',
+    storageBucket: 'arjun-guruji-app.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(

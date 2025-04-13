@@ -29,7 +29,8 @@ class AstottarasBloc extends Bloc<AstottarasEvent, AstottarasState> {
     emit(const AstottarasState.loading());
 
     try {
-      final ConnectivityResult connectivityResult = await connectivity.checkConnectivity();
+      final List<ConnectivityResult> connectivityResults = await connectivity.checkConnectivity();
+      final ConnectivityResult connectivityResult = connectivityResults.isNotEmpty ? connectivityResults.first : ConnectivityResult.none;
       if (connectivityResult == ConnectivityResult.none) {
         try {
           // No internet - Fetch from local Hive database

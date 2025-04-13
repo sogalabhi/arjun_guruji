@@ -1,16 +1,16 @@
 import 'package:arjun_guruji/core/usecases/usecase.dart';
-import 'package:arjun_guruji/features/Astottaras/domain/entity/astottara.dart';
-import 'package:arjun_guruji/features/Astottaras/domain/repository/astottaras_repository.dart';
+import 'package:arjun_guruji/features/Lyrics/domain/entity/lyrics.dart';
+import 'package:arjun_guruji/features/Lyrics/domain/repository/lyrics_repository.dart';
 import 'package:dartz/dartz.dart';
 
-class FetchAstottarasUseCase implements Usecase<List<Astottara>, NoParams, String> {
-  final AstottaraRepository astottaraRepository;
+class FetchLyricsUseCase implements Usecase<List<Lyrics>, NoParams, String> {
+  final LyricsRepository lyricsRepository;
 
-  FetchAstottarasUseCase(this.astottaraRepository);
+  FetchLyricsUseCase(this.lyricsRepository);
 
   @override
-  Future<Either<String, List<Astottara>>> call(NoParams params) async {
-    var res = await astottaraRepository.fetchAllAstottaras();
+  Future<Either<String, List<Lyrics>>> call(NoParams params) async {
+    var res = await lyricsRepository.fetchAllLyrics();
     print('res in usecase: $res');
     return res;
   }

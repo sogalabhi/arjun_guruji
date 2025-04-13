@@ -23,7 +23,7 @@ class BookModelAdapter extends TypeAdapter<BookModel> {
       content: fields[3] as String?,
       chapters: (fields[4] as List?)
           ?.map((dynamic e) => (e as Map).cast<String, dynamic>())
-          .toList(),
+          ?.toList(),
     );
   }
 

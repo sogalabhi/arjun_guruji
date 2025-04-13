@@ -22,21 +22,29 @@ class AudioBloc extends Bloc<AudioEvent, AudioState> {
     on<FetchAllAudio>(_onFetchAudio);
   }
 
-  Future<void> _onFetchAudio(FetchAllAudio event, Emitter<AudioState> emit) async {
+  Future<void> _onFetchAudio(
+      FetchAllAudio event, Emitter<AudioState> emit) async {
     emit(const AudioState.loading());
 
     try {
-      final ConnectivityResult connectivityResult = await connectivity.checkConnectivity();
+      final List<ConnectivityResult> connectivityResults =
+          await connectivity.checkConnectivity();
+      final ConnectivityResult connectivityResult =
+          connectivityResults.isNotEmpty
+              ? connectivityResults.first
+              : ConnectivityResult.none;
       if (connectivityResult == ConnectivityResult.none) {
         emit(const AudioState.error("No internet connection"));
         return;
       }
 
       // Internet is available - Fetch from the source
-      final Either<String, List<CategoryEntity>> result = await fetchAudioUseCase.call(NoParams());
+      final Either<String, List<CategoryEntity>> result =
+          await fetchAudioUseCase.call(NoParams());
 
       await result.fold(
-        (failure) async => emit(AudioState.error(failure)), // Handle failure properly
+        (failure) async =>
+            emit(AudioState.error(failure)), // Handle failure properly
         (audioList) async {
           if (!emit.isDone) {
             emit(AudioState.audioLoaded(audioList));
@@ -44,7 +52,8 @@ class AudioBloc extends Bloc<AudioEvent, AudioState> {
         },
       );
     } catch (e) {
-      print("Error in _onFetchAudio: $e"); // Print unexpected errors for debugging
+      print(
+          "Error in _onFetchAudio: $e"); // Print unexpected errors for debugging
     }
   }
 }

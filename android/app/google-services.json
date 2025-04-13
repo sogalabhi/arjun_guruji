@@ -1,13 +1,14 @@
 {
   "project_info": {
-    "project_number": "970283442139",
-    "project_id": "arjun-guruji-app-d6da1",
-    "storage_bucket": "arjun-guruji-app-d6da1.firebasestorage.app"
+    "project_number": "699085946848",
+    "firebase_url": "https://arjun-guruji-app-default-rtdb.firebaseio.com",
+    "project_id": "arjun-guruji-app",
+    "storage_bucket": "arjun-guruji-app.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:970283442139:android:b97ca92242d8262bab51fe",
+        "mobilesdk_app_id": "1:699085946848:android:e19da417a9720287557585",
         "android_client_info": {
           "package_name": "org.snsds.arjunguruji"
         }
@@ -15,7 +16,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDGsJWH4U91GZdXxBKESJZ5veToJWa5C70"
+          "current_key": "AIzaSyATTVnl8E0gIyrbuqYFu7niyDHiImn_-dI"
         }
       ],
       "services": {

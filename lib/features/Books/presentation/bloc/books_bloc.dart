@@ -25,31 +25,43 @@ class BooksBloc extends Bloc<BooksEvent, BooksState> {
     on<FetchAllBooks>(_onFetchBooks);
   }
 
-  Future<void> _onFetchBooks(FetchAllBooks event, Emitter<BooksState> emit) async {
+  Future<void> _onFetchBooks(
+      FetchAllBooks event, Emitter<BooksState> emit) async {
     emit(const BooksState.loading());
 
     try {
-      final ConnectivityResult connectivityResult = await connectivity.checkConnectivity();
+      final List<ConnectivityResult> connectivityResults =
+          await connectivity.checkConnectivity();
+      final ConnectivityResult connectivityResult =
+          connectivityResults.isNotEmpty
+              ? connectivityResults.first
+              : ConnectivityResult.none;
       if (connectivityResult == ConnectivityResult.none) {
         try {
           // No internet - Fetch from local Hive database
           final List<BookModel> localBooks = booksBox.values.toList();
-          final List<Book> books = localBooks.map((bookModel) => BookModel.toEntity(bookModel)).toList();
-          
+          final List<Book> books = localBooks
+              .map((bookModel) => BookModel.toEntity(bookModel))
+              .toList();
+
           emit(BooksState.booksLoaded(books));
         } catch (e) {
-          emit(BooksState.error("Failed to load books from local database: $e"));
+          emit(
+              BooksState.error("Failed to load books from local database: $e"));
         }
         return;
       }
 
       // Internet is available - Fetch from Firestore
-      final Either<String, List<Book>> result = await fetchBooksUseCase.call(NoParams());
+      final Either<String, List<Book>> result =
+          await fetchBooksUseCase.call(NoParams());
 
       await result.fold(
-        (failure) async => emit(BooksState.error(failure)), // Handle failure properly
+        (failure) async =>
+            emit(BooksState.error(failure)), // Handle failure properly
         (books) async {
-          final List<BookModel> bookModels = books.map((book) => BookModel.fromEntity(book)).toList();
+          final List<BookModel> bookModels =
+              books.map((book) => BookModel.fromEntity(book)).toList();
 
           // Store books in Hive (await to ensure completion)
           await booksBox.clear();
@@ -61,7 +73,8 @@ class BooksBloc extends Bloc<BooksEvent, BooksState> {
         },
       );
     } catch (e) {
-      print("Error in _onFetchBooks: $e"); // Print unexpected errors for debugging
+      print(
+          "Error in _onFetchBooks: $e"); // Print unexpected errors for debugging
     }
   }
 }

@@ -2,8 +2,10 @@ import 'dart:convert';
 
 import 'package:arjun_guruji/features/Astottaras/data/model/astottara_model.dart';
 import 'package:arjun_guruji/features/Books/data/model/book_model.dart';
+import 'package:arjun_guruji/features/Lyrics/data/model/lyrics_model.dart';
 import 'package:arjun_guruji/injection_container.dart';
 import 'package:arjun_guruji/screens/splash_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -101,8 +103,7 @@ void initializeNotifications() {
   const AndroidInitializationSettings initializationSettingsAndroid =
       AndroidInitializationSettings('@mipmap/ic_launcher'); // App icon
 
-  const InitializationSettings initializationSettings =
-      InitializationSettings(
+  const InitializationSettings initializationSettings = InitializationSettings(
     android: initializationSettingsAndroid,
   );
 
@@ -116,6 +117,7 @@ Future<void> main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(BookModelAdapter());
   Hive.registerAdapter(AstottaraModelAdapter());
+  Hive.registerAdapter(LyricsModelAdapter());
 
   // Set up dependency injection
   setupLocator();
@@ -135,7 +137,6 @@ Future<void> main() async {
 
   // Initialize Flutter Local Notifications
   initializeNotifications();
-
   runApp(const MyApp());
 }
 

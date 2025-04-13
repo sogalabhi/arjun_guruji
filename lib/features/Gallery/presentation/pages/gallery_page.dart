@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:arjun_guruji/core/widgets/gradient_background.dart';
 import 'package:arjun_guruji/features/Gallery/presentation/pages/full_page_viewer_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -20,16 +21,18 @@ class GalleryPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Gallery"), centerTitle: true),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: MasonryGridView.builder(
-          gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: MediaQuery.of(context).size.width > 600 ? 4 : 2,
+      body: GradientBackground(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: MasonryGridView.builder(
+            gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: MediaQuery.of(context).size.width > 600 ? 4 : 2,
+            ),
+            itemCount: imageUrls.length,
+            itemBuilder: (context, index) {
+              return _buildImageTile(context, imageUrls[index], index);
+            },
           ),
-          itemCount: imageUrls.length,
-          itemBuilder: (context, index) {
-            return _buildImageTile(context, imageUrls[index], index);
-          },
         ),
       ),
     );

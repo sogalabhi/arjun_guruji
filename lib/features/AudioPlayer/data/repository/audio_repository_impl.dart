@@ -8,7 +8,8 @@ class AudioRepositoryImpl implements AudioRepository {
   const AudioRepositoryImpl({required this.remoteDataSource});
 
   @override
-  Future<Either<String, List<CategoryModel>>> fetchCategoriesWithAudios() async {
+  Future<Either<String, List<CategoryModel>>>
+      fetchCategoriesWithAudios() async {
     try {
       final audios = await remoteDataSource.fetchCategoriesWithAudios();
       if (audios.isEmpty) {

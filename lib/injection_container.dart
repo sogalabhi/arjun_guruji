@@ -15,6 +15,12 @@ import 'package:arjun_guruji/features/Books/data/repository/books_repository_imp
 import 'package:arjun_guruji/features/Books/domain/repository/books_repository.dart';
 import 'package:arjun_guruji/features/Books/domain/usecases/books_usecase.dart';
 import 'package:arjun_guruji/features/Books/presentation/bloc/books_bloc.dart';
+import 'package:arjun_guruji/features/Lyrics/data/datasource/lyrics_remote_datastructure.dart';
+import 'package:arjun_guruji/features/Lyrics/data/model/lyrics_model.dart';
+import 'package:arjun_guruji/features/Lyrics/data/repository/lyrics_repository_impl.dart';
+import 'package:arjun_guruji/features/Lyrics/domain/repository/lyrics_repository.dart';
+import 'package:arjun_guruji/features/Lyrics/domain/usecases/fetch_astottaras_usecase.dart';
+import 'package:arjun_guruji/features/Lyrics/presentation/bloc/lyrics_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get_it/get_it.dart';
@@ -32,6 +38,7 @@ void setupLocator() {
   books();
   astottaras();
   audio();
+  lyrics();
 }
 
 void books() async {
@@ -74,26 +81,6 @@ void astottaras() async {
   sl.registerFactory(() => AstottarasBloc(
       fetchAstottarasUseCase: sl(), astottarasBox: sl(), connectivity: sl()));
 }
-void lyrics() async {
-  sl.registerLazySingleton<AstottaraRepository>(
-    () => AstottarasRepositoryImpl(
-      remoteDataSource: sl(),
-    ),
-  );
-
-  sl.registerLazySingleton<AstottarasRemoteDataSource>(
-      () => AstottarasRemoteDataSourceImpl(firestore: sl()));
-
-  sl.registerFactory(() => FetchAstottarasUseCase(sl()));
-
-  // Register Hive Box instance
-  final Box<AstottaraModel> astottaraBox =
-      await Hive.openBox<AstottaraModel>('astottarasBox');
-  sl.registerLazySingleton<Box<AstottaraModel>>(() => astottaraBox);
-
-  sl.registerFactory(() => AstottarasBloc(
-      fetchAstottarasUseCase: sl(), astottarasBox: sl(), connectivity: sl()));
-}
 
 void audio() async {
   sl.registerLazySingleton<AudioRepository>(
@@ -109,4 +96,24 @@ void audio() async {
 
   sl.registerFactory(
       () => AudioBloc(fetchAudioUseCase: sl(), connectivity: sl()));
+}
+
+void lyrics() async {
+  sl.registerLazySingleton<LyricsRepository>(
+    () => LyricsRepositoryImpl(
+      remoteDataSource: sl(),
+    ),
+  );
+
+  sl.registerLazySingleton<LyricsRemoteDataSource>(
+      () => LyricsRemoteDataSourceImpl(firestore: sl()));
+
+  sl.registerFactory(() => FetchLyricsUseCase(sl()));
+
+  // Register Hive Box instance
+  final Box<LyricsModel> lyricsBox = await Hive.openBox<LyricsModel>('lyricsBox');
+  sl.registerLazySingleton<Box<LyricsModel>>(() => lyricsBox);
+
+  sl.registerFactory(() => LyricsBloc(
+      fetchLyricsUseCase: sl(), lyricsBox: sl(), connectivity: sl()));
 }

@@ -5,6 +5,7 @@ import 'package:arjun_guruji/features/AudioPlayer/presentation/pages/audio_categ
 import 'package:arjun_guruji/features/Books/presentation/pages/all_books_page.dart';
 import 'package:arjun_guruji/features/Contact/presentation/pages/social_media_page.dart';
 import 'package:arjun_guruji/features/Gallery/presentation/pages/gallery_page.dart';
+import 'package:arjun_guruji/features/Lyrics/presentation/pages/lyrics_categories_page.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -49,8 +50,8 @@ class HomePage extends StatelessWidget {
         "subtitle": "Lyrics",
         "imagePath": 'assets/mainlyrics.png',
         "route": () {
-          // Navigator.push(
-          //     context, MaterialPageRoute(builder: (_) => const LyricsPage()));
+          Navigator.push(
+              context, MaterialPageRoute(builder: (_) => const AllLyricsPage()));
         }
       },
       {
