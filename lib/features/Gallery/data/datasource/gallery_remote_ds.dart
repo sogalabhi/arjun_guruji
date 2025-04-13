@@ -19,6 +19,7 @@ class GalleryRemoteDataSourceImpl implements GalleryRemoteDataSource {
       return {
         'count': data['count'] as int,
         'baseUrl': data['baseUrl'] as String,
+        'afterUrl': data['afterUrl'] as String,
       };
     } else {
       throw Exception('No documents found in the Gallery collection');
