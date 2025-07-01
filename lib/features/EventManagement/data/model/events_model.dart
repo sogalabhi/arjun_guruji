@@ -24,6 +24,7 @@ class EventModel extends EventEntity {
     super.tags,
     super.rsvp = false,
     super.rsvpCount = 0,
+    super.isFeatured = false,
   });
 
   factory EventModel.fromFirestore(Map<String, dynamic> doc) {
@@ -53,6 +54,7 @@ class EventModel extends EventEntity {
       tags: doc['tags'] != null ? List<String>.from(doc['tags']) : null,
       rsvp: doc['rsvp'] ?? false,
       rsvpCount: doc['rsvpCount'] ?? 0,
+      isFeatured: doc['isFeatured'] ?? false,
     );
   }
 
@@ -77,6 +79,7 @@ class EventModel extends EventEntity {
       'tags': tags,
       'rsvp': rsvp,
       'rsvpCount': rsvpCount ?? 0, // Ensure a default value if null
+      'isFeatured': isFeatured,
     };
   }
 }

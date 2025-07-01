@@ -1,7 +1,9 @@
+import 'package:arjun_guruji/core/widgets/gradient_background.dart';
 import 'package:arjun_guruji/features/EventManagement/data/model/events_model.dart';
 import 'package:arjun_guruji/features/EventManagement/domain/entity/activity.dart';
 import 'package:arjun_guruji/features/EventManagement/domain/entity/events.dart';
-import 'package:arjun_guruji/features/EventManagement/presentation/widgets/event_card.dart';
+import 'package:arjun_guruji/features/EventManagement/presentation/widgets/featured_events_carousel.dart';
+import 'package:arjun_guruji/features/EventManagement/presentation/widgets/past_events_list.dart';
 import 'package:flutter/material.dart';
 
 class EventListPage extends StatelessWidget {
@@ -26,7 +28,7 @@ class EventListPage extends StatelessWidget {
       galleryLinks: [],
       status: "Upcoming",
       rsvp: false,
-      rsvpCount: 0,
+      rsvpCount: 50,
     );
 
     // Create a recurring event for Arti in Venue 2, Bengaluru (Weekly Monday)
@@ -45,25 +47,26 @@ class EventListPage extends StatelessWidget {
       galleryLinks: [],
       status: "Upcoming",
       rsvp: false,
-      rsvpCount: 0,
+      rsvpCount: 20,
     );
 
     // Create a simple event for Datta Jayanti, Mysuru (One-day event)
     EventModel simpleEvent = EventModel(
-      title: "Datta Jayanti",
-      eventType: "Simple",
-      startDate: DateTime(2025, 12, 20),
-      endDate: DateTime(2025, 12, 20),
-      venue: "Venue 2",
-      city: "Mysuru",
-      place: "Ashrama",
-      description: "Datta Jayanti celebration at Ashrama",
-      interestedCount: 0,
-      galleryLinks: [],
-      status: "Upcoming",
-      rsvp: false,
-      rsvpCount: 0,
-    );
+        title: "Datta Jayanti",
+        eventType: "Simple",
+        startDate: DateTime(2025, 04, 25),
+        endDate: DateTime(2025, 04, 27),
+        venue: "Venue 2",
+        city: "Mysuru",
+        place: "Ashrama",
+        description:
+            "ಅಶ್ರಮದಲ್ಲಿ ದತ್ತ ಜಯಂತಿಯನ್ನು ಭಕ್ತಿ ಮತ್ತು ಹರ್ಷದಿಂದ ಆಚರಿಸಲಾಗುತ್ತದೆ. ವಿಶೇಷ ಪೂಜೆಗಳು, ಭಜನೆಗಳು ಮತ್ತು ಸತ್ಸಂಗಗಳು ನಡೆಯಲಿವೆ. ಪೂಜೆಯ ನಂತರ ಪ್ರಸಾದ ವಿತರಣೆ ಮಾಡಲಾಗುತ್ತದೆ. ಎಲ್ಲರಿಗೂ ಭಾಗವಹಿಸಲು ಆಹ್ವಾನ.",
+        interestedCount: 0,
+        galleryLinks: [],
+        status: "Upcoming",
+        rsvp: false,
+        rsvpCount: 532,
+        isFeatured: true);
 
     // Create a nested event for Navaratri Celebrations (Nov 10-18, 2025)
     List<ActivityEntity> navaratriActivities = [];
@@ -83,8 +86,8 @@ class EventListPage extends StatelessWidget {
     EventModel nestedEvent = EventModel(
       title: "Navaratri Celebrations",
       eventType: "Nested",
-      startDate: DateTime(2025, 11, 10),
-      endDate: DateTime(2025, 11, 18),
+      startDate: DateTime(2024, 11, 10),
+      endDate: DateTime(2024, 11, 18),
       venue: "Ashrama, Mysuru",
       city: "Mysuru",
       place: "Ashrama, Mysuru",
@@ -96,7 +99,23 @@ class EventListPage extends StatelessWidget {
       rsvp: false,
       rsvpCount: 0,
     );
-
+// Create a simple event for Datta Jayanti, Mysuru (One-day event)
+    EventModel simpleEvent2 = EventModel(
+        title: "Datta Jayanti 2",
+        eventType: "Simple",
+        startDate: DateTime(2024, 04, 25),
+        endDate: DateTime(2024, 04, 27),
+        venue: "Venue 2",
+        city: "Mysuru",
+        place: "Ashrama",
+        description:
+            "ಅಶ್ರಮದಲ್ಲಿ ದತ್ತ ಜಯಂತಿಯನ್ನು ಭಕ್ತಿ ಮತ್ತು ಹರ್ಷದಿಂದ ಆಚರಿಸಲಾಗುತ್ತದೆ. ವಿಶೇಷ ಪೂಜೆಗಳು, ಭಜನೆಗಳು ಮತ್ತು ಸತ್ಸಂಗಗಳು ನಡೆಯಲಿವೆ. ಪೂಜೆಯ ನಂತರ ಪ್ರಸಾದ ವಿತರಣೆ ಮಾಡಲಾಗುತ್ತದೆ. ಎಲ್ಲರಿಗೂ ಭಾಗವಹಿಸಲು ಆಹ್ವಾನ.",
+        interestedCount: 0,
+        galleryLinks: [],
+        status: "Upcoming",
+        rsvp: false,
+        rsvpCount: 532,
+        isFeatured: true);
     // Create a non-trust event with Guruji as a guest (at Sringeri Mutt, Shimoga)
     EventModel nonTrustEvent = EventModel(
       title: "Guruji Visit",
@@ -120,42 +139,46 @@ class EventListPage extends StatelessWidget {
       simpleEvent,
       nestedEvent,
       nonTrustEvent,
+      simpleEvent2
     ];
+
+    List<EventEntity> featuredAndRecurringEvents = events.where((event) {
+      return event.eventType == "Recurring" || event.isFeatured;
+    }).toList();
+
+// Sort the list: First by isFeatured (true first), then by eventType ("Recurring" events)
+    featuredAndRecurringEvents.sort((a, b) {
+      if (a.isFeatured && !b.isFeatured) {
+        return -1; // a comes first if a is featured
+      } else if (!a.isFeatured && b.isFeatured) {
+        return 1; // b comes first if b is featured
+      } else {
+        // If both are either featured or recurring, sort by eventType
+        return a.eventType == "Recurring" ? -1 : 1;
+      }
+    });
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Events'),
+        title: const Text('Events'),
         actions: [
           IconButton(
-            icon: Icon(Icons.calendar_today),
+            icon: const Icon(Icons.calendar_today),
             onPressed: () {
-              // Navigate to calendar page or show calendar popup
+              // TODO: Navigate to Calendar Page
             },
           ),
         ],
       ),
-      body: Column(
-        children: [
-          // Filter Button (Placeholder for now)
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-              onPressed: () {
-                // Filter logic goes here
-              },
-              child: Text('Filter Events'),
-            ),
-          ),
-          // EventModel List
-          Expanded(
-            child: ListView.builder(
-              itemCount: events.length,
-              itemBuilder: (context, index) {
-                return EventCard(event: events[index]);
-              },
-            ),
-          ),
-        ],
+      body: GradientBackground(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            FeaturedEventsCarousel(events: featuredAndRecurringEvents),
+            const SizedBox(height: 16),
+            PastEventsList(events: events),
+          ],
+        ),
       ),
     );
   }

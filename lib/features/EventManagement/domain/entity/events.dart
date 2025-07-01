@@ -21,7 +21,7 @@ class EventEntity {
   List<String>? tags; // Event tags (Spiritual, Cultural, etc.)
   bool rsvp; // Whether registration or RSVP is required
   int? rsvpCount; // Count of people who have RSVPed
-
+  final bool isFeatured;
   EventEntity({
     required this.title,
     required this.eventType,
@@ -42,5 +42,6 @@ class EventEntity {
     this.tags,
     this.rsvp = false,
     this.rsvpCount,
+    this.isFeatured = false,
   });
 }
