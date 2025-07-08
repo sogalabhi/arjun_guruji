@@ -2,6 +2,7 @@ import 'package:arjun_guruji/features/EventManagement/domain/entity/activity.dar
 import 'package:arjun_guruji/features/EventManagement/domain/entity/organiser.dart';
 
 class EventEntity {
+  final String id;
   String title;
   String eventType;
   DateTime startDate;
@@ -23,6 +24,7 @@ class EventEntity {
   int? rsvpCount; // Count of people who have RSVPed
   final bool isFeatured;
   EventEntity({
+    required this.id,
     required this.title,
     required this.eventType,
     required this.startDate,

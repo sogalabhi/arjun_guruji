@@ -1,5 +1,4 @@
 import 'package:arjun_guruji/core/usecases/usecase.dart';
-import 'package:arjun_guruji/features/EventManagement/data/model/events_model.dart';
 import 'package:arjun_guruji/features/EventManagement/domain/entity/events.dart';
 import 'package:arjun_guruji/features/EventManagement/domain/repository/events_repository.dart';
 import 'package:dartz/dartz.dart';

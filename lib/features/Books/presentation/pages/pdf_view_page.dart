@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:arjun_guruji/features/Books/domain/entity/book.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
@@ -8,7 +9,7 @@ import 'package:dio/dio.dart';
 class PDFViewerPage extends StatefulWidget {
   final Book book;
 
-  const PDFViewerPage({Key? key, required this.book}) : super(key: key);
+  const PDFViewerPage({super.key, required this.book});
 
   @override
   PdfViewerPageState createState() => PdfViewerPageState();
@@ -30,6 +31,11 @@ class PdfViewerPageState extends State<PDFViewerPage> {
 
   /// ✅ Checks if the file already exists. If yes, loads it. If no, downloads it.
   Future<void> checkAndLoadPDF() async {
+    if (widget.book.pdfBytes != null) {
+      final filePath = await savePdfBytesToFile(widget.book.pdfBytes!, getFileName());
+      setState(() => localFilePath = filePath);
+      return;
+    }
     final dir = await getApplicationDocumentsDirectory();
     final filePath = '${dir.path}/${getFileName()}';
 
@@ -55,6 +61,13 @@ class PdfViewerPageState extends State<PDFViewerPage> {
     } catch (e) {
       print("Error downloading PDF: $e");
     }
+  }
+
+  Future<String?> savePdfBytesToFile(Uint8List bytes, String filename) async {
+    final dir = await getTemporaryDirectory();
+    final file = File('${dir.path}/$filename');
+    await file.writeAsBytes(bytes, flush: true);
+    return file.path;
   }
 
   @override

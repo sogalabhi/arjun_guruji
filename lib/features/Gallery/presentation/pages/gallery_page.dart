@@ -1,6 +1,4 @@
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -185,8 +183,9 @@ class GalleryPage extends StatelessWidget {
 
   Future<void> _saveImage(String url) async {
     try {
-      final response = await http.get(Uri.parse(url));
-      final Uint8List bytes = response.bodyBytes;
+      print("url: $url");
+      // final response = await http.get(Uri.parse(url));
+      // final Uint8List bytes = response.bodyBytes;
 
       // Implement actual saving using image_gallery_saver or gallery_saver
       // await ImageGallerySaver.saveImage(bytes, name: "downloaded_image");

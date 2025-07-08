@@ -3,16 +3,11 @@ import '../../domain/entity/category.dart';
 
 class CategoryModel extends CategoryEntity {
   CategoryModel({
-    required String id,
-    required String name,
-    required String imageUrl,
-    required List<AudioEntity> audios,
-  }) : super(
-          id: id,
-          name: name,
-          imageUrl: imageUrl,
-          audios: audios,
-        );
+    required super.id,
+    required super.name,
+    required super.imageUrl,
+    required super.audios,
+  });
 
   // Convert JSON to CategoryModel
   factory CategoryModel.fromJson(

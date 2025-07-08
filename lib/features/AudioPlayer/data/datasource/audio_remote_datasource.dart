@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 abstract class AudioRemoteDataSource {
   Future<List<CategoryModel>> fetchCategoriesWithAudios();
+  Future<void> feedDummyData();
 }
 
 class AudioRemoteDataSourceImpl implements AudioRemoteDataSource {
@@ -50,6 +51,61 @@ class AudioRemoteDataSourceImpl implements AudioRemoteDataSource {
     } catch (e) {
       print("Error fetching categories: $e");
       return [];
+    }
+  }
+
+  @override
+  Future<void> feedDummyData() async {
+    const String categoryImageUrl =
+        'https://firebasestorage.googleapis.com/v0/b/arjun-guruji-app.appspot.com/o/Gallery%2Fbhajagurunnatham.jpeg?alt=media&token=80aed29b-05fb-4648-95a9-1b4a1c0ada1d';
+    const List<String> sampleAudioUrls = [
+      'https://firebasestorage.googleapis.com/v0/b/arjun-guruji-app.appspot.com/o/Bhaja%20Gurunatham%2F1.mp3?alt=media&token=6c51c303-f754-4a4f-a125-206d3707e49b',
+      'https://firebasestorage.googleapis.com/v0/b/arjun-guruji-app.appspot.com/o/Bhaja%20Gurunatham%2F2.mp3?alt=media&token=6c51c303-f754-4a4f-a125-206d3707e49b',
+      'https://firebasestorage.googleapis.com/v0/b/arjun-guruji-app.appspot.com/o/Bhaja%20Gurunatham%2F3.mp3?alt=media&token=6c51c303-f754-4a4f-a125-206d3707e49b',
+    ];
+
+    final List<Map<String, dynamic>> categories = [
+      {
+        'id': 'bhaja_gurunatham',
+        'name': 'Bhaja gurunatham',
+      },
+      {
+        'id': 'arati',
+        'name': 'Arati',
+      },
+      {
+        'id': 'bhakti_kusumanjali',
+        'name': 'Bhakti kusumanjali',
+      },
+      {
+        'id': 'bhuvanada_bhagya',
+        'name': 'Bhuvanada bhagya',
+      },
+    ];
+
+    try {
+      for (final category in categories) {
+        final categoryRef =
+            firestore.collection('categories').doc(category['id']);
+        await categoryRef.set({
+          'name': category['name'],
+          'imageUrl': categoryImageUrl,
+        });
+
+        for (int i = 0; i < sampleAudioUrls.length; i++) {
+          final audioId = 'audio${i + 1}';
+          await categoryRef.collection('audios').doc(audioId).set({
+            'title': '${category['name']} ${i + 1}',
+            'audioUrl': sampleAudioUrls[i],
+            'imageUrl': categoryImageUrl,
+            'lyrics': '',
+            'category': category['name'],
+          });
+        }
+      }
+      print('Dummy data fed successfully.');
+    } catch (e) {
+      print('Error feeding dummy data: $e');
     }
   }
 }

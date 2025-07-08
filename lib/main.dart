@@ -1,17 +1,25 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:arjun_guruji/features/Astottaras/data/model/astottara_model.dart';
 import 'package:arjun_guruji/features/Books/data/model/book_model.dart';
 import 'package:arjun_guruji/features/Lyrics/data/model/lyrics_model.dart';
 import 'package:arjun_guruji/injection_container.dart';
 import 'package:arjun_guruji/screens/splash_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:just_audio_background/just_audio_background.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:arjun_guruji/features/EventManagement/data/model/events_model.dart';
+import 'package:arjun_guruji/features/EventManagement/data/model/activities_model.dart';
+import 'package:path/path.dart' as p;
+import 'dart:io';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:hive/hive.dart';
 
 // Initialize FlutterLocalNotificationsPlugin
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -109,6 +117,23 @@ void initializeNotifications() {
   flutterLocalNotificationsPlugin.initialize(initializationSettings);
 }
 
+class Uint8ListAdapter extends TypeAdapter<Uint8List> {
+  @override
+  final int typeId = 100;
+
+  @override
+  Uint8List read(BinaryReader reader) {
+    final length = reader.readInt();
+    return reader.readByteList(length);
+  }
+
+  @override
+  void write(BinaryWriter writer, Uint8List obj) {
+    writer.writeInt(obj.length);
+    writer.writeByteList(obj);
+  }
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -117,6 +142,10 @@ Future<void> main() async {
   Hive.registerAdapter(BookModelAdapter());
   Hive.registerAdapter(AstottaraModelAdapter());
   Hive.registerAdapter(LyricsModelAdapter());
+  Hive.registerAdapter(EventModelAdapter());
+  Hive.registerAdapter(ActivityModelAdapter());
+  Hive.registerAdapter(Uint8ListAdapter());
+  await Hive.openBox('interestedBox');
 
   // Set up dependency injection
   setupLocator();
@@ -126,7 +155,6 @@ Future<void> main() async {
 
   // Set up Firebase Messaging
   setupFirebaseMessaging();
-
   // Initialize JustAudioBackground
   await JustAudioBackground.init(
     androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',

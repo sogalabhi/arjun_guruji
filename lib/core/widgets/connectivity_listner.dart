@@ -1,6 +1,7 @@
 import 'package:arjun_guruji/core/widgets/top_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:arjun_guruji/core/services/connectivity_service.dart';
 
 class ConnectivityListener extends StatefulWidget {
   final Widget child;
@@ -22,7 +23,9 @@ class ConnectivityListenerState extends State<ConnectivityListener> {
 
   void _listenForConnectivityChanges() {
     _connectivity.onConnectivityChanged.listen((result) {
-      if (result == ConnectivityResult.none) {
+      final online = result != ConnectivityResult.none;
+      ConnectivityService.isOnline.value = online;
+      if (!online) {
         // No internet
         TopSnackbar.show(
           context: context,

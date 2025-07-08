@@ -13,11 +13,11 @@ class AudioPlayerPage extends StatefulWidget {
   final int index;
 
   const AudioPlayerPage({
-    Key? key,
+    super.key,
     required this.audio,
     required this.category,
     required this.index,
-  }) : super(key: key);
+  });
 
   @override
   AudioPlayerPageState createState() => AudioPlayerPageState();

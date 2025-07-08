@@ -1,11 +1,13 @@
 import 'package:arjun_guruji/features/EventManagement/domain/entity/events.dart';
 import 'package:arjun_guruji/features/EventManagement/presentation/pages/event_details_page.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 
 class FeaturedEventCard extends StatelessWidget {
   final EventEntity event;
+  final Box interestedBox;
 
-  const FeaturedEventCard({super.key, required this.event});
+  const FeaturedEventCard({super.key, required this.event, required this.interestedBox});
 
   bool get isLive {
     final now = DateTime.now();
@@ -25,6 +27,8 @@ class FeaturedEventCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
+    print("event: ${event.galleryLinks}");
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       width: double.infinity,
@@ -97,32 +101,40 @@ class FeaturedEventCard extends StatelessWidget {
                   const Icon(Icons.people, size: 18),
                   const SizedBox(width: 6),
                   Text(
-                    "${event.rsvpCount} Interested",
+                    "${event.interestedCount} Interested",
                     style: const TextStyle(fontSize: 14, color: Colors.black87),
+                  ),
+                  const SizedBox(width: 8),
+                  Icon(
+                    interestedBox.get(event.id, defaultValue: false)
+                        ? Icons.thumb_up_alt
+                        : Icons.thumb_up_alt_outlined,
+                    color: Colors.amber,
+                    size: 20,
                   ),
                 ],
               ),
-              // ElevatedButton(
-              //   onPressed: () {
-              //     // Handle view details action
-              //     Navigator.push(
-              //       context,
-              //       MaterialPageRoute(
-              //         builder: (context) => EventDetailsPage(event: event),
-              //       ),
-              //     );
-              //   },
-              //   style: ElevatedButton.styleFrom(
-              //     backgroundColor: Colors.amber,
-              //     shape: RoundedRectangleBorder(
-              //       borderRadius: BorderRadius.circular(8),
-              //     ),
-              //   ),
-              //   child: const Text(
-              //     'View Details',
-              //     style: TextStyle(color: Colors.black),
-              //   ),
-              // ),
+              const SizedBox(height: 12),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EventDetailsPage(event: event),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.amber,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: const Text(
+                  'View Details',
+                  style: TextStyle(color: Colors.black),
+                ),
+              ),
             ],
           ),
           if (isLive)

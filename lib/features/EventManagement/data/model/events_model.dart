@@ -1,34 +1,120 @@
 import 'package:arjun_guruji/features/EventManagement/data/model/activities_model.dart';
-import 'package:arjun_guruji/features/EventManagement/data/model/organiser_model.dart';
 import 'package:arjun_guruji/features/EventManagement/domain/entity/events.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hive/hive.dart';
 
+part 'events_model.g.dart';
+
+@HiveType(typeId: 21)
 class EventModel extends EventEntity {
-  EventModel({
-    required super.title,
-    required super.eventType,
-    required super.startDate,
-    required super.endDate,
-    required super.venue,
-    required super.city,
-    required super.place,
-    super.guest,
-    super.frequency,
-    super.day,
-    super.activities,
-    required super.description,
-    required super.interestedCount,
-    required super.galleryLinks,
-    required super.status,
-    super.organizerInfo,
-    super.tags,
-    super.rsvp = false,
-    super.rsvpCount = 0,
-    super.isFeatured = false,
-  });
+  @override
+  @HiveField(0)
+  final String id;
+  @override
+  @HiveField(1)
+  final String title;
+  @override
+  @HiveField(2)
+  final String eventType;
+  @override
+  @HiveField(3)
+  final DateTime startDate;
+  @override
+  @HiveField(4)
+  final DateTime endDate;
+  @override
+  @HiveField(5)
+  final String venue;
+  @override
+  @HiveField(6)
+  final String city;
+  @override
+  @HiveField(7)
+  final String place;
+  @override
+  @HiveField(8)
+  final String? guest;
+  @override
+  @HiveField(9)
+  final String? frequency;
+  @override
+  @HiveField(10)
+  final String? day;
+  @override
+  @HiveField(11)
+  final List<ActivityModel>? activities;
+  @override
+  @HiveField(12)
+  final String description;
+  @override
+  @HiveField(13)
+  final int interestedCount;
+  @override
+  @HiveField(14)
+  final List<String> galleryLinks;
+  @override
+  @HiveField(15)
+  final String status;
+  @override
+  @HiveField(16)
+  final bool rsvp;
+  @override
+  @HiveField(17)
+  final int? rsvpCount;
+  @override
+  @HiveField(18)
+  final bool isFeatured;
+  @override
+  @HiveField(19)
+  final List<String>? tags;
 
-  factory EventModel.fromFirestore(Map<String, dynamic> doc) {
+  EventModel({
+    required this.id,
+    required this.title,
+    required this.eventType,
+    required this.startDate,
+    required this.endDate,
+    required this.venue,
+    required this.city,
+    required this.place,
+    this.guest,
+    this.frequency,
+    this.day,
+    this.activities,
+    required this.description,
+    required this.interestedCount,
+    required this.galleryLinks,
+    required this.status,
+    this.tags,
+    this.rsvp = false,
+    this.rsvpCount = 0,
+    this.isFeatured = false,
+  }) : super(
+    id: id,
+    title: title,
+    eventType: eventType,
+    startDate: startDate,
+    endDate: endDate,
+    venue: venue,
+    city: city,
+    place: place,
+    guest: guest,
+    frequency: frequency,
+    day: day,
+    activities: activities,
+    description: description,
+    interestedCount: interestedCount,
+    galleryLinks: galleryLinks,
+    status: status,
+    tags: tags,
+    rsvp: rsvp,
+    rsvpCount: rsvpCount,
+    isFeatured: isFeatured,
+  );
+
+  factory EventModel.fromFirestore(String id, Map<String, dynamic> doc) {
     return EventModel(
+      id: id,
       title: doc['title'] ?? '',
       eventType: doc['eventType'] ?? '',
       startDate: (doc['startDate'] as Timestamp).toDate(),
@@ -48,9 +134,6 @@ class EventModel extends EventEntity {
       interestedCount: doc['interestedCount'] ?? 0,
       galleryLinks: List<String>.from(doc['galleryLinks'] ?? []),
       status: doc['status'] ?? 'Upcoming',
-      organizerInfo: doc['organizerInfo'] != null
-          ? OrganizerInfoModel.fromMap(doc['organizerInfo'])
-          : null,
       tags: doc['tags'] != null ? List<String>.from(doc['tags']) : null,
       rsvp: doc['rsvp'] ?? false,
       rsvpCount: doc['rsvpCount'] ?? 0,
@@ -60,6 +143,7 @@ class EventModel extends EventEntity {
 
   Map<String, dynamic> toFirestore() {
     return {
+      'id': id,
       'title': title,
       'eventType': eventType,
       'startDate': Timestamp.fromDate(startDate),
@@ -70,12 +154,11 @@ class EventModel extends EventEntity {
       'guest': guest,
       'frequency': frequency,
       'day': day,
-      'activities': activities?.map((activity) => (activity as ActivityModel).toMap()).toList(),
+      'activities': activities?.map((activity) => (activity).toMap()).toList(),
       'description': description,
       'interestedCount': interestedCount,
       'galleryLinks': galleryLinks,
       'status': status,
-      'organizerInfo': organizerInfo != null ? (organizerInfo as OrganizerInfoModel).toMap() : null,
       'tags': tags,
       'rsvp': rsvp,
       'rsvpCount': rsvpCount ?? 0, // Ensure a default value if null

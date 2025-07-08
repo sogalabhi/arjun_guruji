@@ -15,7 +15,7 @@ class EventRemoteDataSourceImpl implements EventRemoteDataSource {
   @override
   Future<List<EventModel>> getAllEvents() async {
     final snapshot = await firestore.collection('events').get();
-    return snapshot.docs.map((doc) => EventModel.fromFirestore(doc.data())).toList();
+    return snapshot.docs.map((doc) => EventModel.fromFirestore(doc.id, doc.data())).toList();
   }
 
   @override

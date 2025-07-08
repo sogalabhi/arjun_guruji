@@ -80,7 +80,8 @@ class AllAstottaraPageState extends State<AllAstottaraPage> {
                             .where((astottara) => astottara.title
                                 .toLowerCase()
                                 .contains(_searchQuery))
-                            .toList();
+                            .toList()
+                          ..sort((a, b) => a.title.compareTo(b.title));
                         return ImageGridView(
                           items: filteredAstottara,
                           getImageUrl: (astottara) => astottara.imageUrl,

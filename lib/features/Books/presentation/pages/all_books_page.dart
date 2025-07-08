@@ -52,89 +52,94 @@ class AllBooksPageState extends State<AllBooksPage> {
                 ),
                 const SizedBox(height: 20),
                 Expanded(
-                  child: BlocBuilder<BooksBloc, BooksState>(
-                    builder: (context, state) {
-                      if (state is Loading) {
-                        return GridView.builder(
-                          itemCount: 6,
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 10,
-                            mainAxisSpacing: 10,
-                            childAspectRatio: 0.7,
-                          ),
-                            itemBuilder: (context, index) {
-                            return Shimmer.fromColors(
-                              baseColor: Colors.grey[300]!,
-                              highlightColor: Colors.grey[100]!,
-                              child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              ),
-                            );
-                            },
-                        );
-                      } else if (state is BooksLoaded) {
-                        final filteredBooks = state.books
-                            .where((book) =>
-                                book.title.toLowerCase().contains(_searchQuery))
-                            .toList();
-                        return ImageGridView(
-                          items: filteredBooks,
-                          getImageUrl: (book) => book.imageUrl,
-                          getTitle: (book) => book.title,
-                          getOnTap: (book) {
-                            if (book.bookType == 'chapters' &&
-                                book.chapters != null) {
-                              return () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        ChaptersListPage(book: book),
-                                  ),
-                                );
-                              };
-                            } else if (book.bookType == 'html' &&
-                                book.content != null) {
-                              return () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ContentViewPage(
-                                      title: book.title,
-                                      content: book.content!,
-                                    ),
-                                  ),
-                                );
-                              };
-                            } else {
-                              return () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        PDFViewerPage(book: book),
-                                  ),
-                                );
-                              };
-                            }
-                          },
-                        );
-                      } else if (state is Error) {
-                        return Center(
-                          child: Text(
-                            state.message,
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                        );
-                      } else {
-                        return const Center(child: Text('No data available'));
-                      }
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      context.read<BooksBloc>().add(const FetchAllBooks());
                     },
+                    child: BlocBuilder<BooksBloc, BooksState>(
+                      builder: (context, state) {
+                        if (state is Loading) {
+                          return GridView.builder(
+                            itemCount: 6,
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 10,
+                              mainAxisSpacing: 10,
+                              childAspectRatio: 0.7,
+                            ),
+                              itemBuilder: (context, index) {
+                              return Shimmer.fromColors(
+                                baseColor: Colors.grey[300]!,
+                                highlightColor: Colors.grey[100]!,
+                                child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                ),
+                              );
+                              },
+                          );
+                        } else if (state is BooksLoaded) {
+                          final filteredBooks = state.books
+                              .where((book) =>
+                                  book.title.toLowerCase().contains(_searchQuery))
+                              .toList();
+                          return ImageGridView(
+                            items: filteredBooks,
+                            getImageUrl: (book) => book.imageUrl,
+                            getTitle: (book) => book.title,
+                            getOnTap: (book) {
+                              if (book.bookType == 'chapters' &&
+                                  book.chapters != null) {
+                                return () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          ChaptersListPage(book: book),
+                                    ),
+                                  );
+                                };
+                              } else if (book.bookType == 'html' &&
+                                  book.content != null) {
+                                return () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ContentViewPage(
+                                        title: book.title,
+                                        content: book.content!,
+                                      ),
+                                    ),
+                                  );
+                                };
+                              } else {
+                                return () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          PDFViewerPage(book: book),
+                                    ),
+                                  );
+                                };
+                              }
+                            },
+                          );
+                        } else if (state is Error) {
+                          return Center(
+                            child: Text(
+                              state.message,
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          );
+                        } else {
+                          return const Center(child: Text('No data available'));
+                        }
+                      },
+                    ),
                   ),
                 ),
               ],
@@ -143,5 +148,13 @@ class AllBooksPageState extends State<AllBooksPage> {
         ),
       ),
     );
+  }
+
+  Widget buildBookImage(BookModel book) {
+    if (book.imageBytes != null) {
+      return Image.memory(book.imageBytes!);
+    } else {
+      return Image.network(book.imageUrl);
+    }
   }
 }

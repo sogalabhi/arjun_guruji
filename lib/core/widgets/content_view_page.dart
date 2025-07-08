@@ -6,8 +6,7 @@ class ContentViewPage extends StatefulWidget {
   final String? chapterName;
   final String content;
   const ContentViewPage(
-      {Key? key, required this.title, required this.content, this.chapterName})
-      : super(key: key);
+      {super.key, required this.title, required this.content, this.chapterName});
 
   @override
   ContentViewPageState createState() => ContentViewPageState();

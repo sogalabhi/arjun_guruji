@@ -1,11 +1,13 @@
 import 'package:arjun_guruji/features/EventManagement/domain/entity/events.dart';
 import 'package:arjun_guruji/features/EventManagement/presentation/pages/event_details_page.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 
 class PastEventsList extends StatelessWidget {
   final List<EventEntity> events;
+  final Box interestedBox;
 
-  const PastEventsList({super.key, required this.events});
+  const PastEventsList({super.key, required this.events, required this.interestedBox});
 
   @override
   Widget build(BuildContext context) {
@@ -97,6 +99,25 @@ class PastEventsList extends StatelessWidget {
                         'View Details',
                         style: TextStyle(color: Colors.black),
                       ),
+                    ),
+                    const SizedBox(width: 8),
+                    Icon(
+                      interestedBox.get(event.id, defaultValue: false)
+                          ? Icons.thumb_up_alt
+                          : Icons.thumb_up_alt_outlined,
+                      color: Colors.amber,
+                      size: 20,
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        const Icon(Icons.people, size: 18, color: Colors.black54),
+                        const SizedBox(width: 6),
+                        Text(
+                          "${event.interestedCount} Interested",
+                          style: const TextStyle(fontSize: 14, color: Colors.black87),
+                        ),
+                      ],
                     ),
                   ],
                 ),

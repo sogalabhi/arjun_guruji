@@ -1,5 +1,6 @@
 import 'package:arjun_guruji/features/Books/domain/entity/book.dart';
 import 'package:hive/hive.dart';
+import 'dart:typed_data';
 
 part 'book_model.g.dart'; // Generated file
 
@@ -20,12 +21,20 @@ class BookModel extends HiveObject {
   @HiveField(4)
   final List<Map<String, dynamic>>? chapters;
 
+  @HiveField(5)
+  final Uint8List? pdfBytes;
+
+  @HiveField(6)
+  final Uint8List? imageBytes;
+
   BookModel({
     required this.title,
     required this.imageUrl,
     required this.bookType,
     this.content,
     this.chapters,
+    this.pdfBytes,
+    this.imageBytes,
   });
 
   factory BookModel.fromJson(Map<String, dynamic> json) {
@@ -40,6 +49,8 @@ class BookModel extends HiveObject {
                 'content': chapter['content'] as String? ?? '',
               })
           .toList() ?? [],
+      pdfBytes: json['pdfBytes'] as Uint8List?,
+      imageBytes: json['imageBytes'] as Uint8List?,
     );
   }
 
@@ -50,6 +61,8 @@ class BookModel extends HiveObject {
       'bookType': bookType,
       'content': content,
       'chapters': chapters,
+      'pdfBytes': pdfBytes,
+      'imageBytes': imageBytes,
     };
   }
 
@@ -60,6 +73,8 @@ class BookModel extends HiveObject {
       bookType: book.bookType,
       content: book.content,
       chapters: book.chapters,
+      pdfBytes: book.pdfBytes,
+      imageBytes: book.imageBytes,
     );
   }
 
@@ -70,6 +85,8 @@ class BookModel extends HiveObject {
       bookType: bookModel.bookType,
       content: bookModel.content,
       chapters: bookModel.chapters,
+      pdfBytes: bookModel.pdfBytes,
+      imageBytes: bookModel.imageBytes,
     );
   }
 }

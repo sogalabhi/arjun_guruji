@@ -48,7 +48,7 @@ class NotificationPopup extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.2),
+                color: Colors.black.withAlpha(20),
                 blurRadius: 8,
                 spreadRadius: 2,
               ),

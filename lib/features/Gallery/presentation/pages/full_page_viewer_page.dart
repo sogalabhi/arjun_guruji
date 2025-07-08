@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
-import 'package:http/http.dart' as http;
 import 'package:share_plus/share_plus.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'dart:typed_data';
 
 class FullScreenImageViewer extends StatefulWidget {
   final List<String> imageUrls;
@@ -95,8 +93,9 @@ class FullScreenImageViewerState extends State<FullScreenImageViewer> {
   /// 📥 Save Image to Gallery
   Future<void> _saveImage(String url) async {
     try {
-      final response = await http.get(Uri.parse(url));
-      final Uint8List bytes = response.bodyBytes;
+      print("url: $url");
+      // final response = await http.get(Uri.parse(url));
+      // final Uint8List bytes = response.bodyBytes;
       // final result =
       // await ImageGallerySaver.saveImage(bytes, name: "downloaded_image");
 

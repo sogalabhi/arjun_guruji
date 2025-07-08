@@ -6,11 +6,11 @@ class BuildCard extends StatelessWidget {
   final VoidCallback onTap;
 
   const BuildCard({
-    Key? key,
+    super.key,
     required this.text,
     required this.icon,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
