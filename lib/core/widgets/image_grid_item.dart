@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'dart:typed_data';
 class ImageGridItem extends StatelessWidget {
   final dynamic item;
   final String Function(dynamic) getImageUrl;
+  final Uint8List? Function(dynamic)? getImageBytes;
   final String Function(dynamic) getTitle;
   final VoidCallback? Function(dynamic)? getOnTap;
 
@@ -11,31 +13,41 @@ class ImageGridItem extends StatelessWidget {
     required this.getImageUrl,
     required this.getTitle,
     this.getOnTap,
+    this.getImageBytes,
   });
 
   @override
   Widget build(BuildContext context) {
+    final imageBytes = getImageBytes?.call(item);
     final imageUrl = getImageUrl(item);
-    final isNetwork = imageUrl.startsWith('http://') || imageUrl.startsWith('https://');
     Widget imageWidget;
-    if (isNetwork) {
+    // Try to use cached imageBytes, fallback to network if fails
+    if (imageBytes != null && imageBytes.isNotEmpty) {
+      imageWidget = Image.memory(
+        imageBytes,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          // If cached image fails, fallback to network
+          return Image.network(
+            imageUrl,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return Container(
+                color: Colors.grey[300],
+                child: const Icon(
+                  Icons.error,
+                  color: Colors.red,
+                  size: 50,
+                ),
+              );
+            },
+          );
+        },
+      );
+    } else {
       imageWidget = Image.network(
         imageUrl,
         fit: BoxFit.cover,
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-          return Container(
-            color: Colors.grey[300],
-            child: Center(
-              child: CircularProgressIndicator(
-                value: loadingProgress.expectedTotalBytes != null
-                    ? loadingProgress.cumulativeBytesLoaded /
-                        loadingProgress.expectedTotalBytes!
-                    : null,
-              ),
-            ),
-          );
-        },
         errorBuilder: (context, error, stackTrace) {
           return Container(
             color: Colors.grey[300],
@@ -46,11 +58,6 @@ class ImageGridItem extends StatelessWidget {
             ),
           );
         },
-      );
-    } else {
-      imageWidget = Image.asset(
-        imageUrl,
-        fit: BoxFit.cover,
       );
     }
     return InkWell(

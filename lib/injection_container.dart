@@ -21,6 +21,7 @@ import 'package:arjun_guruji/features/Lyrics/data/repository/lyrics_repository_i
 import 'package:arjun_guruji/features/Lyrics/domain/repository/lyrics_repository.dart';
 import 'package:arjun_guruji/features/Lyrics/domain/usecases/fetch_astottaras_usecase.dart';
 import 'package:arjun_guruji/features/Lyrics/presentation/bloc/lyrics_bloc.dart';
+import 'package:arjun_guruji/features/Notifications/data/datasource/notifications_remote_ds.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get_it/get_it.dart';
@@ -39,6 +40,11 @@ void setupLocator() {
   astottaras();
   audio();
   lyrics();
+
+  // Register NotificationsRemoteDataSource
+  sl.registerLazySingleton<NotificationsRemoteDataSource>(
+    () => NotificationsRemoteDataSource(firestoreInstance: sl()),
+  );
 }
 
 void books() async {
@@ -52,13 +58,20 @@ void books() async {
       () => BooksRemoteDataSourceImpl(firestore: sl()));
 
   sl.registerFactory(() => FetchBooksUseCase(sl()));
+  sl.registerFactory(() => FetchBookSummariesUseCase(sl()));
+  sl.registerFactory(() => FetchBookDetailsByTitleUseCase(sl()));
 
   // Register Hive Box instance
   final Box<BookModel> booksBox = await Hive.openBox<BookModel>('booksBox');
   sl.registerLazySingleton<Box<BookModel>>(() => booksBox);
 
-  sl.registerFactory(() =>
-      BooksBloc(fetchBooksUseCase: sl(), booksBox: sl(), connectivity: sl()));
+  sl.registerFactory(() => BooksBloc(
+    fetchBooksUseCase: sl(),
+    fetchBookSummariesUseCase: sl(),
+    fetchBookDetailsByTitleUseCase: sl(),
+    booksBox: sl(),
+    connectivity: sl(),
+  ));
 }
 
 void astottaras() async {
@@ -111,7 +124,8 @@ void lyrics() async {
   sl.registerFactory(() => FetchLyricsUseCase(sl()));
 
   // Register Hive Box instance
-  final Box<LyricsModel> lyricsBox = await Hive.openBox<LyricsModel>('lyricsBox');
+  final Box<LyricsModel> lyricsBox =
+      await Hive.openBox<LyricsModel>('lyricsBox');
   sl.registerLazySingleton<Box<LyricsModel>>(() => lyricsBox);
 
   sl.registerFactory(() => LyricsBloc(

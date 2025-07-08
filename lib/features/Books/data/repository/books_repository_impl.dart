@@ -37,19 +37,12 @@ class BooksRepositoryImpl implements BookRepository {
       if (books.isEmpty) {
         return const Left('Books Are Empty');
       }
+      // Show UI immediately with what is available
       List<BookModel> updatedBooks = [];
       for (final book in books) {
-        // Check if already cached
         final cached = box.get(book.title);
         Uint8List? pdfBytes = cached?.pdfBytes;
         Uint8List? imageBytes = cached?.imageBytes;
-        // Download if not cached
-        if (pdfBytes == null && book.content != null && book.content!.isNotEmpty) {
-          pdfBytes = await downloadBytes(book.content!);
-        }
-        if (imageBytes == null && book.imageUrl.isNotEmpty) {
-          imageBytes = await downloadBytes(book.imageUrl);
-        }
         final updatedBook = BookModel(
           title: book.title,
           imageUrl: book.imageUrl,
@@ -62,11 +55,58 @@ class BooksRepositoryImpl implements BookRepository {
         await box.put(book.title, updatedBook);
         updatedBooks.add(updatedBook);
       }
+      // Start background cache update for missing images
+      Future.microtask(() async {
+        for (final book in books) {
+          final cached = box.get(book.title);
+          if ((cached?.imageBytes == null || cached!.imageBytes!.isEmpty) && book.imageUrl.isNotEmpty) {
+            final imageBytes = await downloadBytes(book.imageUrl);
+            if (imageBytes != null) {
+              final updatedBook = BookModel(
+                title: book.title,
+                imageUrl: book.imageUrl,
+                bookType: book.bookType,
+                content: book.content,
+                chapters: book.chapters,
+                pdfBytes: cached?.pdfBytes,
+                imageBytes: imageBytes,
+              );
+              await box.put(book.title, updatedBook);
+            }
+          }
+        }
+      });
       return Right(updatedBooks.map((bookModel) => BookModel.toEntity(bookModel)).toList());
     } catch (e) {
       return left(
         e.toString(),
       );
+    }
+  }
+
+  @override
+  Future<Either<String, List<Book>>> fetchBookSummaries() async {
+    try {
+      final books = await remoteDataSource.fetchBookSummaries();
+      if (books.isEmpty) {
+        return const Left('Books Are Empty');
+      }
+      return Right(books.map((bookModel) => BookModel.toEntity(bookModel)).toList());
+    } catch (e) {
+      return left(e.toString());
+    }
+  }
+
+  @override
+  Future<Either<String, Book>> fetchBookDetailsByTitle(String title) async {
+    try {
+      final bookModel = await remoteDataSource.fetchBookDetailsByTitle(title);
+      if (bookModel == null) {
+        return const Left('Book not found');
+      }
+      return Right(BookModel.toEntity(bookModel));
+    } catch (e) {
+      return left(e.toString());
     }
   }
 }

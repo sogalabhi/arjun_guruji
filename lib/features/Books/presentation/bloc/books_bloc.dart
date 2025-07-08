@@ -14,15 +14,21 @@ part 'books_bloc.freezed.dart';
 
 class BooksBloc extends Bloc<BooksEvent, BooksState> {
   final FetchBooksUseCase fetchBooksUseCase;
+  final FetchBookSummariesUseCase fetchBookSummariesUseCase;
+  final FetchBookDetailsByTitleUseCase fetchBookDetailsByTitleUseCase;
   final Box<BookModel> booksBox;
   final Connectivity connectivity;
 
   BooksBloc({
     required this.fetchBooksUseCase,
+    required this.fetchBookSummariesUseCase,
+    required this.fetchBookDetailsByTitleUseCase,
     required this.booksBox,
     required this.connectivity,
   }) : super(const BooksState.initial()) {
     on<FetchAllBooks>(_onFetchBooks);
+    on<FetchBookSummaries>(_onFetchBookSummaries);
+    on<FetchBookDetailsByTitle>(_onFetchBookDetailsByTitle);
   }
 
   Future<void> _onFetchBooks(
@@ -75,6 +81,34 @@ class BooksBloc extends Bloc<BooksEvent, BooksState> {
     } catch (e) {
       print(
           "Error in _onFetchBooks: $e"); // Print unexpected errors for debugging
+    }
+  }
+
+  Future<void> _onFetchBookSummaries(
+      FetchBookSummaries event, Emitter<BooksState> emit) async {
+    emit(const BooksState.loading());
+    try {
+      final result = await fetchBookSummariesUseCase.call(NoParams());
+      await result.fold(
+        (failure) async => emit(BooksState.error(failure)),
+        (books) async => emit(BooksState.booksLoaded(books)),
+      );
+    } catch (e) {
+      emit(BooksState.error(e.toString()));
+    }
+  }
+
+  Future<void> _onFetchBookDetailsByTitle(
+      FetchBookDetailsByTitle event, Emitter<BooksState> emit) async {
+    emit(const BooksState.loading());
+    try {
+      final result = await fetchBookDetailsByTitleUseCase.call(event.title);
+      await result.fold(
+        (failure) async => emit(BooksState.error(failure)),
+        (book) async => emit(BooksState.booksLoaded([book])),
+      );
+    } catch (e) {
+      emit(BooksState.error(e.toString()));
     }
   }
 }

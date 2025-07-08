@@ -15,3 +15,21 @@ class FetchBooksUseCase implements Usecase<List<Book>, NoParams, String> {
     return res;
   }
 }
+
+class FetchBookSummariesUseCase implements Usecase<List<Book>, NoParams, String> {
+  final BookRepository bookRepository;
+  FetchBookSummariesUseCase(this.bookRepository);
+  @override
+  Future<Either<String, List<Book>>> call(NoParams params) async {
+    return await bookRepository.fetchBookSummaries();
+  }
+}
+
+class FetchBookDetailsByTitleUseCase implements Usecase<Book, String, String> {
+  final BookRepository bookRepository;
+  FetchBookDetailsByTitleUseCase(this.bookRepository);
+  @override
+  Future<Either<String, Book>> call(String title) async {
+    return await bookRepository.fetchBookDetailsByTitle(title);
+  }
+}

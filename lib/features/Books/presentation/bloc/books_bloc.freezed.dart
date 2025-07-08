@@ -19,32 +19,45 @@ mixin _$BooksEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() fetchAllBooks,
+    required TResult Function() fetchBookSummaries,
+    required TResult Function(String title) fetchBookDetailsByTitle,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? fetchAllBooks,
+    TResult? Function()? fetchBookSummaries,
+    TResult? Function(String title)? fetchBookDetailsByTitle,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? fetchAllBooks,
+    TResult Function()? fetchBookSummaries,
+    TResult Function(String title)? fetchBookDetailsByTitle,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(FetchAllBooks value) fetchAllBooks,
+    required TResult Function(FetchBookSummaries value) fetchBookSummaries,
+    required TResult Function(FetchBookDetailsByTitle value)
+        fetchBookDetailsByTitle,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(FetchAllBooks value)? fetchAllBooks,
+    TResult? Function(FetchBookSummaries value)? fetchBookSummaries,
+    TResult? Function(FetchBookDetailsByTitle value)? fetchBookDetailsByTitle,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(FetchAllBooks value)? fetchAllBooks,
+    TResult Function(FetchBookSummaries value)? fetchBookSummaries,
+    TResult Function(FetchBookDetailsByTitle value)? fetchBookDetailsByTitle,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -113,6 +126,8 @@ class _$FetchAllBooksImpl implements FetchAllBooks {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() fetchAllBooks,
+    required TResult Function() fetchBookSummaries,
+    required TResult Function(String title) fetchBookDetailsByTitle,
   }) {
     return fetchAllBooks();
   }
@@ -121,6 +136,8 @@ class _$FetchAllBooksImpl implements FetchAllBooks {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? fetchAllBooks,
+    TResult? Function()? fetchBookSummaries,
+    TResult? Function(String title)? fetchBookDetailsByTitle,
   }) {
     return fetchAllBooks?.call();
   }
@@ -129,6 +146,8 @@ class _$FetchAllBooksImpl implements FetchAllBooks {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? fetchAllBooks,
+    TResult Function()? fetchBookSummaries,
+    TResult Function(String title)? fetchBookDetailsByTitle,
     required TResult orElse(),
   }) {
     if (fetchAllBooks != null) {
@@ -141,6 +160,9 @@ class _$FetchAllBooksImpl implements FetchAllBooks {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(FetchAllBooks value) fetchAllBooks,
+    required TResult Function(FetchBookSummaries value) fetchBookSummaries,
+    required TResult Function(FetchBookDetailsByTitle value)
+        fetchBookDetailsByTitle,
   }) {
     return fetchAllBooks(this);
   }
@@ -149,6 +171,8 @@ class _$FetchAllBooksImpl implements FetchAllBooks {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(FetchAllBooks value)? fetchAllBooks,
+    TResult? Function(FetchBookSummaries value)? fetchBookSummaries,
+    TResult? Function(FetchBookDetailsByTitle value)? fetchBookDetailsByTitle,
   }) {
     return fetchAllBooks?.call(this);
   }
@@ -157,6 +181,8 @@ class _$FetchAllBooksImpl implements FetchAllBooks {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(FetchAllBooks value)? fetchAllBooks,
+    TResult Function(FetchBookSummaries value)? fetchBookSummaries,
+    TResult Function(FetchBookDetailsByTitle value)? fetchBookDetailsByTitle,
     required TResult orElse(),
   }) {
     if (fetchAllBooks != null) {
@@ -168,6 +194,269 @@ class _$FetchAllBooksImpl implements FetchAllBooks {
 
 abstract class FetchAllBooks implements BooksEvent {
   const factory FetchAllBooks() = _$FetchAllBooksImpl;
+}
+
+/// @nodoc
+abstract class _$$FetchBookSummariesImplCopyWith<$Res> {
+  factory _$$FetchBookSummariesImplCopyWith(_$FetchBookSummariesImpl value,
+          $Res Function(_$FetchBookSummariesImpl) then) =
+      __$$FetchBookSummariesImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$FetchBookSummariesImplCopyWithImpl<$Res>
+    extends _$BooksEventCopyWithImpl<$Res, _$FetchBookSummariesImpl>
+    implements _$$FetchBookSummariesImplCopyWith<$Res> {
+  __$$FetchBookSummariesImplCopyWithImpl(_$FetchBookSummariesImpl _value,
+      $Res Function(_$FetchBookSummariesImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of BooksEvent
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$FetchBookSummariesImpl implements FetchBookSummaries {
+  const _$FetchBookSummariesImpl();
+
+  @override
+  String toString() {
+    return 'BooksEvent.fetchBookSummaries()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$FetchBookSummariesImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() fetchAllBooks,
+    required TResult Function() fetchBookSummaries,
+    required TResult Function(String title) fetchBookDetailsByTitle,
+  }) {
+    return fetchBookSummaries();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? fetchAllBooks,
+    TResult? Function()? fetchBookSummaries,
+    TResult? Function(String title)? fetchBookDetailsByTitle,
+  }) {
+    return fetchBookSummaries?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? fetchAllBooks,
+    TResult Function()? fetchBookSummaries,
+    TResult Function(String title)? fetchBookDetailsByTitle,
+    required TResult orElse(),
+  }) {
+    if (fetchBookSummaries != null) {
+      return fetchBookSummaries();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(FetchAllBooks value) fetchAllBooks,
+    required TResult Function(FetchBookSummaries value) fetchBookSummaries,
+    required TResult Function(FetchBookDetailsByTitle value)
+        fetchBookDetailsByTitle,
+  }) {
+    return fetchBookSummaries(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(FetchAllBooks value)? fetchAllBooks,
+    TResult? Function(FetchBookSummaries value)? fetchBookSummaries,
+    TResult? Function(FetchBookDetailsByTitle value)? fetchBookDetailsByTitle,
+  }) {
+    return fetchBookSummaries?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(FetchAllBooks value)? fetchAllBooks,
+    TResult Function(FetchBookSummaries value)? fetchBookSummaries,
+    TResult Function(FetchBookDetailsByTitle value)? fetchBookDetailsByTitle,
+    required TResult orElse(),
+  }) {
+    if (fetchBookSummaries != null) {
+      return fetchBookSummaries(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class FetchBookSummaries implements BooksEvent {
+  const factory FetchBookSummaries() = _$FetchBookSummariesImpl;
+}
+
+/// @nodoc
+abstract class _$$FetchBookDetailsByTitleImplCopyWith<$Res> {
+  factory _$$FetchBookDetailsByTitleImplCopyWith(
+          _$FetchBookDetailsByTitleImpl value,
+          $Res Function(_$FetchBookDetailsByTitleImpl) then) =
+      __$$FetchBookDetailsByTitleImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String title});
+}
+
+/// @nodoc
+class __$$FetchBookDetailsByTitleImplCopyWithImpl<$Res>
+    extends _$BooksEventCopyWithImpl<$Res, _$FetchBookDetailsByTitleImpl>
+    implements _$$FetchBookDetailsByTitleImplCopyWith<$Res> {
+  __$$FetchBookDetailsByTitleImplCopyWithImpl(
+      _$FetchBookDetailsByTitleImpl _value,
+      $Res Function(_$FetchBookDetailsByTitleImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of BooksEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? title = null,
+  }) {
+    return _then(_$FetchBookDetailsByTitleImpl(
+      null == title
+          ? _value.title
+          : title // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$FetchBookDetailsByTitleImpl implements FetchBookDetailsByTitle {
+  const _$FetchBookDetailsByTitleImpl(this.title);
+
+  @override
+  final String title;
+
+  @override
+  String toString() {
+    return 'BooksEvent.fetchBookDetailsByTitle(title: $title)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$FetchBookDetailsByTitleImpl &&
+            (identical(other.title, title) || other.title == title));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, title);
+
+  /// Create a copy of BooksEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$FetchBookDetailsByTitleImplCopyWith<_$FetchBookDetailsByTitleImpl>
+      get copyWith => __$$FetchBookDetailsByTitleImplCopyWithImpl<
+          _$FetchBookDetailsByTitleImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() fetchAllBooks,
+    required TResult Function() fetchBookSummaries,
+    required TResult Function(String title) fetchBookDetailsByTitle,
+  }) {
+    return fetchBookDetailsByTitle(title);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? fetchAllBooks,
+    TResult? Function()? fetchBookSummaries,
+    TResult? Function(String title)? fetchBookDetailsByTitle,
+  }) {
+    return fetchBookDetailsByTitle?.call(title);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? fetchAllBooks,
+    TResult Function()? fetchBookSummaries,
+    TResult Function(String title)? fetchBookDetailsByTitle,
+    required TResult orElse(),
+  }) {
+    if (fetchBookDetailsByTitle != null) {
+      return fetchBookDetailsByTitle(title);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(FetchAllBooks value) fetchAllBooks,
+    required TResult Function(FetchBookSummaries value) fetchBookSummaries,
+    required TResult Function(FetchBookDetailsByTitle value)
+        fetchBookDetailsByTitle,
+  }) {
+    return fetchBookDetailsByTitle(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(FetchAllBooks value)? fetchAllBooks,
+    TResult? Function(FetchBookSummaries value)? fetchBookSummaries,
+    TResult? Function(FetchBookDetailsByTitle value)? fetchBookDetailsByTitle,
+  }) {
+    return fetchBookDetailsByTitle?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(FetchAllBooks value)? fetchAllBooks,
+    TResult Function(FetchBookSummaries value)? fetchBookSummaries,
+    TResult Function(FetchBookDetailsByTitle value)? fetchBookDetailsByTitle,
+    required TResult orElse(),
+  }) {
+    if (fetchBookDetailsByTitle != null) {
+      return fetchBookDetailsByTitle(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class FetchBookDetailsByTitle implements BooksEvent {
+  const factory FetchBookDetailsByTitle(final String title) =
+      _$FetchBookDetailsByTitleImpl;
+
+  String get title;
+
+  /// Create a copy of BooksEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$FetchBookDetailsByTitleImplCopyWith<_$FetchBookDetailsByTitleImpl>
+      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc

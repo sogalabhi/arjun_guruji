@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:shimmer/shimmer.dart';
+import 'dart:typed_data';
 
 class AllBooksPage extends StatefulWidget {
   const AllBooksPage({super.key});
@@ -28,6 +29,8 @@ class AllBooksPageState extends State<AllBooksPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => BooksBloc(
+        fetchBookDetailsByTitleUseCase: sl<FetchBookDetailsByTitleUseCase>(),
+        fetchBookSummariesUseCase: sl<FetchBookSummariesUseCase>(),
         fetchBooksUseCase: sl<FetchBooksUseCase>(),
         booksBox: Hive.box<BookModel>('booksBox'),
         connectivity: sl(),
@@ -68,27 +71,29 @@ class AllBooksPageState extends State<AllBooksPage> {
                               mainAxisSpacing: 10,
                               childAspectRatio: 0.7,
                             ),
-                              itemBuilder: (context, index) {
+                            itemBuilder: (context, index) {
                               return Shimmer.fromColors(
                                 baseColor: Colors.grey[300]!,
                                 highlightColor: Colors.grey[100]!,
                                 child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
                                 ),
                               );
-                              },
+                            },
                           );
                         } else if (state is BooksLoaded) {
                           final filteredBooks = state.books
-                              .where((book) =>
-                                  book.title.toLowerCase().contains(_searchQuery))
+                              .where((book) => book.title
+                                  .toLowerCase()
+                                  .contains(_searchQuery))
                               .toList();
                           return ImageGridView(
                             items: filteredBooks,
                             getImageUrl: (book) => book.imageUrl,
+                            getImageBytes: (book) => book.imageBytes,
                             getTitle: (book) => book.title,
                             getOnTap: (book) {
                               if (book.bookType == 'chapters' &&
