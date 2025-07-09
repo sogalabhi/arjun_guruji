@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:arjun_guruji/features/EventManagement/presentation/bloc/event_bloc.dart';
 import 'package:hive/hive.dart';
+import 'package:arjun_guruji/core/widgets/gradient_app_bar.dart';
 
 class EventListPage extends StatelessWidget {
   const EventListPage({super.key});
@@ -37,8 +38,8 @@ class EventListPage extends StatelessWidget {
               }
             });
             return Scaffold(
-              appBar: AppBar(
-                title: const Text('Events'),
+              appBar: GradientAppBar(
+                title: 'Events',
                 actions: [
                   IconButton(
                     icon: const Icon(Icons.calendar_today),
@@ -54,37 +55,49 @@ class EventListPage extends StatelessWidget {
                 ],
               ),
               body: GradientBackground(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Padding(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        child: Text(
-                          'Major Events',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    // Dispatch FetchEvents and wait for reload
+                    final bloc = BlocProvider.of<EventBloc>(context);
+                    bloc.add(FetchEvents());
+                    // Wait for EventsLoaded state
+                    await bloc.stream.firstWhere((state) => state is EventsLoaded || state is EventsError);
+                  },
+                  child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Padding(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          child: Text(
+                            'Major Events',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      ),
-                      FeaturedEventsCarousel(
-                        events: featuredAndRecurringEvents,
-                        interestedBox: interestedBox,
-                      ),
-                      const SizedBox(height: 16),
-                      PastEventsList(
-                          events: events, interestedBox: interestedBox),
-                    ],
+                        FeaturedEventsCarousel(
+                          events: featuredAndRecurringEvents,
+                          interestedBox: interestedBox,
+                        ),
+                        const SizedBox(height: 16),
+                        PastEventsList(
+                            events: events, interestedBox: interestedBox),
+                      ],
+                    ),
                   ),
                 ),
               ),
             );
           } else if (state is EventsError) {
             return Scaffold(
-              appBar: AppBar(title: const Text('Events')),
+              appBar: GradientAppBar(
+                title: 'Events',
+              ),
               body: Center(child: Text(state.message)),
             );
           } else {

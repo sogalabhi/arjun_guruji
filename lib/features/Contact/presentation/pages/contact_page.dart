@@ -1,6 +1,7 @@
 import 'package:arjun_guruji/core/widgets/gradient_background.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:arjun_guruji/core/widgets/gradient_app_bar.dart';
 
 class ContactPage extends StatelessWidget {
   const ContactPage({super.key});
@@ -9,8 +10,8 @@ class ContactPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text("Contact Info"),
+        appBar: GradientAppBar(
+          title: 'Contact',
         ),
         body: GradientBackground(
           child: Padding(

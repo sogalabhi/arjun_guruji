@@ -1,5 +1,6 @@
 import 'package:arjun_guruji/core/widgets/content_view_page.dart';
 import 'package:arjun_guruji/core/widgets/gradient_background.dart';
+import 'package:arjun_guruji/core/widgets/gradient_app_bar.dart';
 import 'package:arjun_guruji/core/widgets/image_grid_view.dart';
 import 'package:arjun_guruji/core/widgets/search_bar.dart';
 import 'package:arjun_guruji/features/Astottaras/data/model/astottara_model.dart';
@@ -31,8 +32,8 @@ class AllAstottaraPageState extends State<AllAstottaraPage> {
         connectivity: sl(),
       )..add(const FetchAllAstottaras()),
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('All Astottara'),
+        appBar: GradientAppBar(
+          title: 'Astottaras',
         ),
         body: GradientBackground(
           child: Padding(

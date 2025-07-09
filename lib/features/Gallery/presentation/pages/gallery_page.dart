@@ -6,6 +6,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
 
 import 'package:arjun_guruji/core/widgets/gradient_background.dart';
+import 'package:arjun_guruji/core/widgets/gradient_app_bar.dart';
 import 'package:arjun_guruji/features/Gallery/data/datasource/gallery_remote_ds.dart';
 import 'package:arjun_guruji/features/Gallery/presentation/pages/full_page_viewer_page.dart';
 
@@ -32,9 +33,8 @@ class GalleryPage extends StatelessWidget {
     );
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Gallery"),
-        centerTitle: true,
+      appBar: GradientAppBar(
+        title: 'Gallery',
       ),
       body: GradientBackground(
         child: Padding(

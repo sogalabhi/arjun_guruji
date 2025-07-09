@@ -8,6 +8,7 @@ import '../../domain/usecases/fetch_notifications_usecase.dart';
 import '../../data/repository/notifications_repository_impl.dart';
 import '../../data/datasource/notifications_remote_ds.dart';
 import 'package:arjun_guruji/core/widgets/gradient_background.dart';
+import 'package:arjun_guruji/core/widgets/gradient_app_bar.dart';
 
 class NotificationsPage extends StatelessWidget {
   const NotificationsPage({super.key});
@@ -23,8 +24,8 @@ class NotificationsPage extends StatelessWidget {
         ),
       )..add(FetchNotifications()),
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text("Notifications"),
+        appBar: GradientAppBar(
+          title: 'Notifications',
         ),
         body: GradientBackground(
           child: BlocBuilder<NotificationBloc, NotificationState>(

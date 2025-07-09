@@ -1,5 +1,6 @@
 import 'package:arjun_guruji/core/widgets/content_view_page.dart';
 import 'package:arjun_guruji/core/widgets/gradient_background.dart';
+import 'package:arjun_guruji/core/widgets/gradient_app_bar.dart';
 import 'package:arjun_guruji/features/Lyrics/data/model/lyrics_model.dart';
 import 'package:arjun_guruji/features/Lyrics/domain/usecases/fetch_astottaras_usecase.dart';
 import 'package:arjun_guruji/features/Lyrics/presentation/bloc/lyrics_bloc.dart';
@@ -22,16 +23,14 @@ class LyricsListPageState extends State<LyricsListPage> {
 
   String _getImageForCategory(String category) {
     switch (category.toLowerCase()) {
-      case 'arati':
-        return 'assets/img2.jpg';
+      case 'arti':
+        return 'https://firebasestorage.googleapis.com/v0/b/arjun-guruji-app.appspot.com/o/Gallery%2Fimg2.jpg?alt=media&token=c3675c3f-3e1c-43ef-b33f-504edf8b8f55';
       case 'daily bhajans':
-        return 'assets/img3.jpg';
-      case 'bhaja gurunatham':
-        return 'assets/img3.jpg';
+        return 'https://firebasestorage.googleapis.com/v0/b/arjun-guruji-app.appspot.com/o/Gallery%2F12.jpg?alt=media&token=e303f0bc-9117-49ba-ac8f-46cc6f7ab17e';
       case 'others':
-        return 'assets/img3.jpg';
+        return 'https://firebasestorage.googleapis.com/v0/b/arjun-guruji-app.appspot.com/o/Gallery%2F17.jpg?alt=media&token=9484a469-da31-4ab8-be68-7a1e02abd384';
       default:
-        return 'assets/img3.jpg';
+        return 'https://firebasestorage.googleapis.com/v0/b/arjun-guruji-app.appspot.com/o/Gallery%2Fimg2.jpg?alt=media&token=c3675c3f-3e1c-43ef-b33f-504edf8b8f55';
     }
   }
 
@@ -44,8 +43,8 @@ class LyricsListPageState extends State<LyricsListPage> {
         connectivity: sl(),
       )..add(const LyricsEvent.fetchAllLyrics()),
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('All Lyrics'),
+        appBar: GradientAppBar(
+          title: 'Lyrics',
         ),
         body: GradientBackground(
           child: Padding(
@@ -94,18 +93,26 @@ class LyricsListPageState extends State<LyricsListPage> {
                             )
                             .toList();
 
-                        return GridView.builder(
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 10,
-                            mainAxisSpacing: 10,
-                            childAspectRatio: 0.7,
-                          ),
+                        return ListView.separated(
                           itemCount: filteredLyrics.length,
+                          separatorBuilder: (context, index) => const Divider(),
                           itemBuilder: (context, index) {
                             final data = filteredLyrics[index];
-                            return InkWell(
+                            return ListTile(
+                              leading: Image.network(
+                                _getImageForCategory(data.category),
+                                width: 48,
+                                height: 48,
+                                fit: BoxFit.cover,
+                              ),
+                              title: Text(
+                                data.title,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
                               onTap: () {
                                 Navigator.push(
                                   context,
@@ -117,54 +124,6 @@ class LyricsListPageState extends State<LyricsListPage> {
                                   ),
                                 );
                               },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                        color: Colors.black26,
-                                        blurRadius: 5,
-                                        offset: Offset(2, 2))
-                                  ],
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: Stack(
-                                    fit: StackFit.expand,
-                                    children: [
-                                      Image.asset(
-                                        _getImageForCategory(data.category),
-                                        fit: BoxFit.cover,
-                                      ),
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          gradient: LinearGradient(
-                                            colors: [
-                                              Colors.black.withAlpha(
-                                                  (0.6 * 255).toInt()),
-                                              Colors.transparent
-                                            ],
-                                            begin: Alignment.bottomCenter,
-                                            end: Alignment.topCenter,
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        bottom: 10,
-                                        left: 10,
-                                        child: Text(
-                                          data.title,
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
                             );
                           },
                         );

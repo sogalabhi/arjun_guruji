@@ -73,7 +73,9 @@ class PdfViewerPageState extends State<PDFViewerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.book.title)),
+      appBar: AppBar(
+        title: Text(widget.book.title),
+      ),
       body: localFilePath == null
           ? const Center(child: CircularProgressIndicator())
           : PDFView(

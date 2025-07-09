@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:arjun_guruji/core/widgets/gradient_app_bar.dart';
 
 class AllLyricsPage extends StatefulWidget {
   const AllLyricsPage({super.key});
@@ -19,16 +20,14 @@ class AllLyricsPage extends StatefulWidget {
 class AllLyricsPageState extends State<AllLyricsPage> {
   String _getImageForCategory(String category) {
     switch (category.toLowerCase()) {
-      case 'arati':
-        return 'assets/img2.jpg';
       case 'daily bhajans':
-        return 'assets/img3.jpg';
-      case 'bhaja gurunatham':
-        return 'assets/img3.jpg';
+        return 'https://firebasestorage.googleapis.com/v0/b/arjun-guruji-app.appspot.com/o/Gallery%2F12.jpg?alt=media&token=e303f0bc-9117-49ba-ac8f-46cc6f7ab17e';
       case 'others':
-        return 'assets/img3.jpg';
+        return 'https://firebasestorage.googleapis.com/v0/b/arjun-guruji-app.appspot.com/o/Gallery%2F17.jpg?alt=media&token=9484a469-da31-4ab8-be68-7a1e02abd384';
+      case 'arti':
+        return 'https://firebasestorage.googleapis.com/v0/b/arjun-guruji-app.appspot.com/o/Gallery%2Fimg2.jpg?alt=media&token=c3675c3f-3e1c-43ef-b33f-504edf8b8f55';
       default:
-        return 'assets/img3.jpg';
+        return 'https://firebasestorage.googleapis.com/v0/b/arjun-guruji-app.appspot.com/o/Gallery%2Fimg2.jpg?alt=media&token=c3675c3f-3e1c-43ef-b33f-504edf8b8f55';
     }
   }
 
@@ -41,8 +40,8 @@ class AllLyricsPageState extends State<AllLyricsPage> {
         connectivity: sl(),
       )..add(const LyricsEvent.fetchAllLyrics()),
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('All Lyrics'),
+        appBar: GradientAppBar(
+          title: 'Lyrics Categories',
         ),
         body: GradientBackground(
           child: Padding(
@@ -118,7 +117,7 @@ class AllLyricsPageState extends State<AllLyricsPage> {
                                   child: Stack(
                                     fit: StackFit.expand,
                                     children: [
-                                      Image.asset(
+                                      Image.network(
                                         _getImageForCategory(category),
                                         fit: BoxFit.cover,
                                       ),

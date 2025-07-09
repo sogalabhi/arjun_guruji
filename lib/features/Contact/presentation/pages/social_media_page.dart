@@ -2,6 +2,7 @@ import 'package:arjun_guruji/core/widgets/gradient_background.dart';
 import 'package:arjun_guruji/features/Contact/presentation/pages/contact_page.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:arjun_guruji/core/widgets/gradient_app_bar.dart';
 
 class SocialMediaPage extends StatelessWidget {
   const SocialMediaPage({super.key});
@@ -10,8 +11,8 @@ class SocialMediaPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text("Social  Links"),
+        appBar: GradientAppBar(
+          title: 'Social Media',
         ),
         body: GradientBackground(
           child: Padding(

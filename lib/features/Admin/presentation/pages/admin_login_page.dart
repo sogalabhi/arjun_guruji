@@ -1,7 +1,7 @@
 import 'package:arjun_guruji/features/Admin/presentation/pages/admin_dashboard_page.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
+import 'package:arjun_guruji/core/widgets/gradient_app_bar.dart';
 class AdminLoginPage extends StatefulWidget {
   const AdminLoginPage({super.key});
 
@@ -31,8 +31,8 @@ class AdminLoginPageState extends State<AdminLoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Admin Login'),
+      appBar: GradientAppBar(
+        title: 'Admin Login',
       ),
       body: Center(
         child: Padding(

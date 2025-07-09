@@ -11,13 +11,16 @@ class PastEventsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final pastEvents =
-        events.where((e) => e.endDate.isBefore(DateTime.now())).toList();
+    final now = DateTime.now();
+    final pastEvents = events.where((e) =>
+      (e.isFeatured || e.eventType == 'Recurring') &&
+      e.startDate.isBefore(DateTime(now.year, now.month, now.day))
+    ).toList();
 
     if (pastEvents.isEmpty) {
       return const Padding(
         padding: EdgeInsets.all(16),
-        child: Text("No Past Events",
+        child: Text("Will be updated",
             style: TextStyle(
                 color: Colors.white,
                 fontSize: 18,
@@ -30,7 +33,7 @@ class PastEventsList extends StatelessWidget {
       children: [
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 16),
-          child: Text('Past Events',
+          child: Text('Other Events',
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 20,

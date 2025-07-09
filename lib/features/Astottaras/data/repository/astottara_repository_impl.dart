@@ -13,7 +13,6 @@ class AstottarasRepositoryImpl implements AstottaraRepository {
   @override
   Future<Either<String, List<Astottara>>> fetchAllAstottaras() async {
     try {
-      final box = Hive.box<AstottaraModel>('astottarasBox');
       if (!ConnectivityService.isOnline.value) {
         // Offline: load from Hive
         return const Left('Offline mode');

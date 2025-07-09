@@ -3,6 +3,7 @@ import 'package:arjun_guruji/features/AudioPlayer/presentation/pages/audio_playe
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:arjun_guruji/features/AudioPlayer/domain/entity/category.dart';
+import 'package:arjun_guruji/core/widgets/gradient_app_bar.dart';
 
 class AudioListPage extends StatelessWidget {
   final CategoryEntity category;
@@ -12,9 +13,8 @@ class AudioListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(category.name),
-        centerTitle: true,
+      appBar: GradientAppBar(
+        title: 'Audio List',
       ),
       body: GradientBackground(
         child: Column(

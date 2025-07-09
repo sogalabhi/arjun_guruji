@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:arjun_guruji/features/AudioPlayer/presentation/bloc/audio_bloc.dart';
+import 'package:arjun_guruji/core/widgets/gradient_app_bar.dart';
 
 class AudioCategoriesPage extends StatelessWidget {
   const AudioCategoriesPage({super.key});
@@ -12,9 +13,8 @@ class AudioCategoriesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Audio Categories'),
-        centerTitle: true,
+      appBar: GradientAppBar(
+        title: 'Audio Categories',
       ),
       body: BlocProvider(
         create: (context) => sl<AudioBloc>()..add(const FetchAllAudio()),

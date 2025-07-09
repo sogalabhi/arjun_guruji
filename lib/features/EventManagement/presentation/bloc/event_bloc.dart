@@ -89,7 +89,12 @@ class EventBloc extends Bloc<EventEvent, EventState> {
       final result = await repository.getAllEvents();
       result.fold(
         (failure) => emit(EventsError(failure)),
-        (events) => emit(EventsLoaded(events)),
+        (events) {
+          for (final e in events) {
+            print('[EVENT] id: ${e.id}, title: ${e.title}, type: ${e.eventType}, start: ${e.startDate}, end: ${e.endDate}');
+          }
+          emit(EventsLoaded(events));
+        },
       );
     });
   }

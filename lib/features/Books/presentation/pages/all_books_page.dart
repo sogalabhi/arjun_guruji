@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:shimmer/shimmer.dart';
-import 'dart:typed_data';
+import 'package:arjun_guruji/core/widgets/gradient_app_bar.dart';
 
 class AllBooksPage extends StatefulWidget {
   const AllBooksPage({super.key});
@@ -36,8 +36,8 @@ class AllBooksPageState extends State<AllBooksPage> {
         connectivity: sl(),
       )..add(const FetchAllBooks()),
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('All Books'),
+        appBar: GradientAppBar(
+          title: 'All Books',
         ),
         body: GradientBackground(
           child: Padding(

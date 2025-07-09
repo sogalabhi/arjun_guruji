@@ -5,6 +5,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:arjun_guruji/features/EventManagement/presentation/bloc/event_bloc.dart';
 import 'package:hive/hive.dart';
+import 'package:arjun_guruji/core/widgets/gradient_app_bar.dart';
 
 class EventDetailsPage extends StatelessWidget {
   final EventEntity event;
@@ -45,8 +46,8 @@ class _EventDetailsViewState extends State<_EventDetailsView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.event.title),
+      appBar: GradientAppBar(
+        title: widget.event.title,
         actions: [
           IconButton(
             icon: const Icon(Icons.share),

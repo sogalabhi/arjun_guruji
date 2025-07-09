@@ -6,6 +6,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:arjun_guruji/features/AudioPlayer/domain/entity/audio.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:arjun_guruji/core/widgets/gradient_app_bar.dart';
 
 class AudioPlayerPage extends StatefulWidget {
   final AudioEntity audio;
@@ -198,9 +199,8 @@ class AudioPlayerPageState extends State<AudioPlayerPage>
   Widget build(BuildContext context) {
     final audio = widget.category.audios[_currentIndex];
     return Scaffold(
-      appBar: AppBar(
-        title: Text(audio.title),
-        centerTitle: true,
+      appBar: GradientAppBar(
+        title: 'Audio Player',
       ),
       backgroundColor: Colors.black,
       body: Stack(

@@ -2,6 +2,7 @@ import 'package:arjun_guruji/core/widgets/content_view_page.dart';
 import 'package:arjun_guruji/core/widgets/gradient_background.dart';
 import 'package:arjun_guruji/features/Books/domain/entity/book.dart';
 import 'package:flutter/material.dart';
+import 'package:arjun_guruji/core/widgets/gradient_app_bar.dart';
 
 class ChaptersListPage extends StatefulWidget {
   final Book book;
@@ -43,8 +44,8 @@ class ChaptersListPageState extends State<ChaptersListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.book.title),
+      appBar: GradientAppBar(
+        title: 'Chapters',
       ),
       body: GradientBackground(
         child: Column(

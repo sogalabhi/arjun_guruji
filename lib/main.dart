@@ -15,7 +15,6 @@ import 'package:just_audio_background/just_audio_background.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:arjun_guruji/features/EventManagement/data/model/events_model.dart';
 import 'package:arjun_guruji/features/EventManagement/data/model/activities_model.dart';
-
 // Initialize FlutterLocalNotificationsPlugin
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -151,7 +150,6 @@ Future<void> main() async {
   // Set up Firebase Messaging
   setupFirebaseMessaging();
 
-  
   // Initialize JustAudioBackground
   await JustAudioBackground.init(
     androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',

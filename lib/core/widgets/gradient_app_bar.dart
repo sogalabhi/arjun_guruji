@@ -4,7 +4,7 @@ class GradientAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final bool showBackButton;
   final Widget? leading;
-  final List<Widget> actions;
+  final List<Widget>? actions;
   final double elevation;
   final bool centerTitle;
   final Color? iconColor;
@@ -14,7 +14,7 @@ class GradientAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.title,
     this.showBackButton = false,
     this.leading,
-    this.actions = const [],
+    this.actions,
     this.elevation = 0,
     this.centerTitle = true,
     this.iconColor = Colors.white,
@@ -26,10 +26,10 @@ class GradientAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       title: Text(
         title,
-        style: const TextStyle(
-          fontFamily: 'samarkan',
+        style: TextStyle(
+          fontFamily: title == 'Arjun Guruji' ? 'samarkan' : null,
           color: Colors.white,
-          fontSize: 40,
+          fontSize: title == 'Arjun Guruji' ? 40 : 22,
         ),
       ),
       centerTitle: centerTitle,

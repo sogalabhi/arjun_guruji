@@ -1,6 +1,5 @@
 import '../../domain/notification.dart';
 import '../datasource/notifications_remote_ds.dart';
-import '../model/notification_model.dart';
 
 class NotificationsRepositoryImpl {
   final NotificationsRemoteDataSource remoteDataSource;
