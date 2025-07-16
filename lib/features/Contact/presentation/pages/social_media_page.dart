@@ -17,52 +17,70 @@ class SocialMediaPage extends StatelessWidget {
         body: GradientBackground(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Image.asset('assets/img12.jpg'),
-                const SizedBox(height: 20),
-                Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        socialMediaBox("Website", Icons.language,
-                            'https://sriarjunaavadhoota.org/', context),
-                        socialMediaBox(
-                            "FaceBook",
-                            Icons.facebook,
-                            'https://www.facebook.com/profile.php?id=61554090696815',
-                            context),
-                      ],
-                    ),
-                    const SizedBox(height: 30),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        socialMediaBox(
-                            "Instagram",
-                            Icons.people,
-                            'https://www.instagram.com/sriarjunavadhoothagurumaharaj/',
-                            context),
-                        socialMediaBox("Contact", Icons.contact_page_outlined,
-                            '', context),
-                      ],
-                    ),
-                    const SizedBox(height: 30),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        socialMediaBox(
-                            "Youtube",
-                            Icons.smart_display,
-                            'https://www.youtube.com/@srisriarjunavadhoothamaharaj',
-                            context),
-                      ],
-                    ),
-                  ],
-                )
-              ],
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Image.asset('assets/img12.jpg'),
+                  const SizedBox(height: 20),
+                  Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          socialMediaBox("Website", Icons.language,
+                              'https://sriarjunaavadhoota.org/', context),
+                          socialMediaBox(
+                              "FaceBook",
+                              Icons.facebook,
+                              'https://www.facebook.com/share/16dVbzvr8L/',
+                              context),
+                        ],
+                      ),
+                      const SizedBox(height: 30),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          socialMediaBox(
+                              "Instagram",
+                              Icons.camera_alt,
+                              'https://www.instagram.com/srisriarjunavadhoothamaharaj?igsh=MTNsNGVyMzNscHVxNg==',
+                              context),
+                          socialMediaBox(
+                              "Threads",
+                              Icons.forum,
+                              'https://www.threads.net/@srisriarjunavadhoothamaharaj',
+                              context),
+                        ],
+                      ),
+                      const SizedBox(height: 30),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          socialMediaBox(
+                              "WhatsApp",
+                              Icons.chat,
+                              'https://whatsapp.com/channel/0029VaxAnryLSmbiJv5Elm0T',
+                              context),
+                          socialMediaBox("Contact", Icons.contact_page_outlined,
+                              '', context),
+                        ],
+                      ),
+                      const SizedBox(height: 30),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          socialMediaBox(
+                              "YouTube",
+                              Icons.smart_display,
+                              'https://youtube.com/@srisriarjunavadhoothamaharaj?si=DakdQ0KQIinug3ac',
+                              context),
+                        ],
+                      ),
+                    ],
+                  )
+                ],
+              ),
             ),
           ),
         ),
