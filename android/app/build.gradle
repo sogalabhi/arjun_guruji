@@ -32,7 +32,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace "org.snsds.arjunguruji"
-    compileSdkVersion flutter.compileSdkVersion
+    compileSdkVersion 35
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -51,8 +51,8 @@ android {
 
     defaultConfig {
         applicationId "org.snsds.arjunguruji"
-        minSdkVersion 25
-        targetSdkVersion flutter.targetSdkVersion
+        minSdkVersion 24
+        targetSdkVersion 35
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
          multiDexEnabled true
