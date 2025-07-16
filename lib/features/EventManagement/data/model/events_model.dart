@@ -113,12 +113,18 @@ class EventModel extends EventEntity {
   );
 
   factory EventModel.fromFirestore(String id, Map<String, dynamic> doc) {
+    DateTime parseDate(dynamic value) {
+      if (value is DateTime) return value;
+      if (value is String) return DateTime.parse(value);
+      if (value is Timestamp) return value.toDate();
+      throw Exception('Invalid date value: $value');
+    }
     return EventModel(
       id: id,
       title: doc['title'] ?? '',
       eventType: doc['eventType'] ?? '',
-      startDate: (doc['startDate'] as Timestamp).toDate(),
-      endDate: (doc['endDate'] as Timestamp).toDate(),
+      startDate: parseDate(doc['startDate']),
+      endDate: parseDate(doc['endDate']),
       venue: doc['venue'] ?? '',
       city: doc['city'] ?? '',
       place: doc['place'] ?? '',

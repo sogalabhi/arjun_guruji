@@ -20,11 +20,11 @@ class AllLyricsPage extends StatefulWidget {
 class AllLyricsPageState extends State<AllLyricsPage> {
   String _getImageForCategory(String category) {
     switch (category.toLowerCase()) {
-      case 'daily bhajans':
+      case 'ನಿತ್ಯ ಭಜನೆಗಳು':
         return 'https://firebasestorage.googleapis.com/v0/b/arjun-guruji-app.appspot.com/o/Gallery%2F12.jpg?alt=media&token=e303f0bc-9117-49ba-ac8f-46cc6f7ab17e';
-      case 'others':
+      case 'ಇತರೆ':
         return 'https://firebasestorage.googleapis.com/v0/b/arjun-guruji-app.appspot.com/o/Gallery%2F17.jpg?alt=media&token=9484a469-da31-4ab8-be68-7a1e02abd384';
-      case 'arti':
+      case 'ಆರತಿ':
         return 'https://firebasestorage.googleapis.com/v0/b/arjun-guruji-app.appspot.com/o/Gallery%2Fimg2.jpg?alt=media&token=c3675c3f-3e1c-43ef-b33f-504edf8b8f55';
       default:
         return 'https://firebasestorage.googleapis.com/v0/b/arjun-guruji-app.appspot.com/o/Gallery%2Fimg2.jpg?alt=media&token=c3675c3f-3e1c-43ef-b33f-504edf8b8f55';

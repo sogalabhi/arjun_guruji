@@ -26,6 +26,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'features/Admin/data/datasource/event_remote_datasource.dart';
+import 'features/Admin/data/repository/event_repository_impl.dart';
+import 'features/Admin/domain/repository/event_repository.dart';
+import 'features/Admin/domain/usecases/create_event_usecase.dart';
+import 'features/Admin/domain/usecases/get_events_usecase.dart';
+import 'features/Admin/domain/usecases/update_event_usecase.dart';
+import 'features/Admin/domain/usecases/delete_event_usecase.dart';
+import 'features/Admin/presentation/bloc/event_bloc.dart';
 
 final GetIt sl = GetIt.instance;
 
@@ -35,11 +44,13 @@ void setupLocator() {
 
   //Firebase
   sl.registerLazySingleton(() => FirebaseFirestore.instance);
+  sl.registerLazySingleton(() => FirebaseStorage.instance);
 
   books();
   astottaras();
   audio();
   lyrics();
+  adminEvents();
 
   // Register NotificationsRemoteDataSource
   sl.registerLazySingleton<NotificationsRemoteDataSource>(
@@ -130,4 +141,23 @@ void lyrics() async {
 
   sl.registerFactory(() => LyricsBloc(
       fetchLyricsUseCase: sl(), lyricsBox: sl(), connectivity: sl()));
+}
+
+void adminEvents() {
+  sl.registerLazySingleton<EventRemoteDataSource>(
+    () => EventRemoteDataSourceImpl(sl<FirebaseFirestore>(), sl<FirebaseStorage>()),
+  );
+  sl.registerLazySingleton<EventRepository>(
+    () => EventRepositoryImpl(sl<EventRemoteDataSource>()),
+  );
+  sl.registerFactory(() => CreateEventUseCase(sl<EventRepository>()));
+  sl.registerFactory(() => GetEventsUseCase(sl<EventRepository>()));
+  sl.registerFactory(() => UpdateEventUseCase(sl<EventRepository>()));
+  sl.registerFactory(() => DeleteEventUseCase(sl<EventRepository>()));
+  sl.registerFactory(() => EventBloc(
+    getEvents: sl<GetEventsUseCase>(),
+    createEvent: sl<CreateEventUseCase>(),
+    updateEvent: sl<UpdateEventUseCase>(),
+    deleteEvent: sl<DeleteEventUseCase>(),
+  ));
 }

@@ -34,6 +34,7 @@ class _EventDetailsView extends StatefulWidget {
 
 class _EventDetailsViewState extends State<_EventDetailsView> {
   bool _pressed = false;
+  bool _popAnim = false; // For pop animation
   late Box interestedBox;
 
   @override
@@ -41,6 +42,19 @@ class _EventDetailsViewState extends State<_EventDetailsView> {
     super.initState();
     interestedBox = Hive.box('interestedBox');
     _pressed = interestedBox.get(widget.event.id, defaultValue: false);
+  }
+
+  void _onLikePressed(BuildContext context) async {
+    setState(() {
+      _popAnim = true;
+    });
+    await Future.delayed(const Duration(milliseconds: 150));
+    setState(() {
+      _popAnim = false;
+      _pressed = true;
+      interestedBox.put(widget.event.id, true);
+    });
+    context.read<EventBloc>().add(ToggleInterested(widget.event.id, true));
   }
 
   @override
@@ -112,26 +126,22 @@ class _EventDetailsViewState extends State<_EventDetailsView> {
                         }
                         return Row(
                           children: [
-                            IconButton(
-                              icon: Icon(
-                                _pressed
-                                    ? Icons.thumb_up_alt
-                                    : Icons.thumb_up_alt_outlined,
-                                color: Colors.amber,
-                                size: 32,
+                            AnimatedScale(
+                              scale: _popAnim ? 1.3 : 1.0,
+                              duration: const Duration(milliseconds: 150),
+                              curve: Curves.easeOut,
+                              child: IconButton(
+                                icon: Icon(
+                                  _pressed
+                                      ? Icons.thumb_up_alt
+                                      : Icons.thumb_up_alt_outlined,
+                                  color: Colors.amber,
+                                  size: 32,
+                                ),
+                                onPressed: _pressed
+                                    ? null
+                                    : () => _onLikePressed(context),
                               ),
-                              onPressed: _pressed
-                                  ? null
-                                  : () {
-                                      context.read<EventBloc>().add(
-                                          ToggleInterested(
-                                              widget.event.id, true));
-                                      setState(() {
-                                        _pressed = true;
-                                        interestedBox.put(
-                                            widget.event.id, true);
-                                      });
-                                    },
                             ),
                             Text('$count'),
                           ],
@@ -185,6 +195,50 @@ class _EventDetailsViewState extends State<_EventDetailsView> {
                   ],
                 ),
               ),
+              const SizedBox(height: 16),
+              if (widget.event.galleryLinks.length > 1)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Gallery',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      SizedBox(
+                        height: 100,
+                        child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: widget.event.galleryLinks.length - 1,
+                          separatorBuilder: (context, index) => const SizedBox(width: 8),
+                          itemBuilder: (context, index) {
+                            final imgUrl = widget.event.galleryLinks[index + 1];
+                            return ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.network(
+                                imgUrl,
+                                width: 120,
+                                height: 100,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) => Container(
+                                  width: 120,
+                                  height: 100,
+                                  color: Colors.grey[300],
+                                  child: const Icon(Icons.broken_image, size: 40, color: Colors.grey),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               const SizedBox(height: 8),
             ],
           ),

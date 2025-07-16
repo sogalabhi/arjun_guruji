@@ -16,8 +16,8 @@ class AdminLoginPageState extends State<AdminLoginPage> {
 
   void _login() {
     if (_formKey.currentState!.validate()) {
-      if (_usernameController.text == 'admin' &&
-          _passwordController.text == 'arjunguruji123') {
+      if (_usernameController.text == 'a' &&
+          _passwordController.text == 'a') {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const AdminDashboard()),
