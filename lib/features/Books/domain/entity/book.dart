@@ -6,7 +6,7 @@ class Book {
   final String bookType;
   final String? content;
   final List<Map<String, dynamic>>? chapters;
-  final Uint8List? pdfBytes;
+  final String? pdfFilePath;
   final Uint8List? imageBytes;
 
   Book({
@@ -15,7 +15,7 @@ class Book {
     required this.bookType,
     this.content,
     this.chapters,
-    this.pdfBytes,
+    this.pdfFilePath,
     this.imageBytes,
   });
 }

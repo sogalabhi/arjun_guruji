@@ -22,7 +22,7 @@ class BookModel extends HiveObject {
   final List<Map<String, dynamic>>? chapters;
 
   @HiveField(5)
-  final Uint8List? pdfBytes;
+  final String? pdfFilePath;
 
   @HiveField(6)
   final Uint8List? imageBytes;
@@ -33,7 +33,7 @@ class BookModel extends HiveObject {
     required this.bookType,
     this.content,
     this.chapters,
-    this.pdfBytes,
+    this.pdfFilePath,
     this.imageBytes,
   });
 
@@ -49,7 +49,7 @@ class BookModel extends HiveObject {
                 'content': chapter['content'] as String? ?? '',
               })
           .toList() ?? [],
-      pdfBytes: json['pdfBytes'] as Uint8List?,
+      pdfFilePath: json['pdfFilePath'] as String?,
       imageBytes: json['imageBytes'] as Uint8List?,
     );
   }
@@ -61,7 +61,7 @@ class BookModel extends HiveObject {
       'bookType': bookType,
       'content': content,
       'chapters': chapters,
-      'pdfBytes': pdfBytes,
+      'pdfFilePath': pdfFilePath,
       'imageBytes': imageBytes,
     };
   }
@@ -73,7 +73,7 @@ class BookModel extends HiveObject {
       bookType: book.bookType,
       content: book.content,
       chapters: book.chapters,
-      pdfBytes: book.pdfBytes,
+      pdfFilePath: book.pdfFilePath,
       imageBytes: book.imageBytes,
     );
   }
@@ -85,7 +85,7 @@ class BookModel extends HiveObject {
       bookType: bookModel.bookType,
       content: bookModel.content,
       chapters: bookModel.chapters,
-      pdfBytes: bookModel.pdfBytes,
+      pdfFilePath: bookModel.pdfFilePath,
       imageBytes: bookModel.imageBytes,
     );
   }

@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/notification_popup.dart';
 import 'package:arjun_guruji/features/Notifications/data/datasource/notifications_remote_ds.dart';
 import 'package:arjun_guruji/injection_container.dart';
+import 'package:upgrader/upgrader.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -52,45 +53,47 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: GradientAppBar(
-        title: "Arjun Guruji",
-        actions: [
-          Stack(
-            children: [
-              IconButton(
-                icon: const Icon(Icons.notifications),
-                onPressed: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => NotificationsPage(),
+    return UpgradeAlert(
+      child: Scaffold(
+        appBar: GradientAppBar(
+          title: "Arjun Guruji",
+          actions: [
+            Stack(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.notifications),
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => NotificationsPage(),
+                    ),
                   ),
                 ),
-              ),
-              Positioned(
-                top: 8,
-                right: 8,
-                child: Container(
-                  width: 8,
-                  height: 8,
-                  decoration: const BoxDecoration(
-                    color: Colors.red,
-                    shape: BoxShape.circle,
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: Container(
+                    width: 8,
+                    height: 8,
+                    decoration: const BoxDecoration(
+                      color: Colors.red,
+                      shape: BoxShape.circle,
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ],
-      ),
-      body: Stack(
-        children: [
-          const HomePageContent(),
-          if (showNotificationPopup && latestNotification != null)
-            NotificationPopup(
-              notification: latestNotification!,
-              onClose: _dismissNotificationPopup,
+              ],
             ),
-        ],
+          ],
+        ),
+        body: Stack(
+          children: [
+            const HomePageContent(),
+            if (showNotificationPopup && latestNotification != null)
+              NotificationPopup(
+                notification: latestNotification!,
+                onClose: _dismissNotificationPopup,
+              ),
+          ],
+        ),
       ),
     );
   }

@@ -24,7 +24,7 @@ class BookModelAdapter extends TypeAdapter<BookModel> {
       chapters: (fields[4] as List?)
           ?.map((dynamic e) => (e as Map).cast<String, dynamic>())
           ?.toList(),
-      pdfBytes: fields[5] as Uint8List?,
+      pdfFilePath: fields[5] as String?,
       imageBytes: fields[6] as Uint8List?,
     );
   }
@@ -44,7 +44,7 @@ class BookModelAdapter extends TypeAdapter<BookModel> {
       ..writeByte(4)
       ..write(obj.chapters)
       ..writeByte(5)
-      ..write(obj.pdfBytes)
+      ..write(obj.pdfFilePath)
       ..writeByte(6)
       ..write(obj.imageBytes);
   }

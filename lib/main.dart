@@ -15,6 +15,9 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:arjun_guruji/features/EventManagement/data/model/events_model.dart';
 import 'package:arjun_guruji/features/EventManagement/data/model/activities_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:io';
+import 'package:flutter/services.dart' show rootBundle;
+
 // Initialize FlutterLocalNotificationsPlugin
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -146,38 +149,10 @@ Future<void> main() async {
 
   // Initialize Firebase
   await Firebase.initializeApp();
-  
+
   // Set up Firebase Messaging
   setupFirebaseMessaging();
 
-  /// Updates the chapters array in the given [book] map:
-  /// - Keeps only chapters 0 to 36 (inclusive)
-  /// - Sets chapterName to "ಅಧ್ಯಾಯ {index+1}" for each
-  /// Updates the "chapters" array in the "1. gurudaari" document of the "Books" collection in Firestore:
-  /// - Keeps only chapters 0 to 36 (inclusive)
-  /// - Sets chapterName to "ಅಧ್ಯಾಯ {index+1}" for each
-  Future<void> updateGurudaariChapters() async {
-    final docRef = FirebaseFirestore.instance.collection('Books').doc('1. gurudaari');
-    final docSnap = await docRef.get();
-    if (docSnap.exists) {
-      final data = docSnap.data();
-      if (data != null && data['chapters'] is List) {
-        List chapters = List.from(data['chapters']);
-        // Keep only chapters 0 to 36
-        if (chapters.length > 37) {
-          chapters = chapters.sublist(0, 37);
-        }
-        // Update chapterName for each
-        for (int i = 0; i < chapters.length; i++) {
-          if (chapters[i] is Map && chapters[i].containsKey('chapterName')) {
-            chapters[i]['chapterName'] = 'ಅಧ್ಯಾಯ $i';
-          }
-        }
-        await docRef.update({'chapters': chapters});
-      }
-    }
-  }
-  await updateGurudaariChapters();
   // Initialize JustAudioBackground
   await JustAudioBackground.init(
     androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
@@ -203,7 +178,7 @@ class MyApp extends StatelessWidget {
         statusBarBrightness: Brightness.dark,
       ),
     );
-    
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

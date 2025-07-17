@@ -49,3 +49,4 @@ app.*.map.json
 /windows/
 
 *.jks
+/assets/raw/

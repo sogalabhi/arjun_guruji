@@ -7,11 +7,24 @@ import 'package:hive/hive.dart';
 import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:arjun_guruji/core/services/connectivity_service.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 
 Future<Uint8List?> downloadBytes(String url) async {
   try {
     final response = await Dio().get(url, options: Options(responseType: ResponseType.bytes));
     return Uint8List.fromList(response.data);
+  } catch (_) {
+    return null;
+  }
+}
+
+Future<String?> downloadAndSavePdfFile(String url, String fileName) async {
+  try {
+    final dir = await getApplicationDocumentsDirectory();
+    final filePath = '${dir.path}/$fileName';
+    await Dio().download(url, filePath);
+    return filePath;
   } catch (_) {
     return null;
   }
@@ -37,12 +50,11 @@ class BooksRepositoryImpl implements BookRepository {
       if (books.isEmpty) {
         return const Left('Books Are Empty');
       }
-      // Show UI immediately with what is available
       List<BookModel> updatedBooks = [];
-      await box.clear(); // Clear the box before adding new books
+      await box.clear();
       for (final book in books) {
         final cached = box.get(book.title);
-        Uint8List? pdfBytes = cached?.pdfBytes;
+        String? pdfFilePath = cached?.pdfFilePath; // Keep existing if present
         Uint8List? imageBytes = cached?.imageBytes;
         final updatedBook = BookModel(
           title: book.title,
@@ -50,7 +62,7 @@ class BooksRepositoryImpl implements BookRepository {
           bookType: book.bookType,
           content: book.content,
           chapters: book.chapters,
-          pdfBytes: pdfBytes,
+          pdfFilePath: pdfFilePath,
           imageBytes: imageBytes,
         );
         await box.put(book.title, updatedBook);
@@ -69,7 +81,7 @@ class BooksRepositoryImpl implements BookRepository {
                 bookType: book.bookType,
                 content: book.content,
                 chapters: book.chapters,
-                pdfBytes: cached?.pdfBytes,
+                pdfFilePath: cached?.pdfFilePath,
                 imageBytes: imageBytes,
               );
               await box.put(book.title, updatedBook);

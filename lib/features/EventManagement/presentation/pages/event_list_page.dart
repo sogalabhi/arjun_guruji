@@ -73,6 +73,63 @@ class EventListPage extends StatelessWidget {
     }
   }
 
+  // Helper method to convert weekday number to string
+  String _weekdayToString(int weekday) {
+    switch (weekday) {
+      case DateTime.monday:
+        return 'Monday';
+      case DateTime.tuesday:
+        return 'Tuesday';
+      case DateTime.wednesday:
+        return 'Wednesday';
+      case DateTime.thursday:
+        return 'Thursday';
+      case DateTime.friday:
+        return 'Friday';
+      case DateTime.saturday:
+        return 'Saturday';
+      case DateTime.sunday:
+        return 'Sunday';
+      default:
+        return '';
+    }
+  }
+
+  // Helper method to check if a recurring event occurs today
+  bool _isOccurrenceToday(EventEntity event, DateTime today) {
+    if (event.eventType == "Recurring" && event.day != null && event.frequency == "weekly") {
+      final eventStart = DateTime(event.startDate.year, event.startDate.month, event.startDate.day);
+      final eventEnd = DateTime(event.endDate.year, event.endDate.month, event.endDate.day);
+      if (today.isBefore(eventStart) || today.isAfter(eventEnd)) return false;
+      final weekdayString = _weekdayToString(today.weekday).toLowerCase();
+      return weekdayString == event.day!.toLowerCase();
+    }
+    return false;
+  }
+
+  // Helper method to get the next occurrence date for a recurring event (including today)
+  DateTime? _getNextOrTodayOccurrence(EventEntity event, DateTime today) {
+    if (event.eventType == "Recurring" && event.day != null && event.frequency == "weekly") {
+      final eventStart = DateTime(event.startDate.year, event.startDate.month, event.startDate.day);
+      final eventEnd = DateTime(event.endDate.year, event.endDate.month, event.endDate.day);
+      if (today.isBefore(eventStart)) return eventStart;
+      if (today.isAfter(eventEnd)) return null;
+      final weekdayString = _weekdayToString(today.weekday).toLowerCase();
+      if (weekdayString == event.day!.toLowerCase()) {
+        return today;
+      }
+      // Find the next occurrence after today
+      for (int i = 1; i <= 7; i++) {
+        final nextDay = today.add(Duration(days: i));
+        final nextWeekdayString = _weekdayToString(nextDay.weekday).toLowerCase();
+        if (nextWeekdayString == event.day!.toLowerCase() && !nextDay.isAfter(eventEnd)) {
+          return nextDay;
+        }
+      }
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final interestedBox = Hive.box('interestedBox');
@@ -92,18 +149,23 @@ class EventListPage extends StatelessWidget {
             // Get upcoming events (future + today) including recurring events
             final upcomingEvents = events.where((event) {
               if (event.eventType == "Recurring") {
-                // For recurring events, check if they have future occurrences
-                return _hasFutureOccurrence(event, today);
+                // For recurring events, include if today or any future date matches recurrence day
+                return _getNextOrTodayOccurrence(event, today) != null;
               } else {
-                // For non-recurring events, check if they start today or in the future
-                return event.startDate.isAfter(today.subtract(const Duration(days: 1)));
+                // For non-recurring events, check if they start today or in the future (ignore time)
+                final eventDate = DateTime(event.startDate.year, event.startDate.month, event.startDate.day);
+                return !eventDate.isBefore(today); // include today
               }
             }).toList();
             
             // Sort upcoming events by their next occurrence date
             upcomingEvents.sort((a, b) {
-              final aNextDate = _getNextOccurrenceDate(a, today);
-              final bNextDate = _getNextOccurrenceDate(b, today);
+              final aNextDate = a.eventType == "Recurring"
+                  ? _getNextOrTodayOccurrence(a, today) ?? DateTime(2100)
+                  : _getNextOccurrenceDate(a, today);
+              final bNextDate = b.eventType == "Recurring"
+                  ? _getNextOrTodayOccurrence(b, today) ?? DateTime(2100)
+                  : _getNextOccurrenceDate(b, today);
               return aNextDate.compareTo(bNextDate);
             });
             

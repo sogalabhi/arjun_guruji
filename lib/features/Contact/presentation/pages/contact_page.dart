@@ -55,19 +55,28 @@ class ContactPage extends StatelessWidget {
                       context: context,
                       builder: (context) => AlertDialog(
                         title: const Text('Bank & UPI Details'),
-                        content: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 12),
-                            const Text('Swarna Nrisimha Datta Sai Peethika Seva Trust'),
-                            const Text('A/C #: 297301000012345'),
-                            const Text('IFSC: IOBA0002973'),
-                            const Text('Branch: Srirampura, Mysore'),
-                            const SizedBox(height: 16),
-                            const Text('UPI ID: 9448843939@iob'),
-                            const SizedBox(height: 8),
-                          ],
+                        content: SingleChildScrollView(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Center(
+                                child: Image.asset(
+                                  'assets/donate.jpg',
+                                  height: 200,
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              const Text('Swarna Nrisimha Datta Sai Peethika Seva Trust'),
+                              const Text('A/C #: 297301000012345'),
+                              const Text('IFSC: IOBA0002973'),
+                              const Text('Branch: Srirampura, Mysore'),
+                              const SizedBox(height: 16),
+                              const Text('UPI ID: 9448843939@iob'),
+                              const SizedBox(height: 8),
+                            ],
+                          ),
                         ),
                         actions: [
                           TextButton(

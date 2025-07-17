@@ -46,11 +46,8 @@ class SocialMediaPage extends StatelessWidget {
                               Icons.camera_alt,
                               'https://www.instagram.com/srisriarjunavadhoothamaharaj?igsh=MTNsNGVyMzNscHVxNg==',
                               context),
-                          socialMediaBox(
-                              "Threads",
-                              Icons.forum,
-                              'https://www.threads.net/@srisriarjunavadhoothamaharaj',
-                              context),
+                          socialMediaBox("Contact", Icons.contact_page_outlined,
+                              '', context),
                         ],
                       ),
                       const SizedBox(height: 30),
@@ -62,8 +59,11 @@ class SocialMediaPage extends StatelessWidget {
                               Icons.chat,
                               'https://whatsapp.com/channel/0029VaxAnryLSmbiJv5Elm0T',
                               context),
-                          socialMediaBox("Contact", Icons.contact_page_outlined,
-                              '', context),
+                          socialMediaBox(
+                              "Threads",
+                              Icons.forum,
+                              'https://www.threads.net/@srisriarjunavadhoothamaharaj',
+                              context),
                         ],
                       ),
                       const SizedBox(height: 30),
@@ -93,8 +93,8 @@ class SocialMediaPage extends StatelessWidget {
     return InkWell(
       onTap: () async {
         if (name == "Contact") {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => const ContactPage()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const ContactPage()));
         } else {
           Uri webUrl = Uri.parse(url);
           if (!await launchUrl(webUrl)) {

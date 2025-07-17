@@ -16,7 +16,11 @@ class BooksRemoteDataSourceImpl implements BooksRemoteDataSource {
     final bookCollection = firestore.collection('Books');
     final querySnapshot = await bookCollection.get();
     var books = querySnapshot.docs
-        .map((doc) => BookModel.fromJson(doc.data()))
+        .map((doc) => BookModel.fromJson({
+              ...doc.data(),
+              'pdfFilePath': null,
+              'imageBytes': null,
+            }))
         .toList();
     return books;
   }
@@ -33,7 +37,7 @@ class BooksRemoteDataSourceImpl implements BooksRemoteDataSource {
         bookType: data['bookType'] ?? '',
         content: null, // Do not fetch content for summary
         chapters: null,
-        pdfBytes: null,
+        pdfFilePath: null,
         imageBytes: null,
       );
     }).toList();
@@ -44,7 +48,11 @@ class BooksRemoteDataSourceImpl implements BooksRemoteDataSource {
     final bookCollection = firestore.collection('Books');
     final querySnapshot = await bookCollection.where('title', isEqualTo: title).limit(1).get();
     if (querySnapshot.docs.isNotEmpty) {
-      return BookModel.fromJson(querySnapshot.docs.first.data());
+      return BookModel.fromJson({
+        ...querySnapshot.docs.first.data(),
+        'pdfFilePath': null,
+        'imageBytes': null,
+      });
     }
     return null;
   }
