@@ -78,12 +78,35 @@ class NotificationsPage extends StatelessWidget {
                                 alignment: Alignment.centerRight,
                                 child: TextButton(
                                   onPressed: () async {
-                                    final url = notification.onTapLink!;
-                                    if (await canLaunch(url)) {
-                                      await launch(url);
-                                    } else {
+                                    try {
+                                      final url = notification.onTapLink!;
+                                      final uri = Uri.parse(url);
+                                      
+                                      // Try to launch URL with external application mode
+                                      if (await canLaunchUrl(uri)) {
+                                        final result = await launchUrl(
+                                          uri, 
+                                          mode: LaunchMode.externalApplication,
+                                        );
+                                        if (!result) {
+                                          throw Exception('Failed to launch URL');
+                                        }
+                                      } else {
+                                        // If canLaunchUrl returns false, try with platform default mode
+                                        final result = await launchUrl(
+                                          uri, 
+                                          mode: LaunchMode.platformDefault,
+                                        );
+                                        if (!result) {
+                                          throw Exception('No app found to handle this URL');
+                                        }
+                                      }
+                                    } catch (e) {
                                       ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(content: Text("Could not open the link.")),
+                                        SnackBar(
+                                          content: Text("Could not open the link: ${e.toString()}"),
+                                          duration: Duration(seconds: 3),
+                                        ),
                                       );
                                     }
                                   },

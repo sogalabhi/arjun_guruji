@@ -98,7 +98,7 @@ class ImageGridItem extends StatelessWidget {
                 child: Text(
                   getTitle(item),
                   style: const TextStyle(
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),

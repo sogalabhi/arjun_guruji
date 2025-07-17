@@ -25,9 +25,9 @@ class AllLyricsPageState extends State<AllLyricsPage> {
       case 'ಇತರೆ':
         return 'https://firebasestorage.googleapis.com/v0/b/arjun-guruji-app.appspot.com/o/Gallery%2F17.jpg?alt=media&token=9484a469-da31-4ab8-be68-7a1e02abd384';
       case 'ಆರತಿ':
-        return 'https://firebasestorage.googleapis.com/v0/b/arjun-guruji-app.appspot.com/o/Gallery%2Fimg2.jpg?alt=media&token=c3675c3f-3e1c-43ef-b33f-504edf8b8f55';
+        return 'https://firebasestorage.googleapis.com/v0/b/arjun-guruji-app.appspot.com/o/Gallery%2Faarti.png?alt=media&token=3b5d2065-f4a2-40cd-8456-c560a86b474f';
       default:
-        return 'https://firebasestorage.googleapis.com/v0/b/arjun-guruji-app.appspot.com/o/Gallery%2Fimg2.jpg?alt=media&token=c3675c3f-3e1c-43ef-b33f-504edf8b8f55';
+        return 'https://firebasestorage.googleapis.com/v0/b/arjun-guruji-app.appspot.com/o/Gallery%2Faarti.png?alt=media&token=3b5d2065-f4a2-40cd-8456-c560a86b474f';
     }
   }
 

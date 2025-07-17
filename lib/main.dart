@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:typed_data';
-
 import 'package:arjun_guruji/features/Astottaras/data/model/astottara_model.dart';
 import 'package:arjun_guruji/features/Books/data/model/book_model.dart';
 import 'package:arjun_guruji/features/Lyrics/data/model/lyrics_model.dart';
@@ -9,12 +7,14 @@ import 'package:arjun_guruji/screens/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:arjun_guruji/features/EventManagement/data/model/events_model.dart';
 import 'package:arjun_guruji/features/EventManagement/data/model/activities_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 // Initialize FlutterLocalNotificationsPlugin
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -146,10 +146,38 @@ Future<void> main() async {
 
   // Initialize Firebase
   await Firebase.initializeApp();
-
+  
   // Set up Firebase Messaging
   setupFirebaseMessaging();
 
+  /// Updates the chapters array in the given [book] map:
+  /// - Keeps only chapters 0 to 36 (inclusive)
+  /// - Sets chapterName to "ಅಧ್ಯಾಯ {index+1}" for each
+  /// Updates the "chapters" array in the "1. gurudaari" document of the "Books" collection in Firestore:
+  /// - Keeps only chapters 0 to 36 (inclusive)
+  /// - Sets chapterName to "ಅಧ್ಯಾಯ {index+1}" for each
+  Future<void> updateGurudaariChapters() async {
+    final docRef = FirebaseFirestore.instance.collection('Books').doc('1. gurudaari');
+    final docSnap = await docRef.get();
+    if (docSnap.exists) {
+      final data = docSnap.data();
+      if (data != null && data['chapters'] is List) {
+        List chapters = List.from(data['chapters']);
+        // Keep only chapters 0 to 36
+        if (chapters.length > 37) {
+          chapters = chapters.sublist(0, 37);
+        }
+        // Update chapterName for each
+        for (int i = 0; i < chapters.length; i++) {
+          if (chapters[i] is Map && chapters[i].containsKey('chapterName')) {
+            chapters[i]['chapterName'] = 'ಅಧ್ಯಾಯ $i';
+          }
+        }
+        await docRef.update({'chapters': chapters});
+      }
+    }
+  }
+  await updateGurudaariChapters();
   // Initialize JustAudioBackground
   await JustAudioBackground.init(
     androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
@@ -167,6 +195,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Configure status bar
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark,
+      ),
+    );
+    
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -175,6 +212,13 @@ class MyApp extends StatelessWidget {
         fontFamily: 'poppins',
         primaryColor: const Color.fromARGB(255, 1, 0, 54),
         hintColor: const Color.fromARGB(255, 51, 47, 255),
+        appBarTheme: const AppBarTheme(
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            statusBarIconBrightness: Brightness.light,
+            statusBarBrightness: Brightness.dark,
+          ),
+        ),
       ),
       home: const SplashScreen(),
     );

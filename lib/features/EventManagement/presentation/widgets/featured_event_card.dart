@@ -18,11 +18,59 @@ class FeaturedEventCard extends StatelessWidget {
   }
 
   String getFormattedDateRange() {
-    final start =
-        "${event.startDate.day}/${event.startDate.month}/${event.startDate.year}";
-    final end =
-        "${event.endDate.day}/${event.endDate.month}/${event.endDate.year}";
+    if (event.eventType == "Recurring" && event.day != null && event.frequency == "weekly") {
+      // For recurring events, show the next occurrence
+      final nextDate = _getNextOccurrenceDate();
+      if (nextDate != null) {
+        final formattedDate = "${nextDate.day}/${nextDate.month}/${nextDate.year}";
+        return "Next ${event.day}: $formattedDate";
+      }
+    }
+    
+    // For non-recurring events, show the original date range
+    final start = "${event.startDate.day}/${event.startDate.month}/${event.startDate.year}";
+    final end = "${event.endDate.day}/${event.endDate.month}/${event.endDate.year}";
     return start == end ? start : "$start - $end";
+  }
+
+  // Helper method to get the next occurrence date for recurring events
+  DateTime? _getNextOccurrenceDate() {
+    if (event.eventType != "Recurring" || event.day == null || event.frequency != "weekly") {
+      return null;
+    }
+    
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final targetWeekday = _dayStringToWeekday(event.day!);
+    final currentWeekday = today.weekday;
+    
+    int daysToAdd = targetWeekday - currentWeekday;
+    if (daysToAdd <= 0) {
+      daysToAdd += 7; // Move to next week
+    }
+    
+    final nextOccurrence = today.add(Duration(days: daysToAdd));
+    
+    // Check if this occurrence is within the event's date range
+    if (nextOccurrence.isAfter(event.endDate)) {
+      return null; // No future occurrences
+    }
+    
+    return nextOccurrence;
+  }
+
+  // Helper method to convert day string to weekday number
+  int _dayStringToWeekday(String day) {
+    switch (day.toLowerCase()) {
+      case 'monday': return DateTime.monday;
+      case 'tuesday': return DateTime.tuesday;
+      case 'wednesday': return DateTime.wednesday;
+      case 'thursday': return DateTime.thursday;
+      case 'friday': return DateTime.friday;
+      case 'saturday': return DateTime.saturday;
+      case 'sunday': return DateTime.sunday;
+      default: return DateTime.monday;
+    }
   }
 
   @override

@@ -12,10 +12,27 @@ class PastEventsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
-    final pastEvents = events.where((e) =>
-      (e.isFeatured || e.eventType == 'Recurring') &&
-      e.startDate.isBefore(DateTime(now.year, now.month, now.day))
+    final today = DateTime(now.year, now.month, now.day);
+    
+    // Get major past events (featured events that are in the past)
+    final majorPastEvents = events.where((e) =>
+      e.isFeatured && 
+      e.eventType != 'Recurring' &&
+      e.startDate.isBefore(today)
     ).toList();
+    
+    // Get all previous weeks events (events that ended more than 7 days ago)
+    final previousWeeksEvents = events.where((e) =>
+      e.endDate.isBefore(today.subtract(const Duration(days: 7)))
+    ).toList();
+    
+    // Combine and remove duplicates
+    final allPastEvents = <EventEntity>{};
+    allPastEvents.addAll(majorPastEvents);
+    allPastEvents.addAll(previousWeeksEvents);
+    
+    final pastEvents = allPastEvents.toList();
+    pastEvents.sort((a, b) => b.startDate.compareTo(a.startDate)); // Sort by date descending
 
     if (pastEvents.isEmpty) {
       return const Padding(
@@ -33,7 +50,7 @@ class PastEventsList extends StatelessWidget {
       children: [
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 16),
-          child: Text('Other Events',
+          child: Text('Events',
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 20,

@@ -39,6 +39,7 @@ class BooksRepositoryImpl implements BookRepository {
       }
       // Show UI immediately with what is available
       List<BookModel> updatedBooks = [];
+      await box.clear(); // Clear the box before adding new books
       for (final book in books) {
         final cached = box.get(book.title);
         Uint8List? pdfBytes = cached?.pdfBytes;

@@ -8,127 +8,87 @@ class ContactPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: GradientAppBar(
-          title: 'Contact',
-        ),
-        body: GradientBackground(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(40.0),
-                    child: Image.asset('assets/snsdslogo.png'),
+    return Scaffold(
+      appBar: GradientAppBar(
+        title: 'Contact',
+        showBackButton: true,
+      ),
+      body: GradientBackground(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(40.0),
+                  child: Image.asset('assets/snsdslogo.png', height: 200),
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  '#36, "ಗೀತನಿಕೇತನ", ಸೋನಾರ್ ಬೀದಿ, ಚಾಮರಾಜ ಮೊಹಲ್ಲಾ, ಮೈಸೂರು - 570024',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
                   ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    '#36, "ಗೀತನಿಕೇತನ", ಸೋನಾರ್ ಬೀದಿ, ಚಾಮರಾಜ ಮೊಹಲ್ಲಾ, ಮೈಸೂರು - 570024',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white,
-                    ),
-                    textAlign: TextAlign.center,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  "Phone: +91-9141075552",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
                   ),
-                  const SizedBox(height: 10),
-                  const Text(
-                    "Phone: +91-9141075552",
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white,
-                    ),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton.icon(
+                  icon: Icon(Icons.volunteer_activism),
+                  label: Text('Donate'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.amber,
+                    foregroundColor: Colors.black,
+                    textStyle: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 20),
-                  ElevatedButton.icon(
-                    icon: Icon(Icons.volunteer_activism),
-                    label: Text('Donate'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.amber,
-                      foregroundColor: Colors.black,
-                      textStyle: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: const Text('Bank & UPI Details'),
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Contact below Bank Details for Donations:',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              const SizedBox(height: 12),
-                              const Text('Swarna Nrisimha Datta Sai Peethika Seva Trust'),
-                              const Text('A/C #: 297301000012345'),
-                              const Text('IFSC: IOBA0002973'),
-                              const Text('Branch: Srirampura, Mysore'),
-                              const SizedBox(height: 16),
-                              const Text('UPI ID: 9448843939@iob'),
-                              const SizedBox(height: 8),
-                              Center(
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      width: 120,
-                                      height: 120,
-                                      color: Colors.grey[300],
-                                      child: Image.network(
-                                        'https://dummyimage.com/120x120/cccccc/000000&text=QR+Code',
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 8),
-                                    ElevatedButton.icon(
-                                      icon: Icon(Icons.open_in_new),
-                                      label: Text('Pay via UPI App'),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.green,
-                                        foregroundColor: Colors.white,
-                                      ),
-                                      onPressed: () async {
-                                        final upiUrl = Uri.parse('upi://pay?ver=01&pa=9448843939@iob&pn=SWARNA NRISIMHA DATTA SAI PEETHIKA SEVA TRUST&tn=%25');
-                                        if (await canLaunchUrl(upiUrl)) {
-                                          await launchUrl(upiUrl, mode: LaunchMode.externalApplication);
-                                        } else {
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            SnackBar(content: Text('No UPI app found to handle this request.')),
-                                          );
-                                        }
-                                      },
-                                    ),
-                                    const SizedBox(height: 8),
-                                    const Text('Scan to pay (QR coming soon)', style: TextStyle(fontSize: 12)),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.of(context).pop(),
-                              child: const Text('Close'),
-                            ),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Bank & UPI Details'),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 12),
+                            const Text('Swarna Nrisimha Datta Sai Peethika Seva Trust'),
+                            const Text('A/C #: 297301000012345'),
+                            const Text('IFSC: IOBA0002973'),
+                            const Text('Branch: Srirampura, Mysore'),
+                            const SizedBox(height: 16),
+                            const Text('UPI ID: 9448843939@iob'),
+                            const SizedBox(height: 8),
                           ],
                         ),
-                      );
-                    },
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      contactIcon(Icons.mail_outline_outlined, "mailto:snsdstrustmysore@gmail.com"),
-                      contactIcon(Icons.call_outlined, "tel:+919141075552"),
-                      contactIcon(Icons.maps_home_work_outlined, "https://maps.app.goo.gl/5yZRd4hzX2zH7MTb8"),
-                    ],
-                  ),
-                ],
-              ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: const Text('Close'),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    contactIcon(Icons.mail_outline_outlined, "mailto:snsdstrustmysore@gmail.com"),
+                    contactIcon(Icons.call_outlined, "tel:+919141075552"),
+                    contactIcon(Icons.maps_home_work_outlined, "https://maps.app.goo.gl/5yZRd4hzX2zH7MTb8"),
+                  ],
+                ),
+              ],
             ),
           ),
         ),

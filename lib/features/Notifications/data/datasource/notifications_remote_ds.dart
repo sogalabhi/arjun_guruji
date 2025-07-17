@@ -35,9 +35,23 @@ class NotificationsRemoteDataSource {
         .get();
     if (query.docs.isNotEmpty) {
       final docs = query.docs;
-      docs.sort((a, b) => (b['dateTime'] as Timestamp).compareTo(a['dateTime'] as Timestamp));
-      final data = docs.first.data();
-      data['id'] = docs.first.id;
+      
+      // Filter out notifications with past dateTime
+      final now = DateTime.now();
+      final futureNotifications = docs.where((doc) {
+        final notificationDateTime = (doc['dateTime'] as Timestamp).toDate();
+        return notificationDateTime.isAfter(now);
+      }).toList();
+      
+      if (futureNotifications.isEmpty) {
+        return null; // No future notifications found
+      }
+      
+      // Sort by dateTime (latest first)
+      futureNotifications.sort((a, b) => (b['dateTime'] as Timestamp).compareTo(a['dateTime'] as Timestamp));
+      
+      final data = futureNotifications.first.data();
+      data['id'] = futureNotifications.first.id;
       return data;
     }
     return null;
