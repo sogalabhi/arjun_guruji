@@ -168,8 +168,9 @@ class _EventDetailsViewState extends State<_EventDetailsView> {
                         size: 20, color: Colors.black54),
                     const SizedBox(width: 8),
                     Text(
-                      _getFormattedDateRange(
-                          widget.event.startDate, widget.event.endDate),
+                      widget.event.eventType == "Recurring" && widget.event.day != null && widget.event.frequency == "weekly"
+                        ? "Every ${widget.event.day!}"
+                        : _getFormattedDateRange(widget.event.startDate, widget.event.endDate),
                       style:
                           const TextStyle(fontSize: 16, color: Colors.black54),
                     ),

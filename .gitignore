@@ -50,3 +50,6 @@ app.*.map.json
 
 *.jks
 /assets/raw/
+
+# Firebase service account key
+assets/arjun-guruji-app-firebase-adminsdk-cas8x-35276622b4.json

@@ -10,7 +10,6 @@ class Event {
   final String eventType;
   final bool isFeatured;
   final String city;
-  final String place;
   final String status;
 
   Event({
@@ -22,10 +21,9 @@ class Event {
     required this.venue,
     required this.galleryLinks,
     required this.interestedCount,
-    this.eventType = "One-time",
-    this.isFeatured = false,
+    this.eventType = "Simple",
+    this.isFeatured = true,
     this.city = "",
-    this.place = "",
     this.status = "Upcoming",
   });
 } 

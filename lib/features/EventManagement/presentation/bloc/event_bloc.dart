@@ -37,7 +37,6 @@ class EventBloc extends Bloc<EventEvent, EventState> {
               interestedCount: 0,
               galleryLinks: [],
               status: '',
-              rsvp: false,
               isFeatured: false,
             ),
           );
@@ -72,7 +71,6 @@ class EventBloc extends Bloc<EventEvent, EventState> {
               interestedCount: 0,
               galleryLinks: [],
               status: '',
-              rsvp: false,
               isFeatured: false,
             ),
           );

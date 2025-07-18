@@ -57,12 +57,6 @@ class EventModel extends EventEntity {
   final String status;
   @override
   @HiveField(16)
-  final bool rsvp;
-  @override
-  @HiveField(17)
-  final int? rsvpCount;
-  @override
-  @HiveField(18)
   final bool isFeatured;
   @override
   @HiveField(19)
@@ -86,8 +80,6 @@ class EventModel extends EventEntity {
     required this.galleryLinks,
     required this.status,
     this.tags,
-    this.rsvp = false,
-    this.rsvpCount = 0,
     this.isFeatured = false,
   }) : super(
     id: id,
@@ -107,8 +99,6 @@ class EventModel extends EventEntity {
     galleryLinks: galleryLinks,
     status: status,
     tags: tags,
-    rsvp: rsvp,
-    rsvpCount: rsvpCount,
     isFeatured: isFeatured,
   );
 
@@ -141,8 +131,6 @@ class EventModel extends EventEntity {
       galleryLinks: List<String>.from(doc['galleryLinks'] ?? []),
       status: doc['status'] ?? 'Upcoming',
       tags: doc['tags'] != null ? List<String>.from(doc['tags']) : null,
-      rsvp: doc['rsvp'] ?? false,
-      rsvpCount: doc['rsvpCount'] ?? 0,
       isFeatured: doc['isFeatured'] ?? false,
     );
   }
@@ -166,8 +154,6 @@ class EventModel extends EventEntity {
       'galleryLinks': galleryLinks,
       'status': status,
       'tags': tags,
-      'rsvp': rsvp,
-      'rsvpCount': rsvpCount ?? 0, // Ensure a default value if null
       'isFeatured': isFeatured,
     };
   }

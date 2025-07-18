@@ -7,4 +7,5 @@ abstract class EventRepository {
   Future<void> updateEvent(Event event, {File? image});
   Future<void> deleteEvent(String eventId);
   Future<String> uploadImage(File imageFile);
+  Future<String> uploadImageToEventFolder(File imageFile, String eventName);
 } 

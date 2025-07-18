@@ -81,7 +81,9 @@ class PastEventsList extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      "${event.startDate.toLocal()}".split(' ')[0],
+                      event.eventType == "Recurring" && event.day != null && event.frequency == "weekly"
+                        ? "Every ${event.day!}"
+                        : "${event.startDate.toLocal()}".split(' ')[0],
                       style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,

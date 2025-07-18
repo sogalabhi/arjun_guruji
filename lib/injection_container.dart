@@ -1,3 +1,4 @@
+import 'package:arjun_guruji/features/Admin/domain/usecases/upload_event_image_usecase.dart';
 import 'package:arjun_guruji/features/Astottaras/data/datasource/ast_remote_ds.dart';
 import 'package:arjun_guruji/features/Astottaras/data/model/astottara_model.dart';
 import 'package:arjun_guruji/features/Astottaras/data/repository/astottara_repository_impl.dart';
@@ -35,6 +36,15 @@ import 'features/Admin/domain/usecases/get_events_usecase.dart';
 import 'features/Admin/domain/usecases/update_event_usecase.dart';
 import 'features/Admin/domain/usecases/delete_event_usecase.dart';
 import 'features/Admin/presentation/bloc/event_bloc.dart';
+import 'features/Admin/data/datasource/notification_remote_datasource.dart';
+import 'features/Admin/data/repository/notification_repository_impl.dart';
+import 'features/Admin/domain/repository/notification_repository.dart';
+import 'features/Admin/domain/usecases/get_notifications_usecase.dart';
+import 'features/Admin/domain/usecases/create_notification_usecase.dart';
+import 'features/Admin/domain/usecases/update_notification_usecase.dart';
+import 'features/Admin/domain/usecases/delete_notification_usecase.dart';
+import 'features/Admin/domain/usecases/upload_notification_image_usecase.dart';
+import 'features/Admin/presentation/bloc/notification_bloc.dart';
 
 final GetIt sl = GetIt.instance;
 
@@ -51,6 +61,7 @@ void setupLocator() {
   audio();
   lyrics();
   adminEvents();
+  adminNotifications();
 
   // Register NotificationsRemoteDataSource
   sl.registerLazySingleton<NotificationsRemoteDataSource>(
@@ -77,12 +88,12 @@ void books() async {
   sl.registerLazySingleton<Box<BookModel>>(() => booksBox);
 
   sl.registerFactory(() => BooksBloc(
-    fetchBooksUseCase: sl(),
-    fetchBookSummariesUseCase: sl(),
-    fetchBookDetailsByTitleUseCase: sl(),
-    booksBox: sl(),
-    connectivity: sl(),
-  ));
+        fetchBooksUseCase: sl(),
+        fetchBookSummariesUseCase: sl(),
+        fetchBookDetailsByTitleUseCase: sl(),
+        booksBox: sl(),
+        connectivity: sl(),
+      ));
 }
 
 void astottaras() async {
@@ -145,7 +156,8 @@ void lyrics() async {
 
 void adminEvents() {
   sl.registerLazySingleton<EventRemoteDataSource>(
-    () => EventRemoteDataSourceImpl(sl<FirebaseFirestore>(), sl<FirebaseStorage>()),
+    () => EventRemoteDataSourceImpl(
+        sl<FirebaseFirestore>(), sl<FirebaseStorage>()),
   );
   sl.registerLazySingleton<EventRepository>(
     () => EventRepositoryImpl(sl<EventRemoteDataSource>()),
@@ -154,10 +166,34 @@ void adminEvents() {
   sl.registerFactory(() => GetEventsUseCase(sl<EventRepository>()));
   sl.registerFactory(() => UpdateEventUseCase(sl<EventRepository>()));
   sl.registerFactory(() => DeleteEventUseCase(sl<EventRepository>()));
+  sl.registerFactory(() => UploadEventImageUseCase(sl<EventRepository>()));
   sl.registerFactory(() => EventBloc(
-    getEvents: sl<GetEventsUseCase>(),
-    createEvent: sl<CreateEventUseCase>(),
-    updateEvent: sl<UpdateEventUseCase>(),
-    deleteEvent: sl<DeleteEventUseCase>(),
+        getEvents: sl<GetEventsUseCase>(),
+        createEvent: sl<CreateEventUseCase>(),
+        updateEvent: sl<UpdateEventUseCase>(),
+        deleteEvent: sl<DeleteEventUseCase>(),
+        uploadEventImage: sl<UploadEventImageUseCase>(),
+      ));
+}
+
+void adminNotifications() {
+  sl.registerLazySingleton<NotificationRemoteDataSource>(
+    () => NotificationRemoteDataSourceImpl(
+      sl<FirebaseFirestore>(), sl<FirebaseStorage>()),
+  );
+  sl.registerLazySingleton<NotificationRepository>(
+    () => NotificationRepositoryImpl(sl<NotificationRemoteDataSource>()),
+  );
+  sl.registerFactory(() => GetNotificationsUseCase(sl<NotificationRepository>()));
+  sl.registerFactory(() => CreateNotificationUseCase(sl<NotificationRepository>()));
+  sl.registerFactory(() => UpdateNotificationUseCase(sl<NotificationRepository>()));
+  sl.registerFactory(() => DeleteNotificationUseCase(sl<NotificationRepository>()));
+  sl.registerFactory(() => UploadNotificationImageUseCase(sl<NotificationRepository>()));
+  sl.registerFactory(() => NotificationBloc(
+    getNotifications: sl<GetNotificationsUseCase>(),
+    createNotification: sl<CreateNotificationUseCase>(),
+    updateNotification: sl<UpdateNotificationUseCase>(),
+    deleteNotification: sl<DeleteNotificationUseCase>(),
+    uploadNotificationImage: sl<UploadNotificationImageUseCase>(),
   ));
 }

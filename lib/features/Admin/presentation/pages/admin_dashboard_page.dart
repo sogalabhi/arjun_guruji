@@ -5,6 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:arjun_guruji/features/Admin/domain/repository/event_repository.dart';
 import 'package:arjun_guruji/features/Admin/presentation/bloc/event_bloc.dart';
 import 'package:arjun_guruji/features/Admin/presentation/bloc/event_event.dart';
+import 'package:arjun_guruji/features/Admin/presentation/pages/admin_notifications_page.dart';
+import 'package:arjun_guruji/features/Admin/presentation/bloc/notification_bloc.dart';
+import 'package:arjun_guruji/features/Admin/presentation/bloc/notification_event.dart';
 import 'package:arjun_guruji/injection_container.dart';
 
 class AdminDashboard extends StatelessWidget {
@@ -50,6 +53,22 @@ class AdminDashboard extends StatelessWidget {
                         create: (_) => sl<EventBloc>()..add(LoadEvents()),
                         child: const AdminEventsPage(),
                       ),
+                    ),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.notifications),
+              label: const Text('Manage Notifications'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BlocProvider<NotificationBloc>(
+                      create: (_) => sl<NotificationBloc>()..add(LoadNotifications()),
+                      child: const AdminNotificationsPage(),
                     ),
                   ),
                 );

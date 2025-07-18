@@ -34,16 +34,14 @@ class EventModelAdapter extends TypeAdapter<EventModel> {
       galleryLinks: (fields[14] as List).cast<String>(),
       status: fields[15] as String,
       tags: (fields[19] as List?)?.cast<String>(),
-      rsvp: fields[16] as bool,
-      rsvpCount: fields[17] as int?,
-      isFeatured: fields[18] as bool,
+      isFeatured: fields[16] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, EventModel obj) {
     writer
-      ..writeByte(20)
+      ..writeByte(18)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -77,10 +75,6 @@ class EventModelAdapter extends TypeAdapter<EventModel> {
       ..writeByte(15)
       ..write(obj.status)
       ..writeByte(16)
-      ..write(obj.rsvp)
-      ..writeByte(17)
-      ..write(obj.rsvpCount)
-      ..writeByte(18)
       ..write(obj.isFeatured)
       ..writeByte(19)
       ..write(obj.tags);

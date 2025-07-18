@@ -19,21 +19,8 @@ class FeaturedEventCard extends StatelessWidget {
 
   String getFormattedDateRange() {
     if (event.eventType == "Recurring" && event.day != null && event.frequency == "weekly") {
-      // For recurring events, show the next occurrence
-      final nextDate = _getNextOccurrenceDate();
-      if (nextDate != null) {
-        final formattedDate = "${nextDate.day}/${nextDate.month}/${nextDate.year}";
-        final now = DateTime.now();
-        final today = DateTime(now.year, now.month, now.day);
-        if (nextDate.year == today.year && nextDate.month == today.month && nextDate.day == today.day) {
-          return "This ${event.day}: $formattedDate";
-        } else {
-          return "Next ${event.day}: $formattedDate";
-        }
-      }
+      return "Every "+event.day!;
     }
-    
-    // For non-recurring events, show the original date range
     final start = "${event.startDate.day}/${event.startDate.month}/${event.startDate.year}";
     final end = "${event.endDate.day}/${event.endDate.month}/${event.endDate.year}";
     return start == end ? start : "$start - $end";
@@ -142,7 +129,7 @@ class FeaturedEventCard extends StatelessWidget {
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
-                      event.place,
+                      event.venue,
                       style:
                           const TextStyle(fontSize: 14, color: Colors.black54),
                       overflow: TextOverflow.ellipsis,

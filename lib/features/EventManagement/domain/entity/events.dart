@@ -20,8 +20,6 @@ class EventEntity {
   String status; // Event status ("Upcoming", "Completed", "Cancelled", etc.)
   OrganizerInfoEntity? organizerInfo; // Organizer details for Non-Trust events
   List<String>? tags; // Event tags (Spiritual, Cultural, etc.)
-  bool rsvp; // Whether registration or RSVP is required
-  int? rsvpCount; // Count of people who have RSVPed
   final bool isFeatured;
   EventEntity({
     required this.id,
@@ -42,8 +40,6 @@ class EventEntity {
     required this.status,
     this.organizerInfo,
     this.tags,
-    this.rsvp = false,
-    this.rsvpCount,
     this.isFeatured = false,
   });
 }

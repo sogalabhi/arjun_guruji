@@ -18,6 +18,7 @@ class _CalendarPageState extends State<CalendarPage> {
   DateTime? _selectedDay;
   Map<DateTime, List<EventEntity>> _eventsMap = {};
   List<EventEntity> _selectedEvents = [];
+  String? _selectedCity;
 
   // Method to get color based on event type
   Color _getEventTypeColor(String eventType) {
@@ -128,6 +129,14 @@ class _CalendarPageState extends State<CalendarPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Get unique cities from events
+    final cities = widget.events.map((e) => e.city).toSet().toList()..sort();
+    final filteredEvents = _selectedCity == null || _selectedCity!.isEmpty
+        ? widget.events
+        : widget.events.where((e) => e.city == _selectedCity).toList();
+    // Rebuild events map with filtered events
+    _buildEventsMap(filteredEvents);
+
     return Scaffold(
       appBar: GradientAppBar(
         title: 'Calendar',
@@ -135,6 +144,45 @@ class _CalendarPageState extends State<CalendarPage> {
       body: GradientBackground(
         child: Column(
           children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              child: Row(
+                children: [
+                  const Icon(Icons.location_city, color: Colors.white70, size: 20),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withAlpha(20),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: DropdownButton<String>(
+                        value: _selectedCity,
+                        dropdownColor: const Color.fromARGB(209, 37, 15, 162), // Deep purple with opacity for a gradient-like effect
+                        iconEnabledColor: Colors.white,
+                        style: const TextStyle(color: Colors.white, fontSize: 16),
+                        underline: const SizedBox(),
+                        isExpanded: true,
+                        hint: const Text('All Cities', style: TextStyle(color: Colors.white70)),
+                        items: [
+                          DropdownMenuItem(value: null, child: Text('All Cities', style: TextStyle(color: Colors.white))),
+                          ...cities.map((city) => DropdownMenuItem(
+                                value: city,
+                                child: Text(city.isEmpty ? '(No City)' : city, style: TextStyle(color: Colors.white)),
+                              )),
+                        ],
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedCity = value;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             TableCalendar<EventEntity>(
               firstDay: DateTime.utc(2020, 1, 1),
               lastDay: DateTime.utc(2030, 12, 31),

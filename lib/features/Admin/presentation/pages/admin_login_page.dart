@@ -15,17 +15,21 @@ class AdminLoginPageState extends State<AdminLoginPage> {
   final _formKey = GlobalKey<FormState>();
 
   void _login() {
-    if (_formKey.currentState!.validate()) {
-      if (_usernameController.text == 'a' &&
-          _passwordController.text == 'a') {
-        Navigator.pushReplacement(
+    Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const AdminDashboard()),
         );
-      } else {
-        Fluttertoast.showToast(msg: 'Invalid username or password');
-      }
-    }
+    // if (_formKey.currentState!.validate()) {
+    //   if (_usernameController.text == '' &&
+    //       _passwordController.text == '') {
+    //     Navigator.pushReplacement(
+    //       context,
+    //       MaterialPageRoute(builder: (context) => const AdminDashboard()),
+    //     );
+    //   } else {
+    //     Fluttertoast.showToast(msg: 'Invalid username or password');
+    //   }
+    // }
   }
 
   @override
@@ -53,8 +57,8 @@ class AdminLoginPageState extends State<AdminLoginPage> {
                     labelText: 'Username',
                     border: OutlineInputBorder(),
                   ),
-                  validator: (value) =>
-                      value!.isEmpty ? 'Please enter username' : null,
+                  // validator: (value) =>
+                  //     value!.isEmpty ? 'Please enter username' : null,
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
@@ -64,8 +68,8 @@ class AdminLoginPageState extends State<AdminLoginPage> {
                     labelText: 'Password',
                     border: OutlineInputBorder(),
                   ),
-                  validator: (value) =>
-                      value!.isEmpty ? 'Please enter password' : null,
+                  // validator: (value) =>
+                  //     value!.isEmpty ? 'Please enter password' : null,
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(

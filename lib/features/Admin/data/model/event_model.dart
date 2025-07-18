@@ -10,7 +10,6 @@ class EventModel {
   final String eventType;
   final bool isFeatured;
   final String city;
-  final String place;
   final String status;
 
   EventModel({
@@ -22,10 +21,9 @@ class EventModel {
     required this.venue,
     required this.galleryLinks,
     required this.interestedCount,
-    this.eventType = "One-time",
-    this.isFeatured = false,
+    this.eventType = "Simple",
+    this.isFeatured = true,
     this.city = "",
-    this.place = "",
     this.status = "Upcoming",
   });
 
@@ -48,10 +46,9 @@ class EventModel {
       venue: map['venue'] as String? ?? '',
       galleryLinks: List<String>.from(map['galleryLinks'] ?? []),
       interestedCount: map['interestedCount'] ?? 0,
-      eventType: map['eventType'] as String? ?? 'One-time',
-      isFeatured: map['isFeatured'] ?? false,
+      eventType: map['eventType'] as String? ?? 'Simple',
+      isFeatured: map['isFeatured'] ?? true,
       city: map['city'] as String? ?? '',
-      place: map['place'] as String? ?? '',
       status: map['status'] as String? ?? 'Upcoming',
     );
   }
@@ -61,15 +58,14 @@ class EventModel {
       'id': id,
       'title': title,
       'description': description,
-      'startDate': startDate.toIso8601String(),
-      'endDate': endDate.toIso8601String(),
+      'startDate': startDate,
+      'endDate': endDate,
       'venue': venue,
       'galleryLinks': galleryLinks,
       'interestedCount': interestedCount,
       'eventType': eventType,
       'isFeatured': isFeatured,
       'city': city,
-      'place': place,
       'status': status,
     };
   }

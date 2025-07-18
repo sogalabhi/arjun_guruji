@@ -10,6 +10,7 @@ abstract class EventRemoteDataSource {
   Future<void> updateEvent(EventModel event, {File? image});
   Future<void> deleteEvent(String eventId);
   Future<String> uploadImage(File imageFile);
+  Future<String> uploadImageToEventFolder(File imageFile, String eventName);
 }
 
 class EventRemoteDataSourceImpl implements EventRemoteDataSource {
@@ -31,12 +32,13 @@ class EventRemoteDataSourceImpl implements EventRemoteDataSource {
       final url = await uploadImage(image);
       galleryLinks.add(url);
     }
-    final docRef = await firestore.collection('events').add({
+    final docRef = firestore.collection('events').doc(event.title);
+    await docRef.set({
       ...event.toMap(),
       'galleryLinks': galleryLinks,
     });
     final doc = await docRef.get();
-    return EventModel.fromMap(doc.data()!..['id'] = doc.id);
+    return EventModel.fromMap(doc.data()!..['id'] = docRef.id);
   }
 
   @override
@@ -46,7 +48,7 @@ class EventRemoteDataSourceImpl implements EventRemoteDataSource {
       final url = await uploadImage(image);
       galleryLinks.add(url);
     }
-    await firestore.collection('events').doc(event.id).update({
+    await firestore.collection('events').doc(event.title).update({
       ...event.toMap(),
       'galleryLinks': galleryLinks,
     });
@@ -61,6 +63,14 @@ class EventRemoteDataSourceImpl implements EventRemoteDataSource {
   Future<String> uploadImage(File imageFile) async {
     final fileName = DateTime.now().millisecondsSinceEpoch.toString();
     final ref = storage.ref().child('events/$fileName');
+    final uploadTask = await ref.putFile(imageFile);
+    return await uploadTask.ref.getDownloadURL();
+  }
+
+  @override
+  Future<String> uploadImageToEventFolder(File imageFile, String eventName) async {
+    final fileName = DateTime.now().millisecondsSinceEpoch.toString();
+    final ref = storage.ref().child('events/$eventName/$fileName');
     final uploadTask = await ref.putFile(imageFile);
     return await uploadTask.ref.getDownloadURL();
   }

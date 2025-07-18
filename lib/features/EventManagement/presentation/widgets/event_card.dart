@@ -56,7 +56,9 @@ class EventCard extends StatelessWidget {
                     ),
                     SizedBox(height: 10),
                     Text(
-                      '${event.startDate.toLocal()} - ${event.endDate.toLocal()}',
+                      event.eventType == "Recurring" && event.day != null && event.frequency == "weekly"
+                        ? "Every ${event.day!}"
+                        : '${event.startDate.toLocal()} - ${event.endDate.toLocal()}',
                       style: TextStyle(color: Colors.grey[800]),
                     ),
                     SizedBox(height: 5),

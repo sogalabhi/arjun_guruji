@@ -11,16 +11,18 @@ class EventRepositoryImpl implements EventRepository {
   @override
   Future<List<Event>> getAllEvents() async {
     final models = await remoteDataSource.getAllEvents();
-    return models.map((m) => Event(
-      id: m.id,
-      title: m.title,
-      description: m.description,
-      startDate: m.startDate,
-      endDate: m.endDate,
-      venue: m.venue,
-      galleryLinks: m.galleryLinks,
-      interestedCount: m.interestedCount,
-    )).toList();
+    return models
+        .map((m) => Event(
+              id: m.id,
+              title: m.title,
+              description: m.description,
+              startDate: m.startDate,
+              endDate: m.endDate,
+              venue: m.venue,
+              galleryLinks: m.galleryLinks,
+              interestedCount: m.interestedCount,
+            ))
+        .toList();
   }
 
   @override
@@ -68,7 +70,15 @@ class EventRepositoryImpl implements EventRepository {
     await remoteDataSource.deleteEvent(eventId);
   }
 
+  @override
   Future<String> uploadImage(File imageFile) async {
     return await remoteDataSource.uploadImage(imageFile);
   }
-} 
+
+  @override
+  Future<String> uploadImageToEventFolder(
+      File imageFile, String eventName) async {
+    return await remoteDataSource.uploadImageToEventFolder(
+        imageFile, eventName);
+  }
+}
