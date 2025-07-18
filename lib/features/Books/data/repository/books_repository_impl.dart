@@ -8,7 +8,7 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:arjun_guruji/core/services/connectivity_service.dart';
 import 'package:path_provider/path_provider.dart';
-import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 Future<Uint8List?> downloadBytes(String url) async {
   try {
@@ -46,6 +46,16 @@ class BooksRepositoryImpl implements BookRepository {
         }
         return Right(cachedBooks.map((bookModel) => BookModel.toEntity(bookModel)).toList());
       }
+      // Check local vs remote count
+      final localCount = box.length;
+      final firestore = FirebaseFirestore.instance;
+      final remoteCount = (await firestore.collection('Books').get()).docs.length;
+      if (localCount == remoteCount && localCount > 0) {
+        print('Books: Local and remote counts match, loading from cache.');
+        final cachedBooks = box.values.toList();
+        return Right(cachedBooks.map((bookModel) => BookModel.toEntity(bookModel)).toList());
+      }
+      print('Books: Syncing books from remote...');
       final books = await remoteDataSource.fetchAllBooks();
       if (books.isEmpty) {
         return const Left('Books Are Empty');
@@ -56,6 +66,12 @@ class BooksRepositoryImpl implements BookRepository {
         final cached = box.get(book.title);
         String? pdfFilePath = cached?.pdfFilePath; // Keep existing if present
         Uint8List? imageBytes = cached?.imageBytes;
+        // Download imageBytes synchronously if not present
+        if (imageBytes == null || imageBytes.isEmpty) {
+          if (book.imageUrl.isNotEmpty) {
+            imageBytes = await downloadBytes(book.imageUrl);
+          }
+        }
         final updatedBook = BookModel(
           title: book.title,
           imageUrl: book.imageUrl,
@@ -68,27 +84,6 @@ class BooksRepositoryImpl implements BookRepository {
         await box.put(book.title, updatedBook);
         updatedBooks.add(updatedBook);
       }
-      // Start background cache update for missing images
-      Future.microtask(() async {
-        for (final book in books) {
-          final cached = box.get(book.title);
-          if ((cached?.imageBytes == null || cached!.imageBytes!.isEmpty) && book.imageUrl.isNotEmpty) {
-            final imageBytes = await downloadBytes(book.imageUrl);
-            if (imageBytes != null) {
-              final updatedBook = BookModel(
-                title: book.title,
-                imageUrl: book.imageUrl,
-                bookType: book.bookType,
-                content: book.content,
-                chapters: book.chapters,
-                pdfFilePath: cached?.pdfFilePath,
-                imageBytes: imageBytes,
-              );
-              await box.put(book.title, updatedBook);
-            }
-          }
-        }
-      });
       return Right(updatedBooks.map((bookModel) => BookModel.toEntity(bookModel)).toList());
     } catch (e) {
       return left(

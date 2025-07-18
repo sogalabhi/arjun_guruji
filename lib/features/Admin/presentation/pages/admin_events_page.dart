@@ -101,7 +101,6 @@ class _EventModalState extends State<EventModal> {
   DateTime? _startDate;
   DateTime? _endDate;
   List<String> _galleryLinks = [];
-  File? _selectedImage;
   bool _uploading = false;
   String _eventType = 'One-time';
   bool _isFeatured = false;

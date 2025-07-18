@@ -9,6 +9,7 @@ import '../../data/repository/notifications_repository_impl.dart';
 import '../../data/datasource/notifications_remote_ds.dart';
 import 'package:arjun_guruji/core/widgets/gradient_background.dart';
 import 'package:arjun_guruji/core/widgets/gradient_app_bar.dart';
+import 'package:shimmer/shimmer.dart';
 
 class NotificationsPage extends StatelessWidget {
   const NotificationsPage({super.key});
@@ -31,7 +32,21 @@ class NotificationsPage extends StatelessWidget {
           child: BlocBuilder<NotificationBloc, NotificationState>(
             builder: (context, state) {
               if (state is NotificationLoading) {
-                return const Center(child: CircularProgressIndicator());
+                return Center(
+                  child: Shimmer.fromColors(
+                    baseColor: Colors.grey[300]!,
+                    highlightColor: Colors.grey[100]!,
+                    child: Container(
+                      width: double.infinity,
+                      height: 80,
+                      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                );
               } else if (state is NotificationLoaded) {
                 final notifications = state.notifications;
                 if (notifications.isEmpty) {

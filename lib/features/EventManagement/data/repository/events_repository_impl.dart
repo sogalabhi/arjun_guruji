@@ -5,6 +5,7 @@ import 'package:arjun_guruji/features/EventManagement/domain/repository/events_r
 import 'package:dartz/dartz.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:hive/hive.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class EventsRepositoryImpl implements EventsRepository {
   final EventRemoteDataSource remoteDataSource;
@@ -17,7 +18,16 @@ class EventsRepositoryImpl implements EventsRepository {
       final connectivityResult = await Connectivity().checkConnectivity();
       final eventsBox = await Hive.openBox<EventModel>('eventsBox');
       if (connectivityResult != ConnectivityResult.none) {
-        // Online: fetch from Firestore and update Hive
+        // Online: check local vs remote count
+        final localCount = eventsBox.length;
+        final firestore = FirebaseFirestore.instance;
+        final remoteCount = (await firestore.collection('Events').get()).docs.length;
+        if (localCount == remoteCount && localCount > 0) {
+          print('Events: Local and remote counts match, loading from cache.');
+          final events = eventsBox.values.toList();
+          return Right(events);
+        }
+        print('Events: Syncing from remote...');
         final events = await remoteDataSource.getAllEvents();
         await eventsBox.clear();
         await eventsBox.addAll(events);

@@ -14,9 +14,6 @@ import 'package:just_audio_background/just_audio_background.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:arjun_guruji/features/EventManagement/data/model/events_model.dart';
 import 'package:arjun_guruji/features/EventManagement/data/model/activities_model.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'dart:io';
-import 'package:flutter/services.dart' show rootBundle;
 
 // Initialize FlutterLocalNotificationsPlugin
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -165,8 +162,17 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

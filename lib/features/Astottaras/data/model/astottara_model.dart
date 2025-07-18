@@ -1,5 +1,6 @@
 import 'package:arjun_guruji/features/Astottaras/domain/entity/astottara.dart';
 import 'package:hive/hive.dart';
+import 'dart:typed_data';
 
 part 'astottara_model.g.dart'; // Generated file
 
@@ -14,10 +15,14 @@ class AstottaraModel extends HiveObject {
   @HiveField(2)
   final String? content;
 
+  @HiveField(3)
+  final Uint8List? imageBytes;
+
   AstottaraModel({
     required this.title,
     required this.imageUrl,
     this.content,
+    this.imageBytes,
   });
 
   factory AstottaraModel.fromJson(Map<String, dynamic> json) {
@@ -25,6 +30,7 @@ class AstottaraModel extends HiveObject {
       title: json['title'],
       imageUrl: json['imageUrl'],
       content: json['content'],
+      imageBytes: json['imageBytes'],
     );
   }
 
@@ -33,6 +39,7 @@ class AstottaraModel extends HiveObject {
       'title': title,
       'imageUrl': imageUrl,
       'content': content,
+      'imageBytes': imageBytes,
     };
   }
 
@@ -41,6 +48,7 @@ class AstottaraModel extends HiveObject {
       title: astottara.title,
       imageUrl: astottara.imageUrl,
       content: astottara.content,
+      imageBytes: astottara.imageBytes,
     );
   }
 
@@ -49,6 +57,7 @@ class AstottaraModel extends HiveObject {
       title: astottaraModel.title,
       imageUrl: astottaraModel.imageUrl,
       content: astottaraModel.content,
+      imageBytes: astottaraModel.imageBytes,
     );
   }
 }

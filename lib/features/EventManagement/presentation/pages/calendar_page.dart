@@ -211,55 +211,57 @@ class _CalendarPageState extends State<CalendarPage> {
                 ),
               ),
             ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: _selectedEvents.length,
-                itemBuilder: (context, index) {
-                  final event = _selectedEvents[index];
-                  return Card(
-                    margin:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: ListTile(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                EventDetailsPage(event: event),
-                          ),
-                        );
-                      },
-                      leading: Container(
-                        width: 12,
-                        height: 12,
-                        decoration: BoxDecoration(
-                          color: _getEventTypeColor(event.eventType),
-                          shape: BoxShape.circle,
-                        ),
+            if (_selectedEvents.isNotEmpty)
+              Expanded(
+                child: ListView.builder(
+                  itemCount: _selectedEvents.length,
+                  itemBuilder: (context, index) {
+                    final event = _selectedEvents[index];
+                    return Card(
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      title: Text(event.title),
-                      subtitle: Text(event.description),
-                      // trailing: Chip(
-                      //   backgroundColor: _getEventTypeColor(event.eventType)
-                      //       .withOpacity(0.2),
-                      //   label: Text(
-                      //     event.eventType,
-                      //     style: TextStyle(
-                      //       color: _getEventTypeColor(event.eventType),
-                      //       fontSize: 12,
-                      //     ),
-                      //   ),
-                      // ),
-                    ),
-                  );
-                },
+                      child: ListTile(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  EventDetailsPage(event: event),
+                            ),
+                          );
+                        },
+                        leading: Container(
+                          width: 12,
+                          height: 12,
+                          decoration: BoxDecoration(
+                            color: _getEventTypeColor(event.eventType),
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        title: Text(event.title),
+                        subtitle: Text(event.description),
+                        // trailing: Chip(
+                        //   backgroundColor: _getEventTypeColor(event.eventType)
+                        //       .withOpacity(0.2),
+                        //   label: Text(
+                        //     event.eventType,
+                        //     style: TextStyle(
+                        //       color: _getEventTypeColor(event.eventType),
+                        //       fontSize: 12,
+                        //     ),
+                        //   ),
+                        // ),
+                      ),
+                    );
+                  },
+                ),
               ),
-            ),
+            
             const SizedBox(height: 16),
-           ],
+          ],
         ),
       ),
     );

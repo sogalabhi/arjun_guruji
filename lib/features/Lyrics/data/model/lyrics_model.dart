@@ -1,5 +1,6 @@
 import 'package:arjun_guruji/features/Lyrics/domain/entity/lyrics.dart';
 import 'package:hive/hive.dart';
+import 'dart:typed_data';
 
 part 'lyrics_model.g.dart'; // Generated file
 
@@ -17,11 +18,19 @@ class LyricsModel extends HiveObject  {
   @HiveField(3)
   final String? content;
 
+  @HiveField(4)
+  final String? imageUrl;
+
+  @HiveField(5)
+  final Uint8List? imageBytes;
+
   LyricsModel({
     required this.docId,
     required this.title,
     required this.category,
     this.content,
+    this.imageUrl,
+    this.imageBytes,
   });
 
   factory LyricsModel.fromJson(Map<String, dynamic> json) {
@@ -30,6 +39,8 @@ class LyricsModel extends HiveObject  {
       title: json['title'],
       category: json['category'],
       content: json['content'],
+      imageUrl: json['imageUrl'],
+      imageBytes: json['imageBytes'],
     );
   }
 
@@ -39,6 +50,8 @@ class LyricsModel extends HiveObject  {
       'title': title,
       'category': category,
       'content': content,
+      'imageUrl': imageUrl,
+      'imageBytes': imageBytes,
     };
   }
 
@@ -48,6 +61,8 @@ class LyricsModel extends HiveObject  {
       title: lyrics.title,
       category: lyrics.category,
       content: lyrics.content,
+      imageUrl: lyrics.imageUrl,
+      imageBytes: lyrics.imageBytes,
     );
   }
 
@@ -57,6 +72,8 @@ class LyricsModel extends HiveObject  {
       title: lyricsModel.title,
       category: lyricsModel.category,
       content: lyricsModel.content,
+      imageUrl: lyricsModel.imageUrl,
+      imageBytes: lyricsModel.imageBytes,
     );
   }
 }

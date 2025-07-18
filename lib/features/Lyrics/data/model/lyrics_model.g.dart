@@ -21,13 +21,15 @@ class LyricsModelAdapter extends TypeAdapter<LyricsModel> {
       title: fields[1] as String,
       category: fields[2] as String,
       content: fields[3] as String?,
+      imageUrl: fields[4] as String?,
+      imageBytes: fields[5] as Uint8List?,
     );
   }
 
   @override
   void write(BinaryWriter writer, LyricsModel obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.docId)
       ..writeByte(1)
@@ -35,7 +37,11 @@ class LyricsModelAdapter extends TypeAdapter<LyricsModel> {
       ..writeByte(2)
       ..write(obj.category)
       ..writeByte(3)
-      ..write(obj.content);
+      ..write(obj.content)
+      ..writeByte(4)
+      ..write(obj.imageUrl)
+      ..writeByte(5)
+      ..write(obj.imageBytes);
   }
 
   @override

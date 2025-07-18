@@ -23,41 +23,13 @@ class ImageGridItem extends StatelessWidget {
     Widget imageWidget;
     // Try to use cached imageBytes, fallback to network if fails
     if (imageBytes != null && imageBytes.isNotEmpty) {
-      imageWidget = Image.memory(
-        imageBytes,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
-          // If cached image fails, fallback to network
-          return Image.network(
-            imageUrl,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) {
-              return Container(
-                color: Colors.grey[300],
-                child: const Icon(
-                  Icons.error,
-                  color: Colors.red,
-                  size: 50,
-                ),
-              );
-            },
-          );
-        },
+      imageWidget = _ErrorHandledImage(
+        imageBytes: imageBytes,
+        imageUrl: imageUrl,
       );
     } else {
-      imageWidget = Image.network(
-        imageUrl,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
-          return Container(
-            color: Colors.grey[300],
-            child: const Icon(
-              Icons.error,
-              color: Colors.red,
-              size: 50,
-            ),
-          );
-        },
+      imageWidget = _ErrorHandledImage(
+        imageUrl: imageUrl,
       );
     }
     return InkWell(
@@ -111,6 +83,62 @@ class ImageGridItem extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _ErrorHandledImage extends StatefulWidget {
+  final Uint8List? imageBytes;
+  final String imageUrl;
+  const _ErrorHandledImage({this.imageBytes, required this.imageUrl});
+
+  @override
+  State<_ErrorHandledImage> createState() => _ErrorHandledImageState();
+}
+
+class _ErrorHandledImageState extends State<_ErrorHandledImage> {
+  bool _memoryFailed = false;
+  bool _networkFailed = false;
+  int _retryCount = 0;
+
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.imageBytes != null && widget.imageBytes!.isNotEmpty && !_memoryFailed) {
+      return Image.memory(
+        widget.imageBytes!,
+        fit: BoxFit.cover,
+        key: ValueKey('memory_${_retryCount}'),
+        errorBuilder: (context, error, stackTrace) {
+          setState(() => _memoryFailed = true);
+          return _buildNetworkOrError();
+        },
+      );
+    } else {
+      return _buildNetworkOrError();
+    }
+  }
+
+  Widget _buildNetworkOrError() {
+    if (!_networkFailed) {
+      return Image.network(
+        widget.imageUrl,
+        fit: BoxFit.cover,
+        key: ValueKey('network_${_retryCount}'),
+        errorBuilder: (context, error, stackTrace) {
+          setState(() => _networkFailed = true);
+          return _buildErrorWidget();
+        },
+      );
+    } else {
+      return _buildErrorWidget();
+    }
+  }
+
+  Widget _buildErrorWidget() {
+    return Image.asset(
+      'assets/17.jpg',
+      fit: BoxFit.cover,
     );
   }
 }

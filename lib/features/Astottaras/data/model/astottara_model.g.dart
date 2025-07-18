@@ -20,19 +20,22 @@ class AstottaraModelAdapter extends TypeAdapter<AstottaraModel> {
       title: fields[0] as String,
       imageUrl: fields[1] as String,
       content: fields[2] as String?,
+      imageBytes: fields[3] as Uint8List?,
     );
   }
 
   @override
   void write(BinaryWriter writer, AstottaraModel obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.title)
       ..writeByte(1)
       ..write(obj.imageUrl)
       ..writeByte(2)
-      ..write(obj.content);
+      ..write(obj.content)
+      ..writeByte(3)
+      ..write(obj.imageBytes);
   }
 
   @override

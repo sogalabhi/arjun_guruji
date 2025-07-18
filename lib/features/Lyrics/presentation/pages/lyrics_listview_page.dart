@@ -8,6 +8,7 @@ import 'package:arjun_guruji/injection_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:shimmer/shimmer.dart';
 
 class LyricsListPage extends StatefulWidget {
   final String category;
@@ -23,14 +24,14 @@ class LyricsListPageState extends State<LyricsListPage> {
 
   String _getImageForCategory(String category) {
     switch (category.toLowerCase()) {
-      case 'arti':
-        return 'https://firebasestorage.googleapis.com/v0/b/arjun-guruji-app.appspot.com/o/Gallery%2Fimg2.jpg?alt=media&token=c3675c3f-3e1c-43ef-b33f-504edf8b8f55';
-      case 'daily bhajans':
+      case 'ನಿತ್ಯ ಭಜನೆಗಳು':
         return 'https://firebasestorage.googleapis.com/v0/b/arjun-guruji-app.appspot.com/o/Gallery%2F12.jpg?alt=media&token=e303f0bc-9117-49ba-ac8f-46cc6f7ab17e';
-      case 'others':
+      case 'ಇತರೆ':
         return 'https://firebasestorage.googleapis.com/v0/b/arjun-guruji-app.appspot.com/o/Gallery%2F17.jpg?alt=media&token=9484a469-da31-4ab8-be68-7a1e02abd384';
+      case 'ಆರತಿ':
+        return 'https://firebasestorage.googleapis.com/v0/b/arjun-guruji-app.appspot.com/o/Gallery%2Faarti.png?alt=media&token=3b5d2065-f4a2-40cd-8456-c560a86b474f';
       default:
-        return 'https://firebasestorage.googleapis.com/v0/b/arjun-guruji-app.appspot.com/o/Gallery%2Fimg2.jpg?alt=media&token=c3675c3f-3e1c-43ef-b33f-504edf8b8f55';
+        return 'https://firebasestorage.googleapis.com/v0/b/arjun-guruji-app.appspot.com/o/Gallery%2Faarti.png?alt=media&token=3b5d2065-f4a2-40cd-8456-c560a86b474f';
     }
   }
 
@@ -76,9 +77,19 @@ class LyricsListPageState extends State<LyricsListPage> {
                   child: BlocBuilder<LyricsBloc, LyricsState>(
                     builder: (context, state) {
                       if (state is Loading) {
-                        return const Center(
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
+                        return Center(
+                          child: Shimmer.fromColors(
+                            baseColor: Colors.grey[300]!,
+                            highlightColor: Colors.grey[100]!,
+                            child: Container(
+                              width: double.infinity,
+                              height: 60,
+                              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
                           ),
                         );
                       } else if (state is LyricsLoaded) {

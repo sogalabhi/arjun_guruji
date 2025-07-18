@@ -7,6 +7,7 @@ import 'package:just_audio_background/just_audio_background.dart';
 import 'package:arjun_guruji/features/AudioPlayer/domain/entity/audio.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:arjun_guruji/core/widgets/gradient_app_bar.dart';
+import 'dart:async';
 
 class AudioPlayerPage extends StatefulWidget {
   final AudioEntity audio;
@@ -39,6 +40,10 @@ class AudioPlayerPageState extends State<AudioPlayerPage>
   // Loop and Shuffle States
   LoopMode _loopMode = LoopMode.off;
   bool _isShuffleEnabled = false;
+
+  late StreamSubscription<Duration> _positionSub;
+  late StreamSubscription<Duration?> _durationSub;
+  late StreamSubscription<PlayerState> _playerStateSub;
 
   @override
   void initState() {
@@ -74,7 +79,8 @@ class AudioPlayerPageState extends State<AudioPlayerPage>
       });
 
       // Listen to position updates
-      _audioPlayer.positionStream.listen((position) {
+      _positionSub = _audioPlayer.positionStream.listen((position) {
+        if (!mounted) return;
         setState(() {
           _sliderValue = position.inMilliseconds.toDouble();
           // Clamp the slider value to the maximum duration
@@ -85,14 +91,16 @@ class AudioPlayerPageState extends State<AudioPlayerPage>
       });
 
       // Listen to duration updates
-      _audioPlayer.durationStream.listen((duration) {
+      _durationSub = _audioPlayer.durationStream.listen((duration) {
+        if (!mounted) return;
         setState(() {
           _maxSliderValue = duration?.inMilliseconds.toDouble() ?? 0.0;
         });
       });
 
       // Listen to playback state updates
-      _audioPlayer.playerStateStream.listen((playerState) {
+      _playerStateSub = _audioPlayer.playerStateStream.listen((playerState) {
+        if (!mounted) return;
         setState(() {
           _isPlaying = playerState.playing;
           if (_isPlaying) {
@@ -112,6 +120,7 @@ class AudioPlayerPageState extends State<AudioPlayerPage>
     } catch (e) {
       print("Error initializing audio player: $e");
     } finally {
+      if (!mounted) return;
       setState(() {
         _isLoading = false;
       });
@@ -134,6 +143,9 @@ class AudioPlayerPageState extends State<AudioPlayerPage>
 
   @override
   void dispose() {
+    _positionSub.cancel();
+    _durationSub.cancel();
+    _playerStateSub.cancel();
     _audioPlayer.dispose();
     _animationController.dispose();
     super.dispose();

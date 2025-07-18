@@ -68,26 +68,45 @@ class ContentViewPageState extends State<ContentViewPage> {
               },
             ),
             Expanded(
-              child: SingleChildScrollView(
-                controller: _scrollController,
-                child: Html(
-                  data: _searchQuery.isEmpty
-                      ? widget.content
-                      : widget.content.replaceAll(
-                          RegExp(_searchQuery, caseSensitive: false),
-                          '<mark>$_searchQuery</mark>'),
-                  style: {
-                    "body": Style(
-                      fontSize: FontSize(_fontSize),
-                      color: _isDarkMode ? Colors.white : Colors.black,
+              child: widget.content.isEmpty
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.error, color: Colors.red, size: 40),
+                          const SizedBox(height: 8),
+                          const Text(
+                            'Failed to load content',
+                            style: TextStyle(color: Colors.red, fontSize: 16),
+                          ),
+                          const SizedBox(height: 8),
+                          ElevatedButton(
+                            onPressed: () => setState(() {}),
+                            child: const Text('Retry'),
+                          ),
+                        ],
+                      ),
+                    )
+                  : SingleChildScrollView(
+                      controller: _scrollController,
+                      child: Html(
+                        data: _searchQuery.isEmpty
+                            ? widget.content
+                            : widget.content.replaceAll(
+                                RegExp(_searchQuery, caseSensitive: false),
+                                '<mark>$_searchQuery</mark>'),
+                        style: {
+                          "body": Style(
+                            fontSize: FontSize(_fontSize),
+                            color: _isDarkMode ? Colors.white : Colors.black,
+                          ),
+                          "mark": Style(
+                            backgroundColor: Colors.yellow,
+                            color: _isDarkMode ? Colors.black : Colors.black,
+                          ),
+                        },
+                      ),
                     ),
-                    "mark": Style(
-                      backgroundColor: Colors.yellow,
-                      color: _isDarkMode ? Colors.black : Colors.black,
-                    ),
-                  },
-                ),
-              ),
             ),
           ],
         ),

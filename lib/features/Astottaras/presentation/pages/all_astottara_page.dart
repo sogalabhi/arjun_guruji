@@ -86,6 +86,7 @@ class AllAstottaraPageState extends State<AllAstottaraPage> {
                         return ImageGridView(
                           items: filteredAstottara,
                           getImageUrl: (astottara) => astottara.imageUrl,
+                          getImageBytes: (astottara) => astottara.imageBytes,
                           getTitle: (astottara) => astottara.title,
                           getOnTap: (astottara) {
                             if (astottara.content != null) {

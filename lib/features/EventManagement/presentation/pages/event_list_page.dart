@@ -12,22 +12,7 @@ import 'package:arjun_guruji/core/widgets/gradient_app_bar.dart';
 class EventListPage extends StatelessWidget {
   const EventListPage({super.key});
 
-  // Helper method to check if a recurring event has future occurrences
-  bool _hasFutureOccurrence(EventEntity event, DateTime today) {
-    if (event.eventType != "Recurring" || event.day == null || event.frequency != "weekly") {
-      return false;
-    }
-    
-    // Check if the event end date is in the future
-    if (event.endDate.isBefore(today)) {
-      return false;
-    }
-    
-    // Check if there's at least one future occurrence
-    final nextDate = _getNextOccurrenceDate(event, today);
-    return nextDate != null;
-  }
-
+  
   // Helper method to get the next occurrence date for an event
   DateTime _getNextOccurrenceDate(EventEntity event, DateTime today) {
     if (event.eventType == "Recurring" && event.day != null && event.frequency == "weekly") {
@@ -95,17 +80,7 @@ class EventListPage extends StatelessWidget {
     }
   }
 
-  // Helper method to check if a recurring event occurs today
-  bool _isOccurrenceToday(EventEntity event, DateTime today) {
-    if (event.eventType == "Recurring" && event.day != null && event.frequency == "weekly") {
-      final eventStart = DateTime(event.startDate.year, event.startDate.month, event.startDate.day);
-      final eventEnd = DateTime(event.endDate.year, event.endDate.month, event.endDate.day);
-      if (today.isBefore(eventStart) || today.isAfter(eventEnd)) return false;
-      final weekdayString = _weekdayToString(today.weekday).toLowerCase();
-      return weekdayString == event.day!.toLowerCase();
-    }
-    return false;
-  }
+ 
 
   // Helper method to get the next occurrence date for a recurring event (including today)
   DateTime? _getNextOrTodayOccurrence(EventEntity event, DateTime today) {
@@ -200,6 +175,54 @@ class EventListPage extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // Trust Calendar Card
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          child: Card(
+                            color: Colors.amber[50],
+                            elevation: 2,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Expanded(
+                                    child: Text(
+                                      'View the full Trust Calendar for all events and important dates.',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  ElevatedButton.icon(
+                                    icon: const Icon(Icons.calendar_month, color: Colors.black),
+                                    label: const Text('Trust Calendar'),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.amber[700],
+                                      foregroundColor: Colors.black,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => CalendarPage(events: events),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
                         const Padding(
                           padding:
                               EdgeInsets.symmetric(horizontal: 16, vertical: 8),
