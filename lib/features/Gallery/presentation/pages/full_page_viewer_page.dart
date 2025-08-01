@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class FullScreenImageViewer extends StatefulWidget {
   final List<String> imageUrls;
@@ -65,23 +63,15 @@ class FullScreenImageViewerState extends State<FullScreenImageViewer> {
               right: 20,
               child: Column(
                 children: [
-                  FloatingActionButton(
-                    heroTag: "download_full",
-                    onPressed: () =>
-                        _saveImage(widget.imageUrls[widget.initialIndex]),
-                    backgroundColor:
-                        Colors.white.withAlpha((0.8 * 255).toInt()),
-                    child: const Icon(Icons.download, color: Colors.black),
-                  ),
-                  const SizedBox(height: 10),
-                  FloatingActionButton(
-                    heroTag: "share_full",
-                    onPressed: () =>
-                        _shareImage(widget.imageUrls[widget.initialIndex]),
-                    backgroundColor:
-                        Colors.white.withAlpha((0.8 * 255).toInt()),
-                    child: const Icon(Icons.share, color: Colors.black),
-                  ),
+                  // Removed download button
+                  // FloatingActionButton(
+                  //   heroTag: "download_full",
+                  //   onPressed: () =>
+                  //       _saveImage(widget.imageUrls[widget.initialIndex]),
+                  //   backgroundColor:
+                  //       Colors.white.withAlpha((0.8 * 255).toInt()),
+                  //   child: const Icon(Icons.download, color: Colors.black),
+                  // ),
                 ],
               ),
             ),
@@ -90,32 +80,21 @@ class FullScreenImageViewerState extends State<FullScreenImageViewer> {
     );
   }
 
-  /// 📥 Save Image to Gallery
-  Future<void> _saveImage(String url) async {
-    try {
-      print("url: $url");
-      // final response = await http.get(Uri.parse(url));
-      // final Uint8List bytes = response.bodyBytes;
-      // final result =
-      // await ImageGallerySaver.saveImage(bytes, name: "downloaded_image");
-
-      // if (result['isSuccess']) {
-      //   Fluttertoast.showToast(msg: "✅ Image saved to gallery!");
-      // } else {
-      //   Fluttertoast.showToast(msg: "❌ Failed to save image!");
-      // }
-    } catch (e) {
-      Fluttertoast.showToast(msg: "⚠ Error: $e");
-    }
-  }
-
-  /// 📤 Share Image via Apps
-  Future<void> _shareImage(String url) async {
-    try {
-      final uri = Uri.parse(url);
-      await Share.shareUri(uri);
-    } catch (e) {
-      Fluttertoast.showToast(msg: "❌ Failed to share image!");
-    }
-  }
+  // Removed save image method
+  // Future<void> _saveImage(String url) async {
+  //   try {
+  //     print("url: $url");
+  //     // final response = await http.get(Uri.parse(url));
+  //     // final Uint8List bytes = response.bodyBytes;
+  //     // final result =
+  //     // await ImageGallerySaver.saveImage(bytes, name: "downloaded_image");
+  //     // if (result['isSuccess']) {
+  //     //   Fluttertoast.showToast(msg: "✅ Image saved to gallery!");
+  //     // } else {
+  //     //   Fluttertoast.showToast(msg: "❌ Failed to save image!");
+  //     // }
+  //   } catch (e) {
+  //     Fluttertoast.showToast(msg: "⚠ Error: $e");
+  //   }
+  // }
 }

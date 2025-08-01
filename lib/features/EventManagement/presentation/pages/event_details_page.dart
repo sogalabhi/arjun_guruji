@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:arjun_guruji/features/EventManagement/presentation/bloc/event_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:arjun_guruji/core/widgets/gradient_app_bar.dart';
+import 'package:arjun_guruji/features/Gallery/presentation/pages/full_page_viewer_page.dart';
 
 class EventDetailsPage extends StatelessWidget {
   final EventEntity event;
@@ -91,10 +92,45 @@ class _EventDetailsViewState extends State<_EventDetailsView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (widget.event.galleryLinks.isNotEmpty)
-                SizedBox(
-                  width: double.infinity,
-                  height: 250,
-                  child: ImageWithShimmer(url: widget.event.galleryLinks.first),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FullScreenImageViewer(
+                          imageUrls: widget.event.galleryLinks,
+                          initialIndex: 0,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Stack(
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        height: 250,
+                        child: ImageWithShimmer(
+                            url: widget.event.galleryLinks.first),
+                      ),
+                      // Subtle overlay to indicate tappable
+                      Positioned(
+                        top: 16,
+                        right: 16,
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.6),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Icon(
+                            Icons.fullscreen,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 )
               else
                 Container(
@@ -168,9 +204,12 @@ class _EventDetailsViewState extends State<_EventDetailsView> {
                         size: 20, color: Colors.black54),
                     const SizedBox(width: 8),
                     Text(
-                      widget.event.eventType == "Recurring" && widget.event.day != null && widget.event.frequency == "weekly"
-                        ? "Every ${widget.event.day!}"
-                        : _getFormattedDateRange(widget.event.startDate, widget.event.endDate),
+                      widget.event.eventType == "Recurring" &&
+                              widget.event.day != null &&
+                              widget.event.frequency == "weekly"
+                          ? "Every ${widget.event.day!}"
+                          : _getFormattedDateRange(
+                              widget.event.startDate, widget.event.endDate),
                       style:
                           const TextStyle(fontSize: 16, color: Colors.black54),
                     ),
@@ -216,21 +255,60 @@ class _EventDetailsViewState extends State<_EventDetailsView> {
                         child: ListView.separated(
                           scrollDirection: Axis.horizontal,
                           itemCount: widget.event.galleryLinks.length - 1,
-                          separatorBuilder: (context, index) => const SizedBox(width: 8),
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(width: 8),
                           itemBuilder: (context, index) {
                             final imgUrl = widget.event.galleryLinks[index + 1];
                             return ClipRRect(
                               borderRadius: BorderRadius.circular(8),
-                              child: Image.network(
-                                imgUrl,
-                                width: 120,
-                                height: 100,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) => Container(
-                                  width: 120,
-                                  height: 100,
-                                  color: Colors.grey[300],
-                                  child: const Icon(Icons.broken_image, size: 40, color: Colors.grey),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          FullScreenImageViewer(
+                                        imageUrls: widget.event.galleryLinks,
+                                        initialIndex: index + 1,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Stack(
+                                  children: [
+                                    Image.network(
+                                      imgUrl,
+                                      width: 120,
+                                      height: 100,
+                                      fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, error, stackTrace) =>
+                                              Container(
+                                        width: 120,
+                                        height: 100,
+                                        color: Colors.grey[300],
+                                        child: const Icon(Icons.broken_image,
+                                            size: 40, color: Colors.grey),
+                                      ),
+                                    ),
+                                    // Subtle overlay to indicate tappable
+                                    Positioned.fill(
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          color: Colors.black.withOpacity(0.1),
+                                        ),
+                                        child: const Center(
+                                          child: Icon(
+                                            Icons.fullscreen,
+                                            color: Colors.white,
+                                            size: 20,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             );
