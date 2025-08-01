@@ -7,7 +7,8 @@ class FeaturedEventsCarousel extends StatefulWidget {
   final List<EventEntity> events;
   final Box interestedBox;
 
-  const FeaturedEventsCarousel({super.key, required this.events, required this.interestedBox});
+  const FeaturedEventsCarousel(
+      {super.key, required this.events, required this.interestedBox});
 
   @override
   _FeaturedEventsCarouselState createState() => _FeaturedEventsCarouselState();
@@ -55,7 +56,8 @@ class _FeaturedEventsCarouselState extends State<FeaturedEventsCarousel> {
         itemCount: widget.events.length,
         onPageChanged: (index) => _currentPage = index,
         itemBuilder: (context, index) {
-          return FeaturedEventCard(event: widget.events[index], interestedBox: widget.interestedBox);
+          return FeaturedEventCard(
+              event: widget.events[index], interestedBox: widget.interestedBox);
         },
       ),
     );

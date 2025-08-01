@@ -8,4 +8,4 @@ class FetchNotificationsUseCase {
   Future<List<NotificationEntity>> call() async {
     return await repository.fetchNotifications();
   }
-} 
+}

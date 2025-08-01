@@ -9,7 +9,9 @@ abstract class NotificationState extends Equatable {
 }
 
 class NotificationInitial extends NotificationState {}
+
 class NotificationLoading extends NotificationState {}
+
 class NotificationLoaded extends NotificationState {
   final List<NotificationEntity> notifications;
   const NotificationLoaded(this.notifications);
@@ -17,10 +19,11 @@ class NotificationLoaded extends NotificationState {
   @override
   List<Object?> get props => [notifications];
 }
+
 class NotificationError extends NotificationState {
   final String message;
   const NotificationError(this.message);
 
   @override
   List<Object?> get props => [message];
-} 
+}

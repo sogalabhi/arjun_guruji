@@ -16,4 +16,4 @@ class GetEventsUseCase implements Usecase<List<Event>, NoParams, String> {
       return Left(e.toString());
     }
   }
-} 
+}

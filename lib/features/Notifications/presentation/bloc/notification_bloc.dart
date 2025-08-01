@@ -6,7 +6,8 @@ import '../../domain/usecases/fetch_notifications_usecase.dart';
 class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   final FetchNotificationsUseCase fetchNotificationsUseCase;
 
-  NotificationBloc(this.fetchNotificationsUseCase) : super(NotificationInitial()) {
+  NotificationBloc(this.fetchNotificationsUseCase)
+      : super(NotificationInitial()) {
     on<FetchNotifications>((event, emit) async {
       emit(NotificationLoading());
       try {
@@ -17,4 +18,4 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
       }
     });
   }
-} 
+}

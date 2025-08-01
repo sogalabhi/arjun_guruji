@@ -179,21 +179,26 @@ void adminEvents() {
 void adminNotifications() {
   sl.registerLazySingleton<NotificationRemoteDataSource>(
     () => NotificationRemoteDataSourceImpl(
-      sl<FirebaseFirestore>(), sl<FirebaseStorage>()),
+        sl<FirebaseFirestore>(), sl<FirebaseStorage>()),
   );
   sl.registerLazySingleton<NotificationRepository>(
     () => NotificationRepositoryImpl(sl<NotificationRemoteDataSource>()),
   );
-  sl.registerFactory(() => GetNotificationsUseCase(sl<NotificationRepository>()));
-  sl.registerFactory(() => CreateNotificationUseCase(sl<NotificationRepository>()));
-  sl.registerFactory(() => UpdateNotificationUseCase(sl<NotificationRepository>()));
-  sl.registerFactory(() => DeleteNotificationUseCase(sl<NotificationRepository>()));
-  sl.registerFactory(() => UploadNotificationImageUseCase(sl<NotificationRepository>()));
+  sl.registerFactory(
+      () => GetNotificationsUseCase(sl<NotificationRepository>()));
+  sl.registerFactory(
+      () => CreateNotificationUseCase(sl<NotificationRepository>()));
+  sl.registerFactory(
+      () => UpdateNotificationUseCase(sl<NotificationRepository>()));
+  sl.registerFactory(
+      () => DeleteNotificationUseCase(sl<NotificationRepository>()));
+  sl.registerFactory(
+      () => UploadNotificationImageUseCase(sl<NotificationRepository>()));
   sl.registerFactory(() => NotificationBloc(
-    getNotifications: sl<GetNotificationsUseCase>(),
-    createNotification: sl<CreateNotificationUseCase>(),
-    updateNotification: sl<UpdateNotificationUseCase>(),
-    deleteNotification: sl<DeleteNotificationUseCase>(),
-    uploadNotificationImage: sl<UploadNotificationImageUseCase>(),
-  ));
+        getNotifications: sl<GetNotificationsUseCase>(),
+        createNotification: sl<CreateNotificationUseCase>(),
+        updateNotification: sl<UpdateNotificationUseCase>(),
+        deleteNotification: sl<DeleteNotificationUseCase>(),
+        uploadNotificationImage: sl<UploadNotificationImageUseCase>(),
+      ));
 }

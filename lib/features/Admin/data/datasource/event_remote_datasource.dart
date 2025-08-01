@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 
-
 abstract class EventRemoteDataSource {
   Future<List<EventModel>> getAllEvents();
   Future<EventModel> createEvent(EventModel event, {File? image});
@@ -68,10 +67,11 @@ class EventRemoteDataSourceImpl implements EventRemoteDataSource {
   }
 
   @override
-  Future<String> uploadImageToEventFolder(File imageFile, String eventName) async {
+  Future<String> uploadImageToEventFolder(
+      File imageFile, String eventName) async {
     final fileName = DateTime.now().millisecondsSinceEpoch.toString();
     final ref = storage.ref().child('events/$eventName/$fileName');
     final uploadTask = await ref.putFile(imageFile);
     return await uploadTask.ref.getDownloadURL();
   }
-} 
+}

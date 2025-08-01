@@ -108,7 +108,8 @@ class _EventModalState extends State<EventModal> {
   void initState() {
     super.initState();
     _titleController = TextEditingController(text: widget.event?.title ?? '');
-    _descController = TextEditingController(text: widget.event?.description ?? '');
+    _descController =
+        TextEditingController(text: widget.event?.description ?? '');
     _venueController = TextEditingController(text: widget.event?.venue ?? '');
     _cityController = TextEditingController(text: widget.event?.city ?? '');
     _startDate = widget.event?.startDate;
@@ -130,10 +131,13 @@ class _EventModalState extends State<EventModal> {
     final picked = await picker.pickMultiImage();
     if (picked != null && picked.isNotEmpty) {
       setState(() => _uploading = true);
-      final eventName = _titleController.text.isNotEmpty ? _titleController.text : 'untitled';
+      final eventName =
+          _titleController.text.isNotEmpty ? _titleController.text : 'untitled';
       for (final image in picked) {
         // Dispatch bloc event to upload image
-        context.read<EventBloc>().add(UploadEventImage(File(image.path), eventName));
+        context
+            .read<EventBloc>()
+            .add(UploadEventImage(File(image.path), eventName));
       }
     }
   }
@@ -155,9 +159,13 @@ class _EventModalState extends State<EventModal> {
         status: _status,
       );
       if (widget.event == null) {
-        context.read<EventBloc>().add(CreateEvent(CreateEventParams(event, image: null)));
+        context
+            .read<EventBloc>()
+            .add(CreateEvent(CreateEventParams(event, image: null)));
       } else {
-        context.read<EventBloc>().add(UpdateEvent(UpdateEventParams(event, image: null)));
+        context
+            .read<EventBloc>()
+            .add(UpdateEvent(UpdateEventParams(event, image: null)));
       }
       Navigator.of(context).pop();
     }
@@ -193,17 +201,21 @@ class _EventModalState extends State<EventModal> {
                     TextFormField(
                       controller: _titleController,
                       decoration: const InputDecoration(labelText: 'Title'),
-                      validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                      validator: (v) =>
+                          v == null || v.isEmpty ? 'Required' : null,
                     ),
                     TextFormField(
                       controller: _descController,
-                      decoration: const InputDecoration(labelText: 'Description'),
-                      validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                      decoration:
+                          const InputDecoration(labelText: 'Description'),
+                      validator: (v) =>
+                          v == null || v.isEmpty ? 'Required' : null,
                     ),
                     TextFormField(
                       controller: _venueController,
                       decoration: const InputDecoration(labelText: 'Venue'),
-                      validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                      validator: (v) =>
+                          v == null || v.isEmpty ? 'Required' : null,
                     ),
                     TextFormField(
                       controller: _cityController,
@@ -213,16 +225,22 @@ class _EventModalState extends State<EventModal> {
                       value: _status,
                       decoration: const InputDecoration(labelText: 'Status'),
                       items: const [
-                        DropdownMenuItem(value: 'Upcoming', child: Text('Upcoming')),
-                        DropdownMenuItem(value: 'Completed', child: Text('Completed')),
-                        DropdownMenuItem(value: 'Cancelled', child: Text('Cancelled')),
+                        DropdownMenuItem(
+                            value: 'Upcoming', child: Text('Upcoming')),
+                        DropdownMenuItem(
+                            value: 'Completed', child: Text('Completed')),
+                        DropdownMenuItem(
+                            value: 'Cancelled', child: Text('Cancelled')),
                       ],
-                      onChanged: (val) => setState(() => _status = val ?? 'Upcoming'),
+                      onChanged: (val) =>
+                          setState(() => _status = val ?? 'Upcoming'),
                     ),
                     Row(
                       children: [
                         Expanded(
-                          child: Text(_startDate == null ? 'Start Date' : _startDate!.toLocal().toString().split(' ')[0]),
+                          child: Text(_startDate == null
+                              ? 'Start Date'
+                              : _startDate!.toLocal().toString().split(' ')[0]),
                         ),
                         IconButton(
                           icon: const Icon(Icons.calendar_today),
@@ -233,7 +251,8 @@ class _EventModalState extends State<EventModal> {
                               firstDate: DateTime(2000),
                               lastDate: DateTime(2100),
                             );
-                            if (picked != null) setState(() => _startDate = picked);
+                            if (picked != null)
+                              setState(() => _startDate = picked);
                           },
                         ),
                       ],
@@ -241,7 +260,9 @@ class _EventModalState extends State<EventModal> {
                     Row(
                       children: [
                         Expanded(
-                          child: Text(_endDate == null ? 'End Date' : _endDate!.toLocal().toString().split(' ')[0]),
+                          child: Text(_endDate == null
+                              ? 'End Date'
+                              : _endDate!.toLocal().toString().split(' ')[0]),
                         ),
                         IconButton(
                           icon: const Icon(Icons.calendar_today),
@@ -252,7 +273,8 @@ class _EventModalState extends State<EventModal> {
                               firstDate: DateTime(2000),
                               lastDate: DateTime(2100),
                             );
-                            if (picked != null) setState(() => _endDate = picked);
+                            if (picked != null)
+                              setState(() => _endDate = picked);
                           },
                         ),
                       ],
@@ -263,18 +285,24 @@ class _EventModalState extends State<EventModal> {
                       label: const Text('Upload Images'),
                       onPressed: _uploading ? null : _pickAndUploadImages,
                     ),
-                    if (_uploading) const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: CircularProgressIndicator(),
-                    ),
+                    if (_uploading)
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: CircularProgressIndicator(),
+                      ),
                     if (_galleryLinks.isNotEmpty)
                       SizedBox(
                         height: 60,
                         child: ListView.separated(
                           scrollDirection: Axis.horizontal,
                           itemCount: _galleryLinks.length,
-                          separatorBuilder: (context, i) => const SizedBox(width: 8),
-                          itemBuilder: (context, i) => Image.network(_galleryLinks[i], width: 60, height: 60, fit: BoxFit.cover),
+                          separatorBuilder: (context, i) =>
+                              const SizedBox(width: 8),
+                          itemBuilder: (context, i) => Image.network(
+                              _galleryLinks[i],
+                              width: 60,
+                              height: 60,
+                              fit: BoxFit.cover),
                         ),
                       ),
                   ],
@@ -296,4 +324,4 @@ class _EventModalState extends State<EventModal> {
       ),
     );
   }
-} 
+}

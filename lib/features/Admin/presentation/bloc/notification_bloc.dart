@@ -37,7 +37,8 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
         (failure) => emit(NotificationError(failure)),
         (_) {
           add(LoadNotifications());
-          emit(NotificationOperationSuccess('Notification created successfully'));
+          emit(NotificationOperationSuccess(
+              'Notification created successfully'));
         },
       );
     });
@@ -48,7 +49,8 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
         (failure) => emit(NotificationError(failure)),
         (_) {
           add(LoadNotifications());
-          emit(NotificationOperationSuccess('Notification updated successfully'));
+          emit(NotificationOperationSuccess(
+              'Notification updated successfully'));
         },
       );
     });
@@ -59,7 +61,8 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
         (failure) => emit(NotificationError(failure)),
         (_) {
           add(LoadNotifications());
-          emit(NotificationOperationSuccess('Notification deleted successfully'));
+          emit(NotificationOperationSuccess(
+              'Notification deleted successfully'));
         },
       );
     });
@@ -72,4 +75,4 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
       );
     });
   }
-} 
+}

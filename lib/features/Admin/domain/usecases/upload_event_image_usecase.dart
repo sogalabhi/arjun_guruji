@@ -9,17 +9,19 @@ class UploadEventImageParams {
   UploadEventImageParams(this.image, this.eventName);
 }
 
-class UploadEventImageUseCase implements Usecase<String, UploadEventImageParams, String> {
+class UploadEventImageUseCase
+    implements Usecase<String, UploadEventImageParams, String> {
   final EventRepository repository;
   UploadEventImageUseCase(this.repository);
 
   @override
   Future<Either<String, String>> call(UploadEventImageParams params) async {
     try {
-      final url = await repository.uploadImageToEventFolder(params.image, params.eventName);
+      final url = await repository.uploadImageToEventFolder(
+          params.image, params.eventName);
       return Right(url);
     } catch (e) {
       return Left(e.toString());
     }
   }
-} 
+}

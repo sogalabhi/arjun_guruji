@@ -23,4 +23,4 @@ class UpdateEventUseCase implements Usecase<void, UpdateEventParams, String> {
       return Left(e.toString());
     }
   }
-} 
+}

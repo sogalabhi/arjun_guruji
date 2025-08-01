@@ -84,7 +84,8 @@ class LyricsListPageState extends State<LyricsListPage> {
                             child: Container(
                               width: double.infinity,
                               height: 60,
-                              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(10),

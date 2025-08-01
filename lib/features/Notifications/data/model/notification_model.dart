@@ -30,4 +30,4 @@ class NotificationModel {
         'image': image,
         'onTapLink': onTapLink,
       };
-} 
+}

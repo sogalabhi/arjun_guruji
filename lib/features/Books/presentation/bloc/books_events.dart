@@ -4,5 +4,6 @@ part of 'books_bloc.dart';
 class BooksEvent with _$BooksEvent {
   const factory BooksEvent.fetchAllBooks() = FetchAllBooks;
   const factory BooksEvent.fetchBookSummaries() = FetchBookSummaries;
-  const factory BooksEvent.fetchBookDetailsByTitle(String title) = FetchBookDetailsByTitle;
+  const factory BooksEvent.fetchBookDetailsByTitle(String title) =
+      FetchBookDetailsByTitle;
 }

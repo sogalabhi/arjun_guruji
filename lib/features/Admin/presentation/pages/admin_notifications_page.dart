@@ -52,10 +52,12 @@ class AdminNotificationsPage extends StatelessWidget {
                 final notification = notifications[index];
                 return ListTile(
                   leading: notification.image != null
-                      ? Image.network(notification.image!, width: 50, height: 50, fit: BoxFit.cover)
+                      ? Image.network(notification.image!,
+                          width: 50, height: 50, fit: BoxFit.cover)
                       : const Icon(Icons.notifications),
                   title: Text(notification.title),
-                  subtitle: Text(notification.description, maxLines: 2, overflow: TextOverflow.ellipsis),
+                  subtitle: Text(notification.description,
+                      maxLines: 2, overflow: TextOverflow.ellipsis),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -66,7 +68,8 @@ class AdminNotificationsPage extends StatelessWidget {
                             context: context,
                             builder: (dialogContext) => BlocProvider.value(
                               value: BlocProvider.of<NotificationBloc>(context),
-                              child: NotificationModal(notification: notification),
+                              child:
+                                  NotificationModal(notification: notification),
                             ),
                           );
                         },
@@ -74,7 +77,9 @@ class AdminNotificationsPage extends StatelessWidget {
                       IconButton(
                         icon: const Icon(Icons.delete),
                         onPressed: () {
-                          context.read<NotificationBloc>().add(DeleteNotification(notification.id));
+                          context
+                              .read<NotificationBloc>()
+                              .add(DeleteNotification(notification.id));
                         },
                       ),
                     ],
@@ -114,9 +119,12 @@ class _NotificationModalState extends State<NotificationModal> {
   @override
   void initState() {
     super.initState();
-    _titleController = TextEditingController(text: widget.notification?.title ?? '');
-    _descController = TextEditingController(text: widget.notification?.description ?? '');
-    _onTapLinkController = TextEditingController(text: widget.notification?.onTapLink ?? '');
+    _titleController =
+        TextEditingController(text: widget.notification?.title ?? '');
+    _descController =
+        TextEditingController(text: widget.notification?.description ?? '');
+    _onTapLinkController =
+        TextEditingController(text: widget.notification?.onTapLink ?? '');
     _dateTime = widget.notification?.dateTime;
     _isVisible = widget.notification?.isVisible ?? true;
     _imageUrl = widget.notification?.image;
@@ -138,7 +146,11 @@ class _NotificationModalState extends State<NotificationModal> {
         _imageFile = File(picked.path);
       });
       setState(() => _uploading = true);
-      final params = UploadNotificationImageParams(_imageFile!, _titleController.text.isNotEmpty ? _titleController.text : 'untitled');
+      final params = UploadNotificationImageParams(
+          _imageFile!,
+          _titleController.text.isNotEmpty
+              ? _titleController.text
+              : 'untitled');
       context.read<NotificationBloc>().add(UploadNotificationImage(params));
     }
   }
@@ -159,19 +171,24 @@ class _NotificationModalState extends State<NotificationModal> {
         dateTime: _dateTime ?? DateTime.now(),
         image: _imageUrl,
         isVisible: _isVisible,
-        onTapLink: _onTapLinkController.text.isNotEmpty ? _onTapLinkController.text : null,
+        onTapLink: _onTapLinkController.text.isNotEmpty
+            ? _onTapLinkController.text
+            : null,
       );
       if (widget.notification == null) {
-        context.read<NotificationBloc>().add(CreateNotification(CreateNotificationParams(notification, image: _imageFile)));
+        context.read<NotificationBloc>().add(CreateNotification(
+            CreateNotificationParams(notification, image: _imageFile)));
       } else {
-        context.read<NotificationBloc>().add(UpdateNotification(UpdateNotificationParams(notification, image: _imageFile)));
+        context.read<NotificationBloc>().add(UpdateNotification(
+            UpdateNotificationParams(notification, image: _imageFile)));
       }
       Navigator.of(context).pop();
     }
   }
 
   Future<void> _sendPushNotification() async {
-    const serverKey = 'AAAAosTE_-A:APA91bFuAGZj3tt6oQHv1oZLXw2KcyLA7zRj_FPED-27BAz9g99DGvaSGm6lq4cYmjAKIXTsK1wpmZzvH0Wny9tMkqY9wI6Bh5e1qWZHcqopdrE3bYufb7QEW9ickPgQd3SbkepW98_f'; // Replace with your FCM server key
+    const serverKey =
+        'AAAAosTE_-A:APA91bFuAGZj3tt6oQHv1oZLXw2KcyLA7zRj_FPED-27BAz9g99DGvaSGm6lq4cYmjAKIXTsK1wpmZzvH0Wny9tMkqY9wI6Bh5e1qWZHcqopdrE3bYufb7QEW9ickPgQd3SbkepW98_f'; // Replace with your FCM server key
     final url = Uri.parse('https://fcm.googleapis.com/fcm/send');
     final headers = {
       'Content-Type': 'application/json',
@@ -185,30 +202,37 @@ class _NotificationModalState extends State<NotificationModal> {
         if (_imageUrl != null) 'image': _imageUrl,
       },
       'data': {
-        if (_onTapLinkController.text.isNotEmpty) 'link': _onTapLinkController.text,
+        if (_onTapLinkController.text.isNotEmpty)
+          'link': _onTapLinkController.text,
       },
     };
-    final response = await http.post(url, headers: headers, body: jsonEncode(payload));
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(payload));
     print('FCM response status: ${response.statusCode}');
     print('FCM response body: ${response.body}');
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(response.statusCode == 200 ? 'Push notification sent!' : 'Failed to send push notification'),
+          content: Text(response.statusCode == 200
+              ? 'Push notification sent!'
+              : 'Failed to send push notification'),
         ),
       );
     }
   }
 
   Future<void> _sendPushNotificationV1() async {
-    final serviceAccountPath = 'assets/arjun-guruji-app-firebase-adminsdk-cas8x-35276622b4.json';
+    final serviceAccountPath =
+        'assets/arjun-guruji-app-firebase-adminsdk-cas8x-35276622b4.json';
     final projectId = 'arjun-guruji-app';
     // Load service account from assets
     final serviceAccountJson = await rootBundle.loadString(serviceAccountPath);
-    final serviceAccount = ServiceAccountCredentials.fromJson(json.decode(serviceAccountJson));
+    final serviceAccount =
+        ServiceAccountCredentials.fromJson(json.decode(serviceAccountJson));
     final scopes = ['https://www.googleapis.com/auth/firebase.messaging'];
     final client = await clientViaServiceAccount(serviceAccount, scopes);
-    final url = Uri.parse('https://fcm.googleapis.com/v1/projects/$projectId/messages:send');
+    final url = Uri.parse(
+        'https://fcm.googleapis.com/v1/projects/$projectId/messages:send');
     final payload = {
       'message': {
         'topic': 'all', // or 'token': '<device_token>'
@@ -218,7 +242,8 @@ class _NotificationModalState extends State<NotificationModal> {
           if (_imageUrl != null) 'image': _imageUrl,
         },
         'data': {
-          if (_onTapLinkController.text.isNotEmpty) 'link': _onTapLinkController.text,
+          if (_onTapLinkController.text.isNotEmpty)
+            'link': _onTapLinkController.text,
         },
       }
     };
@@ -232,7 +257,9 @@ class _NotificationModalState extends State<NotificationModal> {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(response.statusCode == 200 ? 'Push notification sent (v1)!' : 'Failed to send push notification (v1)'),
+          content: Text(response.statusCode == 200
+              ? 'Push notification sent (v1)!'
+              : 'Failed to send push notification (v1)'),
         ),
       );
     }
@@ -243,7 +270,8 @@ class _NotificationModalState extends State<NotificationModal> {
   Widget build(BuildContext context) {
     return BlocListener<NotificationBloc, NotificationState>(
       listener: (context, state) {
-        if (state is NotificationOperationSuccess && state.message.startsWith('http')) {
+        if (state is NotificationOperationSuccess &&
+            state.message.startsWith('http')) {
           setState(() {
             _imageUrl = state.message;
             _uploading = false;
@@ -253,7 +281,9 @@ class _NotificationModalState extends State<NotificationModal> {
         }
       },
       child: AlertDialog(
-        title: Text(widget.notification == null ? 'Create Notification' : 'Edit Notification'),
+        title: Text(widget.notification == null
+            ? 'Create Notification'
+            : 'Edit Notification'),
         content: SizedBox(
           width: 400,
           child: ConstrainedBox(
@@ -267,22 +297,28 @@ class _NotificationModalState extends State<NotificationModal> {
                     TextFormField(
                       controller: _titleController,
                       decoration: const InputDecoration(labelText: 'Title'),
-                      validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                      validator: (v) =>
+                          v == null || v.isEmpty ? 'Required' : null,
                     ),
                     TextFormField(
                       controller: _descController,
-                      decoration: const InputDecoration(labelText: 'Description'),
-                      validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+                      decoration:
+                          const InputDecoration(labelText: 'Description'),
+                      validator: (v) =>
+                          v == null || v.isEmpty ? 'Required' : null,
                       maxLines: 3,
                     ),
                     TextFormField(
                       controller: _onTapLinkController,
-                      decoration: const InputDecoration(labelText: 'On Tap Link'),
+                      decoration:
+                          const InputDecoration(labelText: 'On Tap Link'),
                     ),
                     Row(
                       children: [
                         Expanded(
-                          child: Text(_dateTime == null ? 'Date' : _dateTime!.toLocal().toString().split(' ')[0]),
+                          child: Text(_dateTime == null
+                              ? 'Date'
+                              : _dateTime!.toLocal().toString().split(' ')[0]),
                         ),
                         IconButton(
                           icon: const Icon(Icons.calendar_today),
@@ -293,7 +329,8 @@ class _NotificationModalState extends State<NotificationModal> {
                               firstDate: DateTime(2000),
                               lastDate: DateTime(2100),
                             );
-                            if (picked != null) setState(() => _dateTime = picked);
+                            if (picked != null)
+                              setState(() => _dateTime = picked);
                           },
                         ),
                       ],
@@ -309,17 +346,19 @@ class _NotificationModalState extends State<NotificationModal> {
                       label: const Text('Upload Image'),
                       onPressed: _uploading ? null : _pickImage,
                     ),
-                    if (_uploading) const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: CircularProgressIndicator(),
-                    ),
+                    if (_uploading)
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: CircularProgressIndicator(),
+                      ),
                     if (_imageUrl != null)
                       Stack(
                         alignment: Alignment.topRight,
                         children: [
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            child: Image.network(_imageUrl!, width: 80, height: 80, fit: BoxFit.cover),
+                            child: Image.network(_imageUrl!,
+                                width: 80, height: 80, fit: BoxFit.cover),
                           ),
                           IconButton(
                             icon: const Icon(Icons.close),
@@ -351,4 +390,4 @@ class _NotificationModalState extends State<NotificationModal> {
       ),
     );
   }
-} 
+}

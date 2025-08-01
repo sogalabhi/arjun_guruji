@@ -8,4 +8,4 @@ abstract class EventRepository {
   Future<void> deleteEvent(String eventId);
   Future<String> uploadImage(File imageFile);
   Future<String> uploadImageToEventFolder(File imageFile, String eventName);
-} 
+}

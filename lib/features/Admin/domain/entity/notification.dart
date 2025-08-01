@@ -16,4 +16,4 @@ class NotificationEntity {
     required this.isVisible,
     this.onTapLink,
   });
-} 
+}

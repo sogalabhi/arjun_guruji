@@ -67,7 +67,8 @@ class AdminDashboard extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => BlocProvider<NotificationBloc>(
-                      create: (_) => sl<NotificationBloc>()..add(LoadNotifications()),
+                      create: (_) =>
+                          sl<NotificationBloc>()..add(LoadNotifications()),
                       child: const AdminNotificationsPage(),
                     ),
                   ),

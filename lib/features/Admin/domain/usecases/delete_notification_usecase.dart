@@ -15,4 +15,4 @@ class DeleteNotificationUseCase implements Usecase<void, String, String> {
       return Left(e.toString());
     }
   }
-} 
+}

@@ -3,7 +3,8 @@ import 'package:arjun_guruji/features/Astottaras/domain/entity/astottara.dart';
 import 'package:arjun_guruji/features/Astottaras/domain/repository/astottaras_repository.dart';
 import 'package:dartz/dartz.dart';
 
-class FetchAstottarasUseCase implements Usecase<List<Astottara>, NoParams, String> {
+class FetchAstottarasUseCase
+    implements Usecase<List<Astottara>, NoParams, String> {
   final AstottaraRepository astottaraRepository;
 
   FetchAstottarasUseCase(this.astottaraRepository);

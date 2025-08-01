@@ -9,17 +9,20 @@ class UploadNotificationImageParams {
   UploadNotificationImageParams(this.image, this.notificationId);
 }
 
-class UploadNotificationImageUseCase implements Usecase<String, UploadNotificationImageParams, String> {
+class UploadNotificationImageUseCase
+    implements Usecase<String, UploadNotificationImageParams, String> {
   final NotificationRepository repository;
   UploadNotificationImageUseCase(this.repository);
 
   @override
-  Future<Either<String, String>> call(UploadNotificationImageParams params) async {
+  Future<Either<String, String>> call(
+      UploadNotificationImageParams params) async {
     try {
-      final url = await repository.uploadImage(params.image, params.notificationId);
+      final url =
+          await repository.uploadImage(params.image, params.notificationId);
       return Right(url);
     } catch (e) {
       return Left(e.toString());
     }
   }
-} 
+}

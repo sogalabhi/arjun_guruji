@@ -44,11 +44,12 @@ class BookModel extends HiveObject {
       bookType: json['bookType'],
       content: json['content'],
       chapters: (json['chapters'] as List<dynamic>?)
-          ?.map((chapter) => {
-                'chapterName': chapter['chapterName'] as String? ?? '',
-                'content': chapter['content'] as String? ?? '',
-              })
-          .toList() ?? [],
+              ?.map((chapter) => {
+                    'chapterName': chapter['chapterName'] as String? ?? '',
+                    'content': chapter['content'] as String? ?? '',
+                  })
+              .toList() ??
+          [],
       pdfFilePath: json['pdfFilePath'] as String?,
       imageBytes: json['imageBytes'] as Uint8List?,
     );

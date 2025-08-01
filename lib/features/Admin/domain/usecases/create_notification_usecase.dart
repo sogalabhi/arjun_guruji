@@ -10,17 +10,19 @@ class CreateNotificationParams {
   CreateNotificationParams(this.notification, {this.image});
 }
 
-class CreateNotificationUseCase implements Usecase<void, CreateNotificationParams, String> {
+class CreateNotificationUseCase
+    implements Usecase<void, CreateNotificationParams, String> {
   final NotificationRepository repository;
   CreateNotificationUseCase(this.repository);
 
   @override
   Future<Either<String, void>> call(CreateNotificationParams params) async {
     try {
-      await repository.createNotification(params.notification, image: params.image);
+      await repository.createNotification(params.notification,
+          image: params.image);
       return const Right(null);
     } catch (e) {
       return Left(e.toString());
     }
   }
-} 
+}

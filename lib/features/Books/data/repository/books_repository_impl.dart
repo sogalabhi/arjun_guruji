@@ -12,7 +12,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 Future<Uint8List?> downloadBytes(String url) async {
   try {
-    final response = await Dio().get(url, options: Options(responseType: ResponseType.bytes));
+    final response = await Dio()
+        .get(url, options: Options(responseType: ResponseType.bytes));
     return Uint8List.fromList(response.data);
   } catch (_) {
     return null;
@@ -44,16 +45,21 @@ class BooksRepositoryImpl implements BookRepository {
         if (cachedBooks.isEmpty) {
           return const Left('No internet and no cached books available');
         }
-        return Right(cachedBooks.map((bookModel) => BookModel.toEntity(bookModel)).toList());
+        return Right(cachedBooks
+            .map((bookModel) => BookModel.toEntity(bookModel))
+            .toList());
       }
       // Check local vs remote count
       final localCount = box.length;
       final firestore = FirebaseFirestore.instance;
-      final remoteCount = (await firestore.collection('Books').get()).docs.length;
+      final remoteCount =
+          (await firestore.collection('Books').get()).docs.length;
       if (localCount == remoteCount && localCount > 0) {
         print('Books: Local and remote counts match, loading from cache.');
         final cachedBooks = box.values.toList();
-        return Right(cachedBooks.map((bookModel) => BookModel.toEntity(bookModel)).toList());
+        return Right(cachedBooks
+            .map((bookModel) => BookModel.toEntity(bookModel))
+            .toList());
       }
       print('Books: Syncing books from remote...');
       final books = await remoteDataSource.fetchAllBooks();
@@ -84,7 +90,9 @@ class BooksRepositoryImpl implements BookRepository {
         await box.put(book.title, updatedBook);
         updatedBooks.add(updatedBook);
       }
-      return Right(updatedBooks.map((bookModel) => BookModel.toEntity(bookModel)).toList());
+      return Right(updatedBooks
+          .map((bookModel) => BookModel.toEntity(bookModel))
+          .toList());
     } catch (e) {
       return left(
         e.toString(),
@@ -99,7 +107,8 @@ class BooksRepositoryImpl implements BookRepository {
       if (books.isEmpty) {
         return const Left('Books Are Empty');
       }
-      return Right(books.map((bookModel) => BookModel.toEntity(bookModel)).toList());
+      return Right(
+          books.map((bookModel) => BookModel.toEntity(bookModel)).toList());
     } catch (e) {
       return left(e.toString());
     }

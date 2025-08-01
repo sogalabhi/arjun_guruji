@@ -3,7 +3,8 @@ import '../repository/notification_repository.dart';
 import 'package:arjun_guruji/core/usecases/usecase.dart';
 import 'package:dartz/dartz.dart';
 
-class GetNotificationsUseCase implements Usecase<List<NotificationEntity>, NoParams, String> {
+class GetNotificationsUseCase
+    implements Usecase<List<NotificationEntity>, NoParams, String> {
   final NotificationRepository repository;
   GetNotificationsUseCase(this.repository);
 
@@ -16,4 +17,4 @@ class GetNotificationsUseCase implements Usecase<List<NotificationEntity>, NoPar
       return Left(e.toString());
     }
   }
-} 
+}

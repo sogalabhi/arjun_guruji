@@ -5,8 +5,10 @@ import 'dart:io';
 
 abstract class NotificationRemoteDataSource {
   Future<List<NotificationModel>> getAllNotifications();
-  Future<void> createNotification(NotificationModel notification, {File? image});
-  Future<void> updateNotification(NotificationModel notification, {File? image});
+  Future<void> createNotification(NotificationModel notification,
+      {File? image});
+  Future<void> updateNotification(NotificationModel notification,
+      {File? image});
   Future<void> deleteNotification(String notificationId);
   Future<String> uploadImage(File imageFile, String notificationId);
 }
@@ -19,16 +21,20 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
   @override
   Future<List<NotificationModel>> getAllNotifications() async {
     final snapshot = await firestore.collection('Notifications').get();
-    return snapshot.docs.map((doc) => NotificationModel.fromMap(doc.data())).toList();
+    return snapshot.docs
+        .map((doc) => NotificationModel.fromMap(doc.data()))
+        .toList();
   }
 
   @override
-  Future<void> createNotification(NotificationModel notification, {File? image}) async {
+  Future<void> createNotification(NotificationModel notification,
+      {File? image}) async {
     String? imageUrl = notification.image;
     if (image != null) {
       imageUrl = await uploadImage(image, notification.title);
     }
-    final docRef = firestore.collection('Notifications').doc(notification.title);
+    final docRef =
+        firestore.collection('Notifications').doc(notification.title);
     final data = notification.toMap();
     data['dateTime'] = Timestamp.fromDate(notification.dateTime);
     await docRef.set({
@@ -38,7 +44,8 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
   }
 
   @override
-  Future<void> updateNotification(NotificationModel notification, {File? image}) async {
+  Future<void> updateNotification(NotificationModel notification,
+      {File? image}) async {
     String? imageUrl = notification.image;
     if (image != null) {
       imageUrl = await uploadImage(image, notification.title);
@@ -62,4 +69,4 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
     final uploadTask = await ref.putFile(imageFile);
     return await uploadTask.ref.getDownloadURL();
   }
-} 
+}

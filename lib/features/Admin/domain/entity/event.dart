@@ -26,4 +26,4 @@ class Event {
     this.city = "",
     this.status = "Upcoming",
   });
-} 
+}

@@ -82,25 +82,25 @@ class EventModel extends EventEntity {
     this.tags,
     this.isFeatured = false,
   }) : super(
-    id: id,
-    title: title,
-    eventType: eventType,
-    startDate: startDate,
-    endDate: endDate,
-    venue: venue,
-    city: city,
-    place: place,
-    guest: guest,
-    frequency: frequency,
-    day: day,
-    activities: activities,
-    description: description,
-    interestedCount: interestedCount,
-    galleryLinks: galleryLinks,
-    status: status,
-    tags: tags,
-    isFeatured: isFeatured,
-  );
+          id: id,
+          title: title,
+          eventType: eventType,
+          startDate: startDate,
+          endDate: endDate,
+          venue: venue,
+          city: city,
+          place: place,
+          guest: guest,
+          frequency: frequency,
+          day: day,
+          activities: activities,
+          description: description,
+          interestedCount: interestedCount,
+          galleryLinks: galleryLinks,
+          status: status,
+          tags: tags,
+          isFeatured: isFeatured,
+        );
 
   factory EventModel.fromFirestore(String id, Map<String, dynamic> doc) {
     DateTime parseDate(dynamic value) {
@@ -109,6 +109,7 @@ class EventModel extends EventEntity {
       if (value is Timestamp) return value.toDate();
       throw Exception('Invalid date value: $value');
     }
+
     return EventModel(
       id: id,
       title: doc['title'] ?? '',

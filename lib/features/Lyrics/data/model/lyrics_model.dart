@@ -5,7 +5,7 @@ import 'dart:typed_data';
 part 'lyrics_model.g.dart'; // Generated file
 
 @HiveType(typeId: 3)
-class LyricsModel extends HiveObject  {
+class LyricsModel extends HiveObject {
   @HiveField(0)
   final String docId;
 

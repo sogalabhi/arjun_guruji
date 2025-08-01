@@ -29,6 +29,7 @@ class NotificationModel {
       }
       throw Exception('Invalid date value: $value');
     }
+
     return NotificationModel(
       id: map['id'] as String? ?? '',
       title: map['title'] as String? ?? '',
@@ -75,4 +76,4 @@ class NotificationModel {
       onTapLink: onTapLink,
     );
   }
-} 
+}

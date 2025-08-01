@@ -7,7 +7,8 @@ class FeaturedEventCard extends StatelessWidget {
   final EventEntity event;
   final Box interestedBox;
 
-  const FeaturedEventCard({super.key, required this.event, required this.interestedBox});
+  const FeaturedEventCard(
+      {super.key, required this.event, required this.interestedBox});
 
   bool get isLive {
     final now = DateTime.now();
@@ -18,27 +19,37 @@ class FeaturedEventCard extends StatelessWidget {
   }
 
   String getFormattedDateRange() {
-    if (event.eventType == "Recurring" && event.day != null && event.frequency == "weekly") {
-      return "Every "+event.day!;
+    if (event.eventType == "Recurring" &&
+        event.day != null &&
+        event.frequency == "weekly") {
+      return "Every " + event.day!;
     }
-    final start = "${event.startDate.day}/${event.startDate.month}/${event.startDate.year}";
-    final end = "${event.endDate.day}/${event.endDate.month}/${event.endDate.year}";
+    final start =
+        "${event.startDate.day}/${event.startDate.month}/${event.startDate.year}";
+    final end =
+        "${event.endDate.day}/${event.endDate.month}/${event.endDate.year}";
     return start == end ? start : "$start - $end";
   }
 
   // Helper method to get the next occurrence date for recurring events
   DateTime? _getNextOccurrenceDate() {
-    if (event.eventType != "Recurring" || event.day == null || event.frequency != "weekly") {
+    if (event.eventType != "Recurring" ||
+        event.day == null ||
+        event.frequency != "weekly") {
       return null;
     }
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    final eventStart = DateTime(event.startDate.year, event.startDate.month, event.startDate.day);
-    final eventEnd = DateTime(event.endDate.year, event.endDate.month, event.endDate.day);
+    final eventStart = DateTime(
+        event.startDate.year, event.startDate.month, event.startDate.day);
+    final eventEnd =
+        DateTime(event.endDate.year, event.endDate.month, event.endDate.day);
     final targetWeekday = _dayStringToWeekday(event.day!);
     final currentWeekday = today.weekday;
     // If today is the event day and within the event's date range, return today
-    if (currentWeekday == targetWeekday && !today.isBefore(eventStart) && !today.isAfter(eventEnd)) {
+    if (currentWeekday == targetWeekday &&
+        !today.isBefore(eventStart) &&
+        !today.isAfter(eventEnd)) {
       return today;
     }
     int daysToAdd = targetWeekday - currentWeekday;
@@ -56,20 +67,27 @@ class FeaturedEventCard extends StatelessWidget {
   // Helper method to convert day string to weekday number
   int _dayStringToWeekday(String day) {
     switch (day.toLowerCase()) {
-      case 'monday': return DateTime.monday;
-      case 'tuesday': return DateTime.tuesday;
-      case 'wednesday': return DateTime.wednesday;
-      case 'thursday': return DateTime.thursday;
-      case 'friday': return DateTime.friday;
-      case 'saturday': return DateTime.saturday;
-      case 'sunday': return DateTime.sunday;
-      default: return DateTime.monday;
+      case 'monday':
+        return DateTime.monday;
+      case 'tuesday':
+        return DateTime.tuesday;
+      case 'wednesday':
+        return DateTime.wednesday;
+      case 'thursday':
+        return DateTime.thursday;
+      case 'friday':
+        return DateTime.friday;
+      case 'saturday':
+        return DateTime.saturday;
+      case 'sunday':
+        return DateTime.sunday;
+      default:
+        return DateTime.monday;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    
     print("event: ${event.galleryLinks}");
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -92,7 +110,6 @@ class FeaturedEventCard extends StatelessWidget {
       ),
       padding: const EdgeInsets.all(20),
       child: Stack(
-
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,

@@ -68,7 +68,8 @@ class ContactPage extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(height: 12),
-                              const Text('Swarna Nrisimha Datta Sai Peethika Seva Trust'),
+                              const Text(
+                                  'Swarna Nrisimha Datta Sai Peethika Seva Trust'),
                               const Text('A/C #: 297301000012345'),
                               const Text('IFSC: IOBA0002973'),
                               const Text('Branch: Srirampura, Mysore'),
@@ -92,9 +93,11 @@ class ContactPage extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    contactIcon(Icons.mail_outline_outlined, "mailto:snsdstrustmysore@gmail.com"),
+                    contactIcon(Icons.mail_outline_outlined,
+                        "mailto:snsdstrustmysore@gmail.com"),
                     contactIcon(Icons.call_outlined, "tel:+919141075552"),
-                    contactIcon(Icons.maps_home_work_outlined, "https://maps.app.goo.gl/5yZRd4hzX2zH7MTb8"),
+                    contactIcon(Icons.maps_home_work_outlined,
+                        "https://maps.app.goo.gl/5yZRd4hzX2zH7MTb8"),
                   ],
                 ),
               ],

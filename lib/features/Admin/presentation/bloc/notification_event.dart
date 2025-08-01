@@ -36,4 +36,4 @@ class UploadNotificationImage extends NotificationEvent {
   UploadNotificationImage(this.params);
   @override
   List<Object?> get props => [params];
-} 
+}

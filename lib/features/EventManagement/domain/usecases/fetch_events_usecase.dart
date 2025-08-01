@@ -3,7 +3,8 @@ import 'package:arjun_guruji/features/EventManagement/domain/entity/events.dart'
 import 'package:arjun_guruji/features/EventManagement/domain/repository/events_repository.dart';
 import 'package:dartz/dartz.dart';
 
-class FetchEventsUseCase implements Usecase<List<EventEntity>, NoParams, String> {
+class FetchEventsUseCase
+    implements Usecase<List<EventEntity>, NoParams, String> {
   final EventsRepository eventsRepository;
 
   FetchEventsUseCase(this.eventsRepository);

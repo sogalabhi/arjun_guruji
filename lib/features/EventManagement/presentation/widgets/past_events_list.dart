@@ -7,32 +7,36 @@ class PastEventsList extends StatelessWidget {
   final List<EventEntity> events;
   final Box interestedBox;
 
-  const PastEventsList({super.key, required this.events, required this.interestedBox});
+  const PastEventsList(
+      {super.key, required this.events, required this.interestedBox});
 
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    
+
     // Get major past events (featured events that are in the past)
-    final majorPastEvents = events.where((e) =>
-      e.isFeatured && 
-      e.eventType != 'Recurring' &&
-      e.startDate.isBefore(today)
-    ).toList();
-    
+    final majorPastEvents = events
+        .where((e) =>
+            e.isFeatured &&
+            e.eventType != 'Recurring' &&
+            e.startDate.isBefore(today))
+        .toList();
+
     // Get all previous weeks events (events that ended more than 7 days ago)
-    final previousWeeksEvents = events.where((e) =>
-      e.endDate.isBefore(today.subtract(const Duration(days: 7)))
-    ).toList();
-    
+    final previousWeeksEvents = events
+        .where(
+            (e) => e.endDate.isBefore(today.subtract(const Duration(days: 7))))
+        .toList();
+
     // Combine and remove duplicates
     final allPastEvents = <EventEntity>{};
     allPastEvents.addAll(majorPastEvents);
     allPastEvents.addAll(previousWeeksEvents);
-    
+
     final pastEvents = allPastEvents.toList();
-    pastEvents.sort((a, b) => b.startDate.compareTo(a.startDate)); // Sort by date descending
+    pastEvents.sort((a, b) =>
+        b.startDate.compareTo(a.startDate)); // Sort by date descending
 
     if (pastEvents.isEmpty) {
       return const Padding(
@@ -81,9 +85,11 @@ class PastEventsList extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      event.eventType == "Recurring" && event.day != null && event.frequency == "weekly"
-                        ? "Every ${event.day!}"
-                        : "${event.startDate.toLocal()}".split(' ')[0],
+                      event.eventType == "Recurring" &&
+                              event.day != null &&
+                              event.frequency == "weekly"
+                          ? "Every ${event.day!}"
+                          : "${event.startDate.toLocal()}".split(' ')[0],
                       style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
@@ -133,11 +139,13 @@ class PastEventsList extends StatelessWidget {
                     const SizedBox(height: 8),
                     Row(
                       children: [
-                        const Icon(Icons.people, size: 18, color: Colors.black54),
+                        const Icon(Icons.people,
+                            size: 18, color: Colors.black54),
                         const SizedBox(width: 6),
                         Text(
                           "${event.interestedCount} Interested",
-                          style: const TextStyle(fontSize: 14, color: Colors.black87),
+                          style: const TextStyle(
+                              fontSize: 14, color: Colors.black87),
                         ),
                       ],
                     ),

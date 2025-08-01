@@ -38,7 +38,8 @@ class TopSnackbarWidget extends StatefulWidget {
   final Color backgroundColor;
   final VoidCallback onDismissed;
 
-  const TopSnackbarWidget({super.key, 
+  const TopSnackbarWidget({
+    super.key,
     required this.message,
     required this.backgroundColor,
     required this.onDismissed,
@@ -48,7 +49,8 @@ class TopSnackbarWidget extends StatefulWidget {
   TopSnackbarWidgetState createState() => TopSnackbarWidgetState();
 }
 
-class TopSnackbarWidgetState extends State<TopSnackbarWidget> with SingleTickerProviderStateMixin {
+class TopSnackbarWidgetState extends State<TopSnackbarWidget>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<Offset> _offsetAnimation;
 

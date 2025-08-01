@@ -148,28 +148,37 @@ class _CalendarPageState extends State<CalendarPage> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               child: Row(
                 children: [
-                  const Icon(Icons.location_city, color: Colors.white70, size: 20),
+                  const Icon(Icons.location_city,
+                      color: Colors.white70, size: 20),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 2),
                       decoration: BoxDecoration(
                         color: Colors.white.withAlpha(20),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: DropdownButton<String>(
                         value: _selectedCity,
-                        dropdownColor: const Color.fromARGB(209, 37, 15, 162), // Deep purple with opacity for a gradient-like effect
+                        dropdownColor: const Color.fromARGB(209, 37, 15,
+                            162), // Deep purple with opacity for a gradient-like effect
                         iconEnabledColor: Colors.white,
-                        style: const TextStyle(color: Colors.white, fontSize: 16),
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 16),
                         underline: const SizedBox(),
                         isExpanded: true,
-                        hint: const Text('All Cities', style: TextStyle(color: Colors.white70)),
+                        hint: const Text('All Cities',
+                            style: TextStyle(color: Colors.white70)),
                         items: [
-                          DropdownMenuItem(value: null, child: Text('All Cities', style: TextStyle(color: Colors.white))),
+                          DropdownMenuItem(
+                              value: null,
+                              child: Text('All Cities',
+                                  style: TextStyle(color: Colors.white))),
                           ...cities.map((city) => DropdownMenuItem(
                                 value: city,
-                                child: Text(city.isEmpty ? '(No City)' : city, style: TextStyle(color: Colors.white)),
+                                child: Text(city.isEmpty ? '(No City)' : city,
+                                    style: TextStyle(color: Colors.white)),
                               )),
                         ],
                         onChanged: (value) {
@@ -307,7 +316,6 @@ class _CalendarPageState extends State<CalendarPage> {
                   },
                 ),
               ),
-            
             const SizedBox(height: 16),
           ],
         ),

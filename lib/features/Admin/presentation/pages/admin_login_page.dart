@@ -2,6 +2,7 @@ import 'package:arjun_guruji/features/Admin/presentation/pages/admin_dashboard_p
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:arjun_guruji/core/widgets/gradient_app_bar.dart';
+
 class AdminLoginPage extends StatefulWidget {
   const AdminLoginPage({super.key});
 
@@ -16,9 +17,9 @@ class AdminLoginPageState extends State<AdminLoginPage> {
 
   void _login() {
     Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const AdminDashboard()),
-        );
+      context,
+      MaterialPageRoute(builder: (context) => const AdminDashboard()),
+    );
     // if (_formKey.currentState!.validate()) {
     //   if (_usernameController.text == '' &&
     //       _passwordController.text == '') {

@@ -31,7 +31,9 @@ class _HomePageState extends State<HomePage> {
     if (notification != null) {
       final notificationId = notification['id'];
       final prefs = await SharedPreferences.getInstance();
-      final dismissed = prefs.getBool('latest_notification_dismissed_$notificationId') ?? false;
+      final dismissed =
+          prefs.getBool('latest_notification_dismissed_$notificationId') ??
+              false;
       if (!dismissed) {
         setState(() {
           showNotificationPopup = true;
@@ -44,7 +46,8 @@ class _HomePageState extends State<HomePage> {
   void _dismissNotificationPopup() async {
     if (latestNotification != null) {
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setBool('latest_notification_dismissed_${latestNotification!['id']}', true);
+      await prefs.setBool(
+          'latest_notification_dismissed_${latestNotification!['id']}', true);
     }
     setState(() {
       showNotificationPopup = false;

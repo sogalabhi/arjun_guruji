@@ -38,4 +38,4 @@ class UploadEventImage extends EventEvent {
   UploadEventImage(this.image, this.eventName);
   @override
   List<Object?> get props => [image, eventName];
-} 
+}

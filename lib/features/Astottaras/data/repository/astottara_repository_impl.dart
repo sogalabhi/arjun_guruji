@@ -15,7 +15,8 @@ class AstottarasRepositoryImpl implements AstottaraRepository {
 
   Future<Uint8List?> downloadBytes(String url) async {
     try {
-      final response = await Dio().get(url, options: Options(responseType: ResponseType.bytes));
+      final response = await Dio()
+          .get(url, options: Options(responseType: ResponseType.bytes));
       return Uint8List.fromList(response.data);
     } catch (_) {
       return null;
@@ -32,16 +33,21 @@ class AstottarasRepositoryImpl implements AstottaraRepository {
         if (cachedAstottaras.isEmpty) {
           return const Left('No internet and no cached astottaras available');
         }
-        return Right(cachedAstottaras.map((model) => AstottaraModel.toEntity(model)).toList());
+        return Right(cachedAstottaras
+            .map((model) => AstottaraModel.toEntity(model))
+            .toList());
       }
       // Check local vs remote count
       final localCount = box.length;
       final firestore = FirebaseFirestore.instance;
-      final remoteCount = (await firestore.collection('Astottaras').get()).docs.length;
+      final remoteCount =
+          (await firestore.collection('Astottaras').get()).docs.length;
       if (localCount == remoteCount && localCount > 0) {
         print('Astottaras: Local and remote counts match, loading from cache.');
         final cachedAstottaras = box.values.toList();
-        return Right(cachedAstottaras.map((model) => AstottaraModel.toEntity(model)).toList());
+        return Right(cachedAstottaras
+            .map((model) => AstottaraModel.toEntity(model))
+            .toList());
       }
       print('Astottaras: Syncing from remote...');
       final astottaras = await remoteDataSource.fetchAllAstottaras();
@@ -51,7 +57,8 @@ class AstottarasRepositoryImpl implements AstottaraRepository {
       await box.clear();
       for (final model in astottaras) {
         Uint8List? imageBytes = model.imageBytes;
-        if ((imageBytes == null || imageBytes.isEmpty) && model.imageUrl.isNotEmpty) {
+        if ((imageBytes == null || imageBytes.isEmpty) &&
+            model.imageUrl.isNotEmpty) {
           imageBytes = await downloadBytes(model.imageUrl);
         }
         final updatedModel = AstottaraModel(
@@ -62,7 +69,8 @@ class AstottarasRepositoryImpl implements AstottaraRepository {
         );
         await box.put(model.title, updatedModel);
       }
-      return Right(box.values.map((model) => AstottaraModel.toEntity(model)).toList());
+      return Right(
+          box.values.map((model) => AstottaraModel.toEntity(model)).toList());
     } catch (e) {
       return left(
         e.toString(),

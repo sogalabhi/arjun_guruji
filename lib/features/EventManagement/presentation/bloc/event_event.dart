@@ -21,4 +21,4 @@ class ToggleInterested extends EventEvent {
   List<Object?> get props => [eventId, increment];
 }
 
-class FetchEvents extends EventEvent {} 
+class FetchEvents extends EventEvent {}

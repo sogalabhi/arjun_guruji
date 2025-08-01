@@ -12,10 +12,11 @@ import 'package:arjun_guruji/core/widgets/gradient_app_bar.dart';
 class EventListPage extends StatelessWidget {
   const EventListPage({super.key});
 
-  
   // Helper method to get the next occurrence date for an event
   DateTime _getNextOccurrenceDate(EventEntity event, DateTime today) {
-    if (event.eventType == "Recurring" && event.day != null && event.frequency == "weekly") {
+    if (event.eventType == "Recurring" &&
+        event.day != null &&
+        event.frequency == "weekly") {
       // For recurring events, calculate the next occurrence
       return _getNextWeeklyOccurrence(event, today);
     } else {
@@ -28,33 +29,41 @@ class EventListPage extends StatelessWidget {
   DateTime _getNextWeeklyOccurrence(EventEntity event, DateTime today) {
     final targetWeekday = _dayStringToWeekday(event.day!);
     final currentWeekday = today.weekday;
-    
+
     int daysToAdd = targetWeekday - currentWeekday;
     if (daysToAdd <= 0) {
       daysToAdd += 7; // Move to next week
     }
-    
+
     final nextOccurrence = today.add(Duration(days: daysToAdd));
-    
+
     // Check if this occurrence is within the event's date range
     if (nextOccurrence.isAfter(event.endDate)) {
       return event.startDate; // Return start date if no future occurrences
     }
-    
+
     return nextOccurrence;
   }
 
   // Helper method to convert day string to weekday number
   int _dayStringToWeekday(String day) {
     switch (day.toLowerCase()) {
-      case 'monday': return DateTime.monday;
-      case 'tuesday': return DateTime.tuesday;
-      case 'wednesday': return DateTime.wednesday;
-      case 'thursday': return DateTime.thursday;
-      case 'friday': return DateTime.friday;
-      case 'saturday': return DateTime.saturday;
-      case 'sunday': return DateTime.sunday;
-      default: return DateTime.monday;
+      case 'monday':
+        return DateTime.monday;
+      case 'tuesday':
+        return DateTime.tuesday;
+      case 'wednesday':
+        return DateTime.wednesday;
+      case 'thursday':
+        return DateTime.thursday;
+      case 'friday':
+        return DateTime.friday;
+      case 'saturday':
+        return DateTime.saturday;
+      case 'sunday':
+        return DateTime.sunday;
+      default:
+        return DateTime.monday;
     }
   }
 
@@ -80,13 +89,15 @@ class EventListPage extends StatelessWidget {
     }
   }
 
- 
-
   // Helper method to get the next occurrence date for a recurring event (including today)
   DateTime? _getNextOrTodayOccurrence(EventEntity event, DateTime today) {
-    if (event.eventType == "Recurring" && event.day != null && event.frequency == "weekly") {
-      final eventStart = DateTime(event.startDate.year, event.startDate.month, event.startDate.day);
-      final eventEnd = DateTime(event.endDate.year, event.endDate.month, event.endDate.day);
+    if (event.eventType == "Recurring" &&
+        event.day != null &&
+        event.frequency == "weekly") {
+      final eventStart = DateTime(
+          event.startDate.year, event.startDate.month, event.startDate.day);
+      final eventEnd =
+          DateTime(event.endDate.year, event.endDate.month, event.endDate.day);
       if (today.isBefore(eventStart)) return eventStart;
       if (today.isAfter(eventEnd)) return null;
       final weekdayString = _weekdayToString(today.weekday).toLowerCase();
@@ -96,8 +107,10 @@ class EventListPage extends StatelessWidget {
       // Find the next occurrence after today
       for (int i = 1; i <= 7; i++) {
         final nextDay = today.add(Duration(days: i));
-        final nextWeekdayString = _weekdayToString(nextDay.weekday).toLowerCase();
-        if (nextWeekdayString == event.day!.toLowerCase() && !nextDay.isAfter(eventEnd)) {
+        final nextWeekdayString =
+            _weekdayToString(nextDay.weekday).toLowerCase();
+        if (nextWeekdayString == event.day!.toLowerCase() &&
+            !nextDay.isAfter(eventEnd)) {
           return nextDay;
         }
       }
@@ -120,7 +133,7 @@ class EventListPage extends StatelessWidget {
             final events = state.events;
             final now = DateTime.now();
             final today = DateTime(now.year, now.month, now.day);
-            
+
             // Get upcoming events (future + today) including recurring events
             final upcomingEvents = events.where((event) {
               if (event.eventType == "Recurring") {
@@ -128,11 +141,12 @@ class EventListPage extends StatelessWidget {
                 return _getNextOrTodayOccurrence(event, today) != null;
               } else {
                 // For non-recurring events, check if they start today or in the future (ignore time)
-                final eventDate = DateTime(event.startDate.year, event.startDate.month, event.startDate.day);
+                final eventDate = DateTime(event.startDate.year,
+                    event.startDate.month, event.startDate.day);
                 return !eventDate.isBefore(today); // include today
               }
             }).toList();
-            
+
             // Sort upcoming events by their next occurrence date
             upcomingEvents.sort((a, b) {
               final aNextDate = a.eventType == "Recurring"
@@ -143,7 +157,7 @@ class EventListPage extends StatelessWidget {
                   : _getNextOccurrenceDate(b, today);
               return aNextDate.compareTo(bNextDate);
             });
-            
+
             return Scaffold(
               appBar: GradientAppBar(
                 title: 'Events',
@@ -168,7 +182,8 @@ class EventListPage extends StatelessWidget {
                     final bloc = BlocProvider.of<EventBloc>(context);
                     bloc.add(FetchEvents());
                     // Wait for EventsLoaded state
-                    await bloc.stream.firstWhere((state) => state is EventsLoaded || state is EventsError);
+                    await bloc.stream.firstWhere((state) =>
+                        state is EventsLoaded || state is EventsError);
                   },
                   child: SingleChildScrollView(
                     physics: const AlwaysScrollableScrollPhysics(),
@@ -177,7 +192,8 @@ class EventListPage extends StatelessWidget {
                       children: [
                         // Trust Calendar Card
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
                           child: Card(
                             color: Colors.amber[50],
                             elevation: 2,
@@ -187,7 +203,8 @@ class EventListPage extends StatelessWidget {
                             child: Padding(
                               padding: const EdgeInsets.all(16.0),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   const Expanded(
                                     child: Text(
@@ -200,7 +217,8 @@ class EventListPage extends StatelessWidget {
                                   ),
                                   const SizedBox(width: 12),
                                   ElevatedButton.icon(
-                                    icon: const Icon(Icons.calendar_month, color: Colors.black),
+                                    icon: const Icon(Icons.calendar_month,
+                                        color: Colors.black),
                                     label: const Text('Trust Calendar'),
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.amber[700],
@@ -213,7 +231,8 @@ class EventListPage extends StatelessWidget {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => CalendarPage(events: events),
+                                          builder: (context) =>
+                                              CalendarPage(events: events),
                                         ),
                                       );
                                     },

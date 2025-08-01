@@ -25,32 +25,45 @@ class AstottarasBloc extends Bloc<AstottarasEvent, AstottarasState> {
     on<FetchAllAstottaras>(_onFetchAstottaras);
   }
 
-  Future<void> _onFetchAstottaras(FetchAllAstottaras event, Emitter<AstottarasState> emit) async {
+  Future<void> _onFetchAstottaras(
+      FetchAllAstottaras event, Emitter<AstottarasState> emit) async {
     emit(const AstottarasState.loading());
 
     try {
-      final List<ConnectivityResult> connectivityResults = await connectivity.checkConnectivity();
-      final ConnectivityResult connectivityResult = connectivityResults.isNotEmpty ? connectivityResults.first : ConnectivityResult.none;
+      final List<ConnectivityResult> connectivityResults =
+          await connectivity.checkConnectivity();
+      final ConnectivityResult connectivityResult =
+          connectivityResults.isNotEmpty
+              ? connectivityResults.first
+              : ConnectivityResult.none;
       if (connectivityResult == ConnectivityResult.none) {
         try {
           // No internet - Fetch from local Hive database
-          final List<AstottaraModel> localAstottaras = astottarasBox.values.toList();
-          final List<Astottara> astottaras = localAstottaras.map((astottaraModel) => AstottaraModel.toEntity(astottaraModel)).toList();
-          
+          final List<AstottaraModel> localAstottaras =
+              astottarasBox.values.toList();
+          final List<Astottara> astottaras = localAstottaras
+              .map((astottaraModel) => AstottaraModel.toEntity(astottaraModel))
+              .toList();
+
           emit(AstottarasState.astottarasLoaded(astottaras));
         } catch (e) {
-          emit(AstottarasState.error("Failed to load astottaras from local database: $e"));
+          emit(AstottarasState.error(
+              "Failed to load astottaras from local database: $e"));
         }
         return;
       }
 
       // Internet is available - Fetch from Firestore
-      final Either<String, List<Astottara>> result = await fetchAstottarasUseCase.call(NoParams());
+      final Either<String, List<Astottara>> result =
+          await fetchAstottarasUseCase.call(NoParams());
 
       await result.fold(
-        (failure) async => emit(AstottarasState.error(failure)), // Handle failure properly
+        (failure) async =>
+            emit(AstottarasState.error(failure)), // Handle failure properly
         (astottaras) async {
-          final List<AstottaraModel> astottaraModels = astottaras.map((astottara) => AstottaraModel.fromEntity(astottara)).toList();
+          final List<AstottaraModel> astottaraModels = astottaras
+              .map((astottara) => AstottaraModel.fromEntity(astottara))
+              .toList();
 
           // Store astottaras in Hive (await to ensure completion)
           await astottarasBox.clear();
@@ -62,7 +75,8 @@ class AstottarasBloc extends Bloc<AstottarasEvent, AstottarasState> {
         },
       );
     } catch (e) {
-      print("Error in _onFetchAstottaras: $e"); // Print unexpected errors for debugging
+      print(
+          "Error in _onFetchAstottaras: $e"); // Print unexpected errors for debugging
     }
   }
 }

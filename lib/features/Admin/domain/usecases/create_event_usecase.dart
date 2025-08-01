@@ -17,7 +17,8 @@ class CreateEventUseCase implements Usecase<Event, CreateEventParams, String> {
   @override
   Future<Either<String, Event>> call(CreateEventParams params) async {
     try {
-      final event = await repository.createEvent(params.event, image: params.image);
+      final event =
+          await repository.createEvent(params.event, image: params.image);
       return Right(event);
     } catch (e) {
       return Left(e.toString());

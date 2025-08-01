@@ -39,7 +39,8 @@ class NotificationsPage extends StatelessWidget {
                     child: Container(
                       width: double.infinity,
                       height: 80,
-                      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10),
@@ -57,7 +58,8 @@ class NotificationsPage extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final notification = notifications[index];
                     return Card(
-                      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Column(
@@ -82,7 +84,8 @@ class NotificationsPage extends StatelessWidget {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              "${notification.dateTime.toLocal()}".split(' ')[0],
+                              "${notification.dateTime.toLocal()}"
+                                  .split(' ')[0],
                               style: const TextStyle(
                                 fontSize: 12,
                                 color: Colors.grey,
@@ -96,30 +99,34 @@ class NotificationsPage extends StatelessWidget {
                                     try {
                                       final url = notification.onTapLink!;
                                       final uri = Uri.parse(url);
-                                      
+
                                       // Try to launch URL with external application mode
                                       if (await canLaunchUrl(uri)) {
                                         final result = await launchUrl(
-                                          uri, 
+                                          uri,
                                           mode: LaunchMode.externalApplication,
                                         );
                                         if (!result) {
-                                          throw Exception('Failed to launch URL');
+                                          throw Exception(
+                                              'Failed to launch URL');
                                         }
                                       } else {
                                         // If canLaunchUrl returns false, try with platform default mode
                                         final result = await launchUrl(
-                                          uri, 
+                                          uri,
                                           mode: LaunchMode.platformDefault,
                                         );
                                         if (!result) {
-                                          throw Exception('No app found to handle this URL');
+                                          throw Exception(
+                                              'No app found to handle this URL');
                                         }
                                       }
                                     } catch (e) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
                                         SnackBar(
-                                          content: Text("Could not open the link: ${e.toString()}"),
+                                          content: Text(
+                                              "Could not open the link: ${e.toString()}"),
                                           duration: Duration(seconds: 3),
                                         ),
                                       );

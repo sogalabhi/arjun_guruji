@@ -14,7 +14,10 @@ class EventBloc extends Bloc<EventEvent, EventState> {
   final EventsRepository repository;
 
   EventBloc({EventsRepository? repo})
-      : repository = repo ?? EventsRepositoryImpl(remoteDataSource: EventRemoteDataSourceImpl(FirebaseFirestore.instance)),
+      : repository = repo ??
+            EventsRepositoryImpl(
+                remoteDataSource:
+                    EventRemoteDataSourceImpl(FirebaseFirestore.instance)),
         super(EventsLoading()) {
     on<CheckInterestedStatus>((event, emit) async {
       emit(EventsLoading());
@@ -50,7 +53,8 @@ class EventBloc extends Bloc<EventEvent, EventState> {
     });
     on<ToggleInterested>((event, emit) async {
       emit(EventsLoading());
-      await repository.updateInterestedCount(eventId: event.eventId, increment: event.increment);
+      await repository.updateInterestedCount(
+          eventId: event.eventId, increment: event.increment);
       // Fetch updated count
       final result = await repository.getAllEvents();
       result.fold(
@@ -89,11 +93,12 @@ class EventBloc extends Bloc<EventEvent, EventState> {
         (failure) => emit(EventsError(failure)),
         (events) {
           for (final e in events) {
-            print('[EVENT] id: ${e.id}, title: ${e.title}, type: ${e.eventType}, start: ${e.startDate}, end: ${e.endDate}');
+            print(
+                '[EVENT] id: ${e.id}, title: ${e.title}, type: ${e.eventType}, start: ${e.startDate}, end: ${e.endDate}');
           }
           emit(EventsLoaded(events));
         },
       );
     });
   }
-} 
+}

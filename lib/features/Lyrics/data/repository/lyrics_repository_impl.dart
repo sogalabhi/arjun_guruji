@@ -22,9 +22,12 @@ class LyricsRepositoryImpl implements LyricsRepository {
       await box.clear();
       for (final model in lyrics) {
         Uint8List? imageBytes = model.imageBytes;
-        if ((imageBytes == null || imageBytes.isEmpty) && model.imageUrl != null && model.imageUrl!.isNotEmpty) {
+        if ((imageBytes == null || imageBytes.isEmpty) &&
+            model.imageUrl != null &&
+            model.imageUrl!.isNotEmpty) {
           try {
-            final response = await Dio().get(model.imageUrl!, options: Options(responseType: ResponseType.bytes));
+            final response = await Dio().get(model.imageUrl!,
+                options: Options(responseType: ResponseType.bytes));
             imageBytes = Uint8List.fromList(response.data);
           } catch (_) {
             imageBytes = null;
@@ -40,7 +43,8 @@ class LyricsRepositoryImpl implements LyricsRepository {
         );
         await box.put(model.docId, updatedModel);
       }
-      return Right(box.values.map((model) => LyricsModel.toEntity(model)).toList());
+      return Right(
+          box.values.map((model) => LyricsModel.toEntity(model)).toList());
     } catch (e) {
       return left(
         e.toString(),

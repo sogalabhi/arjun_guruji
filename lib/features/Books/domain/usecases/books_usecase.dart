@@ -16,7 +16,8 @@ class FetchBooksUseCase implements Usecase<List<Book>, NoParams, String> {
   }
 }
 
-class FetchBookSummariesUseCase implements Usecase<List<Book>, NoParams, String> {
+class FetchBookSummariesUseCase
+    implements Usecase<List<Book>, NoParams, String> {
   final BookRepository bookRepository;
   FetchBookSummariesUseCase(this.bookRepository);
   @override

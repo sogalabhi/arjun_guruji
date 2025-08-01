@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:typed_data';
+
 class ImageGridItem extends StatelessWidget {
   final dynamic item;
   final String Function(dynamic) getImageUrl;
@@ -101,10 +102,11 @@ class _ErrorHandledImageState extends State<_ErrorHandledImage> {
   bool _networkFailed = false;
   int _retryCount = 0;
 
-
   @override
   Widget build(BuildContext context) {
-    if (widget.imageBytes != null && widget.imageBytes!.isNotEmpty && !_memoryFailed) {
+    if (widget.imageBytes != null &&
+        widget.imageBytes!.isNotEmpty &&
+        !_memoryFailed) {
       return Image.memory(
         widget.imageBytes!,
         fit: BoxFit.cover,

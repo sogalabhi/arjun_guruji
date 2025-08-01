@@ -15,4 +15,4 @@ class DeleteEventUseCase implements Usecase<void, String, String> {
       return Left(e.toString());
     }
   }
-} 
+}

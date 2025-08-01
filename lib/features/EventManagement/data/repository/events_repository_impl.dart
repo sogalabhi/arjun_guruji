@@ -21,7 +21,8 @@ class EventsRepositoryImpl implements EventsRepository {
         // Online: check local vs remote count
         final localCount = eventsBox.length;
         final firestore = FirebaseFirestore.instance;
-        final remoteCount = (await firestore.collection('Events').get()).docs.length;
+        final remoteCount =
+            (await firestore.collection('Events').get()).docs.length;
         if (localCount == remoteCount && localCount > 0) {
           print('Events: Local and remote counts match, loading from cache.');
           final events = eventsBox.values.toList();

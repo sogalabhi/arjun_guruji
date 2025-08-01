@@ -6,7 +6,8 @@ class AudioState with _$AudioState {
 
   const factory AudioState.loading() = Loading;
 
-  const factory AudioState.audioLoaded(List<CategoryEntity> audios) = AudioLoaded;
+  const factory AudioState.audioLoaded(List<CategoryEntity> audios) =
+      AudioLoaded;
 
   const factory AudioState.error(String message) = Error;
 }

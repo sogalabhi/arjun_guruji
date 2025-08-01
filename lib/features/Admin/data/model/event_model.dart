@@ -37,6 +37,7 @@ class EventModel {
       }
       throw Exception('Invalid date value: $value');
     }
+
     return EventModel(
       id: map['id'] as String? ?? '',
       title: map['title'] as String? ?? '',
@@ -69,4 +70,4 @@ class EventModel {
       'status': status,
     };
   }
-} 
+}

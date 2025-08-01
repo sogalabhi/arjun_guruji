@@ -15,13 +15,15 @@ class NotificationRepositoryImpl implements NotificationRepository {
   }
 
   @override
-  Future<void> createNotification(NotificationEntity notification, {File? image}) async {
+  Future<void> createNotification(NotificationEntity notification,
+      {File? image}) async {
     final model = NotificationModel.fromEntity(notification);
     await remoteDataSource.createNotification(model, image: image);
   }
 
   @override
-  Future<void> updateNotification(NotificationEntity notification, {File? image}) async {
+  Future<void> updateNotification(NotificationEntity notification,
+      {File? image}) async {
     final model = NotificationModel.fromEntity(notification);
     await remoteDataSource.updateNotification(model, image: image);
   }
@@ -35,4 +37,4 @@ class NotificationRepositoryImpl implements NotificationRepository {
   Future<String> uploadImage(File imageFile, String notificationId) async {
     return await remoteDataSource.uploadImage(imageFile, notificationId);
   }
-} 
+}

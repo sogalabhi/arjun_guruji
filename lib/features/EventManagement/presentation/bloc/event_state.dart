@@ -34,4 +34,4 @@ class EventsError extends EventState {
   const EventsError(this.message);
   @override
   List<Object?> get props => [message];
-} 
+}
