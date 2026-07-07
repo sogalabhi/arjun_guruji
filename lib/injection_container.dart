@@ -12,6 +12,7 @@ import 'package:arjun_guruji/features/AudioPlayer/data/repository/audio_reposito
 import 'package:arjun_guruji/features/AudioPlayer/domain/repository/audio_repository.dart';
 import 'package:arjun_guruji/features/AudioPlayer/domain/usecases/audio_usecase.dart';
 import 'package:arjun_guruji/features/AudioPlayer/presentation/bloc/audio_bloc.dart';
+import 'package:arjun_guruji/features/AudioPlayer/presentation/bloc/global_audio_player_bloc.dart';
 import 'package:arjun_guruji/features/Books/data/datasource/books_remote_ds.dart';
 import 'package:arjun_guruji/features/Books/data/datasource/books_local_ds.dart';
 import 'package:arjun_guruji/features/Books/data/model/book_model.dart';
@@ -165,6 +166,9 @@ void audio() async {
 
   sl.registerFactory(
       () => AudioBloc(fetchAudioUseCase: sl()));
+
+  sl.registerLazySingleton(
+      () => GlobalAudioPlayerBloc(settingsBox: sl(instanceName: 'settingsBox')));
 }
 
 void lyrics() async {

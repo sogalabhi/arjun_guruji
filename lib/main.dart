@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:arjun_guruji/features/Astottaras/data/model/astottara_model.dart';
 import 'package:arjun_guruji/features/Books/data/model/book_model.dart';
 import 'package:arjun_guruji/features/Lyrics/data/model/lyrics_model.dart';
+import 'package:arjun_guruji/features/AudioPlayer/presentation/bloc/global_audio_player_bloc.dart';
+import 'package:arjun_guruji/features/AudioPlayer/presentation/widgets/now_playing_snackbar.dart';
 import 'package:arjun_guruji/injection_container.dart';
 import 'package:arjun_guruji/screens/splash_screen.dart';
 import 'package:arjun_guruji/core/widgets/connectivity_listner.dart';
@@ -191,8 +193,15 @@ class _MyAppState extends State<MyApp> {
       ),
     );
 
-    return BlocProvider(
-      create: (_) => sl<SettingsBloc>()..add(LoadSettings()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => sl<SettingsBloc>()..add(LoadSettings()),
+        ),
+        BlocProvider(
+          create: (_) => sl<GlobalAudioPlayerBloc>(),
+        ),
+      ],
       child: MaterialApp(
         navigatorKey: ConnectivityService.navigatorKey,
         debugShowCheckedModeBanner: false,
@@ -210,7 +219,12 @@ class _MyAppState extends State<MyApp> {
             ),
           ),
         ),
-        builder: (context, child) => ConnectivityListener(child: child ?? const SizedBox()),
+        builder: (context, child) => Stack(
+          children: [
+            ConnectivityListener(child: child ?? const SizedBox()),
+            const GlobalNowPlayingOverlay(),
+          ],
+        ),
         home: const SplashScreen(),
       ),
     );
