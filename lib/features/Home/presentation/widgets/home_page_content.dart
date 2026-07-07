@@ -3,7 +3,7 @@ import 'package:arjun_guruji/features/Admin/presentation/pages/admin_login_page.
 import 'package:arjun_guruji/features/Astottaras/presentation/pages/all_astottara_page.dart';
 import 'package:arjun_guruji/features/AudioPlayer/presentation/pages/audio_categories_page.dart';
 import 'package:arjun_guruji/features/Books/presentation/pages/all_books_page.dart';
-import 'package:arjun_guruji/features/Contact/presentation/pages/social_media_page.dart';
+import 'package:arjun_guruji/features/Contact/presentation/pages/connect_page.dart';
 import 'package:arjun_guruji/features/EventManagement/presentation/pages/event_list_page.dart';
 import 'package:arjun_guruji/features/Home/presentation/widgets/animated_grid_item.dart';
 import 'package:arjun_guruji/features/Lyrics/presentation/pages/lyrics_categories_page.dart';
@@ -56,11 +56,11 @@ class HomePageContent extends StatelessWidget {
             context, MaterialPageRoute(builder: (_) => EventListPage())),
       },
       {
-        "title": "About",
-        "subtitle": "About",
+        "title": "Connect",
+        "subtitle": "Connect",
         "imagePath": 'assets/mainlinks.png',
         "route": () => Navigator.push(context,
-            MaterialPageRoute(builder: (_) => const SocialMediaPage())),
+            MaterialPageRoute(builder: (_) => const ConnectPage())),
       },
     ];
 

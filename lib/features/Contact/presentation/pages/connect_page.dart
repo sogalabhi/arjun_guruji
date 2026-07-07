@@ -1,18 +1,19 @@
 import 'package:arjun_guruji/core/widgets/gradient_background.dart';
 import 'package:arjun_guruji/features/Contact/presentation/pages/contact_page.dart';
+import 'package:arjun_guruji/features/Contact/presentation/pages/donate_page.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:arjun_guruji/core/widgets/gradient_app_bar.dart';
 
-class SocialMediaPage extends StatelessWidget {
-  const SocialMediaPage({super.key});
+class ConnectPage extends StatelessWidget {
+  const ConnectPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         appBar: GradientAppBar(
-          title: 'Social Media',
+          title: 'Connect',
         ),
         body: GradientBackground(
           child: Padding(
@@ -70,14 +71,20 @@ class SocialMediaPage extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 30),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: socialMediaBox(
-                            "Contact",
-                            Icons.contact_page_outlined,
-                            '',
-                            context,
-                            isFullWidth: true),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          socialMediaBox(
+                              "Contact",
+                              Icons.contact_page_outlined,
+                              '',
+                              context),
+                          socialMediaBox(
+                              "Donate",
+                              Icons.volunteer_activism,
+                              '',
+                              context),
+                        ],
                       ),
                     ],
                   )
@@ -102,6 +109,8 @@ class SocialMediaPage extends StatelessWidget {
         return const Color(0xFF25D366);
       case 'contact':
         return Colors.teal[700]!;
+      case 'donate':
+        return Colors.amber[700]!;
       default:
         return Colors.blue[900]!;
     }
@@ -115,6 +124,9 @@ class SocialMediaPage extends StatelessWidget {
         if (name == "Contact") {
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => const ContactPage()));
+        } else if (name == "Donate") {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const DonatePage()));
         } else {
           Uri webUrl = Uri.parse(url);
           if (!await launchUrl(webUrl)) {
@@ -137,8 +149,7 @@ class SocialMediaPage extends StatelessWidget {
             ),
           ],
         ),
-        child: isFullWidth
-            ? Row(
+        child: isFullWidth            ? Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(

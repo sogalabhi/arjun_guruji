@@ -1,4 +1,5 @@
 class NotificationEntity {
+  final String id;
   final String title;
   final String description;
   final DateTime dateTime;
@@ -6,6 +7,7 @@ class NotificationEntity {
   final String? onTapLink;
 
   NotificationEntity({
+    required this.id,
     required this.title,
     required this.description,
     required this.dateTime,

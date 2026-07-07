@@ -27,6 +27,11 @@ import 'package:arjun_guruji/features/Lyrics/domain/repository/lyrics_repository
 import 'package:arjun_guruji/features/Lyrics/domain/usecases/fetch_astottaras_usecase.dart';
 import 'package:arjun_guruji/features/Lyrics/presentation/bloc/lyrics_bloc.dart';
 import 'package:arjun_guruji/features/Notifications/data/datasource/notifications_remote_ds.dart';
+import 'package:arjun_guruji/features/Notifications/domain/repository/notifications_repository.dart';
+import 'package:arjun_guruji/features/Notifications/data/repository/notifications_repository_impl.dart';
+import 'package:arjun_guruji/features/Notifications/domain/usecases/fetch_notifications_usecase.dart';
+import 'package:arjun_guruji/features/Notifications/domain/usecases/fetch_latest_notification_usecase.dart';
+import 'package:arjun_guruji/features/Notifications/presentation/bloc/notification_bloc.dart' as user_notification;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get_it/get_it.dart';
@@ -74,11 +79,7 @@ void setupLocator() {
   adminEvents();
   adminNotifications();
   eventManagement();
-
-  // Register NotificationsRemoteDataSource
-  sl.registerLazySingleton<NotificationsRemoteDataSource>(
-    () => NotificationsRemoteDataSource(firestoreInstance: sl()),
-  );
+  notifications();
 }
 
 void books() async {
@@ -257,4 +258,16 @@ void eventManagement() async {
   sl.registerFactory<em_bloc.EventBloc>(
     () => em_bloc.EventBloc(repository: sl()),
   );
+}
+
+void notifications() {
+  sl.registerLazySingleton<NotificationsRemoteDataSource>(
+    () => NotificationsRemoteDataSource(firestoreInstance: sl()),
+  );
+  sl.registerLazySingleton<NotificationsRepository>(
+    () => NotificationsRepositoryImpl(sl()),
+  );
+  sl.registerLazySingleton(() => FetchNotificationsUseCase(sl()));
+  sl.registerLazySingleton(() => FetchLatestNotificationUseCase(sl()));
+  sl.registerFactory(() => user_notification.NotificationBloc(sl()));
 }

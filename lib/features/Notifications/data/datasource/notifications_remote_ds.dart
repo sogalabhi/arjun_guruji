@@ -16,6 +16,7 @@ class NotificationsRemoteDataSource {
     final notifications = querySnapshot.docs.map((doc) {
       final data = doc.data();
       return NotificationModel(
+        id: doc.id,
         title: data['title'] ?? '',
         description: data['description'] ?? '',
         dateTime: (data['dateTime'] as Timestamp).toDate(),
@@ -28,33 +29,40 @@ class NotificationsRemoteDataSource {
     return notifications;
   }
 
-  Future<Map<String, dynamic>?> fetchLatestNotification() async {
-    final query = await firestore
+  Future<NotificationModel?> fetchLatestNotification() async {
+    final querySnapshot = await firestore
         .collection('Notifications')
         .where('isVisible', isEqualTo: true)
         .get();
-    if (query.docs.isNotEmpty) {
-      final docs = query.docs;
+    if (querySnapshot.docs.isEmpty) return null;
 
-      // Filter out notifications with past dateTime
-      final now = DateTime.now();
-      final futureNotifications = docs.where((doc) {
-        final notificationDateTime = (doc['dateTime'] as Timestamp).toDate();
-        return notificationDateTime.isAfter(now);
-      }).toList();
+    final now = DateTime.now();
+    final futureDocs = querySnapshot.docs.where((doc) {
+      final data = doc.data();
+      if (data['dateTime'] == null) return false;
+      final dateTime = (data['dateTime'] as Timestamp).toDate();
+      return dateTime.isAfter(now);
+    }).toList();
 
-      if (futureNotifications.isEmpty) {
-        return null; // No future notifications found
-      }
+    if (futureDocs.isEmpty) return null;
 
-      // Sort by dateTime (latest first)
-      futureNotifications.sort((a, b) =>
-          (b['dateTime'] as Timestamp).compareTo(a['dateTime'] as Timestamp));
+    // Sort by dateTime (latest first)
+    futureDocs.sort((a, b) {
+      final aTime = (a.data()['dateTime'] as Timestamp).toDate();
+      final bTime = (b.data()['dateTime'] as Timestamp).toDate();
+      return bTime.compareTo(aTime);
+    });
 
-      final data = futureNotifications.first.data();
-      data['id'] = futureNotifications.first.id;
-      return data;
-    }
-    return null;
+    final targetDoc = futureDocs.first;
+    final data = targetDoc.data();
+
+    return NotificationModel(
+      id: targetDoc.id,
+      title: data['title'] ?? '',
+      description: data['description'] ?? '',
+      dateTime: (data['dateTime'] as Timestamp).toDate(),
+      image: data['image'],
+      onTapLink: data['onTapLink'],
+    );
   }
 }

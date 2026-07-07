@@ -41,55 +41,7 @@ class ContactPage extends StatelessWidget {
                     color: Colors.white,
                   ),
                 ),
-                const SizedBox(height: 20),
-                ElevatedButton.icon(
-                  icon: Icon(Icons.volunteer_activism),
-                  label: Text('Donate'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.amber,
-                    foregroundColor: Colors.black,
-                    textStyle: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: const Text('Bank & UPI Details'),
-                        content: SingleChildScrollView(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Center(
-                                child: Image.asset(
-                                  'assets/donate.jpg',
-                                  height: 200,
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
-                              const SizedBox(height: 12),
-                              const Text(
-                                  'Swarna Nrisimha Datta Sai Peethika Seva Trust'),
-                              const Text('A/C #: 297301000012345'),
-                              const Text('IFSC: IOBA0002973'),
-                              const Text('Branch: Srirampura, Mysore'),
-                              const SizedBox(height: 16),
-                              const Text('UPI ID: 9448843939@iob'),
-                              const SizedBox(height: 8),
-                            ],
-                          ),
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.of(context).pop(),
-                            child: const Text('Close'),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 40),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [

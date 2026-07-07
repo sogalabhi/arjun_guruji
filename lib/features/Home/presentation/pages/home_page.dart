@@ -1,10 +1,12 @@
 import 'package:arjun_guruji/core/widgets/gradient_app_bar.dart';
 import 'package:arjun_guruji/features/Home/presentation/widgets/home_page_content.dart';
 import 'package:arjun_guruji/features/Notifications/presentation/pages/notifications_page.dart';
+import 'package:arjun_guruji/features/Notifications/domain/notification.dart';
+import 'package:arjun_guruji/features/Notifications/domain/usecases/fetch_latest_notification_usecase.dart';
+import 'package:arjun_guruji/core/usecases/usecase.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/notification_popup.dart';
-import 'package:arjun_guruji/features/Notifications/data/datasource/notifications_remote_ds.dart';
 import 'package:arjun_guruji/injection_container.dart';
 import 'package:upgrader/upgrader.dart';
 
@@ -17,7 +19,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool showNotificationPopup = false;
-  Map<String, dynamic>? latestNotification;
+  NotificationEntity? latestNotification;
 
   @override
   void initState() {
@@ -26,28 +28,33 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _checkAndShowLatestNotification() async {
-    final notificationsRemoteDS = sl<NotificationsRemoteDataSource>();
-    final notification = await notificationsRemoteDS.fetchLatestNotification();
-    if (notification != null) {
-      final notificationId = notification['id'];
-      final prefs = await SharedPreferences.getInstance();
-      final dismissed =
-          prefs.getBool('latest_notification_dismissed_$notificationId') ??
-              false;
-      if (!dismissed) {
-        setState(() {
-          showNotificationPopup = true;
-          latestNotification = notification;
-        });
-      }
-    }
+    final fetchLatestNotificationUseCase = sl<FetchLatestNotificationUseCase>();
+    final result = await fetchLatestNotificationUseCase(NoParams());
+    result.fold(
+      (failure) => null, // Ignore failures silently on startup
+      (notification) async {
+        if (notification != null) {
+          final notificationId = notification.id;
+          final prefs = await SharedPreferences.getInstance();
+          final dismissed =
+              prefs.getBool('latest_notification_dismissed_$notificationId') ??
+                  false;
+          if (!dismissed) {
+            setState(() {
+              showNotificationPopup = true;
+              latestNotification = notification;
+            });
+          }
+        }
+      },
+    );
   }
 
   void _dismissNotificationPopup() async {
     if (latestNotification != null) {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool(
-          'latest_notification_dismissed_${latestNotification!['id']}', true);
+          'latest_notification_dismissed_${latestNotification!.id}', true);
     }
     setState(() {
       showNotificationPopup = false;
@@ -67,7 +74,7 @@ class _HomePageState extends State<HomePage> {
                   icon: const Icon(Icons.notifications),
                   onPressed: () => Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => NotificationsPage(),
+                      builder: (context) => const NotificationsPage(),
                     ),
                   ),
                 ),

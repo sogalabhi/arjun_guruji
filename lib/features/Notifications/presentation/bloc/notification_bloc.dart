@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:arjun_guruji/core/usecases/usecase.dart';
 import 'notification_event.dart';
 import 'notification_state.dart';
 import '../../domain/usecases/fetch_notifications_usecase.dart';
@@ -10,12 +11,11 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
       : super(NotificationInitial()) {
     on<FetchNotifications>((event, emit) async {
       emit(NotificationLoading());
-      try {
-        final notifications = await fetchNotificationsUseCase();
-        emit(NotificationLoaded(notifications));
-      } catch (e) {
-        emit(NotificationError(e.toString()));
-      }
+      final result = await fetchNotificationsUseCase(NoParams());
+      result.fold(
+        (failure) => emit(NotificationError(failure)),
+        (notifications) => emit(NotificationLoaded(notifications)),
+      );
     });
   }
 }

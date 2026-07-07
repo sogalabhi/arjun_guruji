@@ -1,7 +1,8 @@
+import 'package:arjun_guruji/features/Notifications/domain/notification.dart';
 import 'package:flutter/material.dart';
 
 class NotificationPopup extends StatelessWidget {
-  final Map<String, dynamic> notification;
+  final NotificationEntity notification;
   final VoidCallback onClose;
 
   const NotificationPopup({
@@ -37,11 +38,13 @@ class NotificationPopup extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    notification['title'] ?? '',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
+                  Expanded(
+                    child: Text(
+                      notification.title,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
                     ),
                   ),
                   IconButton(
@@ -52,13 +55,13 @@ class NotificationPopup extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Text(
-                notification['description'] ?? notification['message'] ?? '',
+                notification.description,
                 style: const TextStyle(fontSize: 15),
               ),
-              if (notification['image'] != null)
+              if (notification.image != null)
                 Padding(
                   padding: const EdgeInsets.only(top: 12.0),
-                  child: Image.network(notification['image'], height: 120),
+                  child: Image.network(notification.image!, height: 120),
                 ),
             ],
           ),

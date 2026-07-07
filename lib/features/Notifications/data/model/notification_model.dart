@@ -1,4 +1,7 @@
+import '../../domain/notification.dart';
+
 class NotificationModel {
+  final String id;
   final String title;
   final String description;
   final DateTime dateTime;
@@ -6,6 +9,7 @@ class NotificationModel {
   final String? onTapLink;
 
   NotificationModel({
+    required this.id,
     required this.title,
     required this.description,
     required this.dateTime,
@@ -13,10 +17,11 @@ class NotificationModel {
     this.onTapLink,
   });
 
-  factory NotificationModel.fromJson(Map<String, dynamic> json) {
+  factory NotificationModel.fromJson(Map<String, dynamic> json, String documentId) {
     return NotificationModel(
-      title: json['title'],
-      description: json['description'],
+      id: documentId,
+      title: json['title'] ?? '',
+      description: json['description'] ?? '',
       dateTime: DateTime.parse(json['dateTime']),
       image: json['image'],
       onTapLink: json['onTapLink'],
@@ -30,4 +35,15 @@ class NotificationModel {
         'image': image,
         'onTapLink': onTapLink,
       };
+
+  NotificationEntity toEntity() {
+    return NotificationEntity(
+      id: id,
+      title: title,
+      description: description,
+      dateTime: dateTime,
+      image: image,
+      onTapLink: onTapLink,
+    );
+  }
 }

@@ -4,12 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/notification_bloc.dart';
 import '../bloc/notification_event.dart';
 import '../bloc/notification_state.dart';
-import '../../domain/usecases/fetch_notifications_usecase.dart';
-import '../../data/repository/notifications_repository_impl.dart';
-import '../../data/datasource/notifications_remote_ds.dart';
 import 'package:arjun_guruji/core/widgets/gradient_background.dart';
 import 'package:arjun_guruji/core/widgets/gradient_app_bar.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:arjun_guruji/injection_container.dart';
 
 class NotificationsPage extends StatelessWidget {
   const NotificationsPage({super.key});
@@ -17,13 +15,7 @@ class NotificationsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => NotificationBloc(
-        FetchNotificationsUseCase(
-          NotificationsRepositoryImpl(
-            NotificationsRemoteDataSource(),
-          ),
-        ),
-      )..add(FetchNotifications()),
+      create: (_) => sl<NotificationBloc>()..add(FetchNotifications()),
       child: Scaffold(
         appBar: GradientAppBar(
           title: 'Notifications',
@@ -87,9 +79,9 @@ class NotificationsPage extends StatelessWidget {
                               "${notification.dateTime.toLocal()}"
                                   .split(' ')[0],
                               style: const TextStyle(
-                                fontSize: 12,
-                                color: Colors.grey,
-                              ),
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.bold),
                             ),
                             if (notification.onTapLink != null)
                               Align(
@@ -127,7 +119,7 @@ class NotificationsPage extends StatelessWidget {
                                         SnackBar(
                                           content: Text(
                                               "Could not open the link: ${e.toString()}"),
-                                          duration: Duration(seconds: 3),
+                                          duration: const Duration(seconds: 3),
                                         ),
                                       );
                                     }

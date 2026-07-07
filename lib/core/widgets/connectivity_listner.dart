@@ -14,6 +14,7 @@ class ConnectivityListener extends StatefulWidget {
 
 class ConnectivityListenerState extends State<ConnectivityListener> {
   final Connectivity _connectivity = Connectivity();
+  bool? _wasOnline;
 
   @override
   void initState() {
@@ -25,22 +26,33 @@ class ConnectivityListenerState extends State<ConnectivityListener> {
     _connectivity.onConnectivityChanged.listen((result) {
       final online = result.isNotEmpty && result.first != ConnectivityResult.none;
       ConnectivityService.isOnline.value = online;
-      final overlayState = ConnectivityService.navigatorKey.currentState?.overlay;
-      if (overlayState != null) {
-        if (!online) {
-          // No internet
-          TopSnackbar.show(
-            overlayState: overlayState,
-            message: 'No Internet Connection',
-            backgroundColor: Colors.red,
-          );
-        } else {
-          // Internet connected
-          TopSnackbar.show(
-            overlayState: overlayState,
-            message: 'Internet Connected',
-            backgroundColor: Colors.green,
-          );
+      
+      // If this is the initial event on app load, just save the status and do not show snackbar.
+      if (_wasOnline == null) {
+        _wasOnline = online;
+        return;
+      }
+
+      // Show snackbar only if the status actually changed
+      if (online != _wasOnline) {
+        _wasOnline = online;
+        final overlayState = ConnectivityService.navigatorKey.currentState?.overlay;
+        if (overlayState != null) {
+          if (!online) {
+            // No internet
+            TopSnackbar.show(
+              overlayState: overlayState,
+              message: 'No Internet Connection',
+              backgroundColor: Colors.red,
+            );
+          } else {
+            // Internet connected
+            TopSnackbar.show(
+              overlayState: overlayState,
+              message: 'Internet Connected',
+              backgroundColor: Colors.green,
+            );
+          }
         }
       }
     });

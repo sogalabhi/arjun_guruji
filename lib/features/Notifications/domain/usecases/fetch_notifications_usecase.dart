@@ -1,11 +1,14 @@
+import 'package:arjun_guruji/core/usecases/usecase.dart';
+import 'package:dartz/dartz.dart';
 import '../notification.dart';
-import '../../data/repository/notifications_repository_impl.dart';
+import '../repository/notifications_repository.dart';
 
-class FetchNotificationsUseCase {
-  final NotificationsRepositoryImpl repository;
+class FetchNotificationsUseCase implements Usecase<List<NotificationEntity>, NoParams, String> {
+  final NotificationsRepository repository;
   FetchNotificationsUseCase(this.repository);
 
-  Future<List<NotificationEntity>> call() async {
+  @override
+  Future<Either<String, List<NotificationEntity>>> call(NoParams params) async {
     return await repository.fetchNotifications();
   }
 }
