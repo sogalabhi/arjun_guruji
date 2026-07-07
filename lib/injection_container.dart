@@ -156,7 +156,7 @@ void audio() async {
   sl.registerFactory(() => FetchAudioUseCase(sl()));
 
   sl.registerFactory(
-      () => AudioBloc(fetchAudioUseCase: sl(), connectivity: sl()));
+      () => AudioBloc(fetchAudioUseCase: sl()));
 }
 
 void lyrics() async {

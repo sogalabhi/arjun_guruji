@@ -86,20 +86,12 @@ class __$$FetchAllAudioImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$FetchAllAudioImpl
-    with DiagnosticableTreeMixin
-    implements FetchAllAudio {
+class _$FetchAllAudioImpl implements FetchAllAudio {
   const _$FetchAllAudioImpl();
 
   @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+  String toString() {
     return 'AudioEvent.fetchAllAudio()';
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('type', 'AudioEvent.fetchAllAudio'));
   }
 
   @override
@@ -262,18 +254,12 @@ class __$$InitialImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$InitialImpl with DiagnosticableTreeMixin implements Initial {
+class _$InitialImpl implements Initial {
   const _$InitialImpl();
 
   @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+  String toString() {
     return 'AudioState.initial()';
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('type', 'AudioState.initial'));
   }
 
   @override
@@ -382,18 +368,12 @@ class __$$LoadingImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$LoadingImpl with DiagnosticableTreeMixin implements Loading {
+class _$LoadingImpl implements Loading {
   const _$LoadingImpl();
 
   @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+  String toString() {
     return 'AudioState.loading()';
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty('type', 'AudioState.loading'));
   }
 
   @override
@@ -517,7 +497,7 @@ class __$$AudioLoadedImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$AudioLoadedImpl with DiagnosticableTreeMixin implements AudioLoaded {
+class _$AudioLoadedImpl implements AudioLoaded {
   const _$AudioLoadedImpl(final List<CategoryEntity> audios) : _audios = audios;
 
   final List<CategoryEntity> _audios;
@@ -529,16 +509,8 @@ class _$AudioLoadedImpl with DiagnosticableTreeMixin implements AudioLoaded {
   }
 
   @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+  String toString() {
     return 'AudioState.audioLoaded(audios: $audios)';
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('type', 'AudioState.audioLoaded'))
-      ..add(DiagnosticsProperty('audios', audios));
   }
 
   @override
@@ -677,23 +649,15 @@ class __$$ErrorImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$ErrorImpl with DiagnosticableTreeMixin implements Error {
+class _$ErrorImpl implements Error {
   const _$ErrorImpl(this.message);
 
   @override
   final String message;
 
   @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+  String toString() {
     return 'AudioState.error(message: $message)';
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('type', 'AudioState.error'))
-      ..add(DiagnosticsProperty('message', message));
   }
 
   @override

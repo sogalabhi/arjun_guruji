@@ -116,10 +116,39 @@ class AudioCategoriesPage extends StatelessWidget {
                         );
                       } else if (state is Error) {
                         return Center(
-                            child: Text(
-                          state.message,
-                          style: const TextStyle(color: Colors.white),
-                        ));
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.wifi_off_rounded,
+                                  size: 72,
+                                  color: Colors.white70,
+                                ),
+                                const SizedBox(height: 16),
+                                Text(
+                                  state.message,
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(height: 8),
+                                const Text(
+                                  "Audio features are online-only. Connect to the internet to load tracks.",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white70,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
                       } else {
                         return const Center(
                             child: Text('Something went wrong!',

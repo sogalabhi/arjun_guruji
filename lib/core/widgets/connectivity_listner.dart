@@ -25,19 +25,19 @@ class ConnectivityListenerState extends State<ConnectivityListener> {
     _connectivity.onConnectivityChanged.listen((result) {
       final online = result.isNotEmpty && result.first != ConnectivityResult.none;
       ConnectivityService.isOnline.value = online;
-      final activeContext = ConnectivityService.navigatorKey.currentContext;
-      if (activeContext != null) {
+      final overlayState = ConnectivityService.navigatorKey.currentState?.overlay;
+      if (overlayState != null) {
         if (!online) {
           // No internet
           TopSnackbar.show(
-            context: activeContext,
+            overlayState: overlayState,
             message: 'No Internet Connection',
             backgroundColor: Colors.red,
           );
         } else {
           // Internet connected
           TopSnackbar.show(
-            context: activeContext,
+            overlayState: overlayState,
             message: 'Internet Connected',
             backgroundColor: Colors.green,
           );

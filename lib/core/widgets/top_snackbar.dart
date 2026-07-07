@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 
 class TopSnackbar {
   static void show({
-    required BuildContext context,
+    BuildContext? context,
+    OverlayState? overlayState,
     required String message,
     required Color backgroundColor,
   }) {
     // Get the OverlayState
-    final overlayState = Overlay.of(context);
+    final activeOverlayState = overlayState ?? (context != null ? Overlay.of(context) : null);
+    if (activeOverlayState == null) return;
 
     // Declare the OverlayEntry variable
     late OverlayEntry overlayEntry;
@@ -24,7 +26,7 @@ class TopSnackbar {
     );
 
     // Insert the OverlayEntry
-    overlayState.insert(overlayEntry);
+    activeOverlayState.insert(overlayEntry);
 
     // Automatically dismiss after 3 seconds
     Future.delayed(const Duration(seconds: 3), () {
@@ -85,24 +87,29 @@ class TopSnackbarWidgetState extends State<TopSnackbarWidget>
 
   @override
   Widget build(BuildContext context) {
-    return SlideTransition(
-      position: _offsetAnimation,
-      child: Material(
-        color: Colors.transparent,
-        child: SizedBox(
-          height: 20,
+    return Positioned(
+      top: 0,
+      left: 0,
+      right: 0,
+      child: SlideTransition(
+        position: _offsetAnimation,
+        child: Material(
+          color: Colors.transparent,
           child: Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
             color: widget.backgroundColor,
-            child: Text(
-              widget.message,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
+            child: SafeArea(
+              bottom: false,
+              child: Text(
+                widget.message,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
               ),
-              textAlign: TextAlign.center,
             ),
           ),
         ),
