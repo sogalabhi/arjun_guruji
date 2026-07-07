@@ -5,61 +5,14 @@
 **Arjun Guruji** is a devotional mobile application built to spread spirituality, knowledge, and event awareness in a seamless and modern experience.
 
 ### 🌟 Core Features:
-- 🎵 **Audio Player:** Devotional songs and chants with lyrics & images.
-- 📖 **Books & Astottaras:** Access PDFs and lyric content offline.
-- 🔔 **Notifications:** Get alerted about new content and events via FCM.
-- 📅 **Event Management Module (Upcoming):**
-  - View upcoming spiritual & cultural events.
-  - Add to Google Calendar, mark interest, and share.
-  - Live YouTube integration and post-event galleries.
-- 🎨 **Modern UI with Smooth Animations**
-- 🧱 **Clean Architecture:** Code structured with Bloc, Data-Repo-Entity layers.
-- 📦 **Hive Integration:** Offline access for lyrics, books, and content.
-
----
-
-# ✅ Admin Panel Feature Checklist
-
-## 🔐 Authentication
-- [ ] Admin Login (Email/Password or Firebase Auth)
-
-## 🎵 Audio Module
-- [ ] Add Category (name + image)
-- [ ] Upload Audio (title, file, image, lyrics, category)
-- [ ] Edit/Delete Category or Audio
-
-## 🔔 Notifications
-- [ ] Send FCM Notifications (title, body, link to page)
-
-## 📅 Events Module
-- [ ] Create Event (title, date, time, venue, desc)
-- [ ] Link to Google Calendar
-- [ ] Mark Recurring Events (e.g., weekly arti)
-- [ ] Gallery Uploads (post-event images)
-- [ ] Interested Button Tracking (like BookMyShow)
-- [ ] Social Media Links (Insta/Facebook posts)
-- [ ] YouTube Live Embed
-- [ ] Shareable Event Link
-
-## 📊 Insights & Stats
-- [ ] Live Stats (views, interests)
-- [ ] Event-wise Engagement Tracking
-- [ ] Dashboard Summary
-
-## 🧾 Organizer Info
-- [ ] Club/Organizer Name
-- [ ] Contact Email / Phone / Social Handles
-
-## 🧠 Categorization
-- [ ] Event Tags (Cultural, Spiritual, Workshop, etc.)
-- [ ] Filters or Tabs for categories
-
-## 🗂 Books / Astottara / Lyrics Module
-- [ ] Upload Book PDFs / Astottaras
-- [ ] Store Lyrics in Hive
-- [ ] UI to Add/Edit Content
-
-## 🔒 Roles & Permissions (Optional)
-- [ ] Different Admin Roles (Superadmin, Editor)
-
----
+- 🎵 **Audio Player:** High-quality devotional songs and chants with synced lyrics and offline fallback UI.
+- 📖 **Books & Astottaras Library:** Full offline access to text content via a robust Hive local caching layer, actively synchronized with Firestore.
+- ⚙️ **Global Reading Settings:** Centralized, reactive state management allowing users to customize font size (16-32px), switch themes (Light, Sepia, Dark), and toggle classic/modern font styles globally across the app.
+- 🔠 **Premium Offline Typography:** Built-in Kannada script optimization using `Noto Sans Kannada` and `Noto Serif Kannada` for stunning, distraction-free reading without internet requirements.
+- 🔔 **Push Notifications:** Instant alerts about new content and events powered by Firebase Cloud Messaging (FCM).
+- 📅 **Event Management & Social Hub:**
+  - View upcoming spiritual and cultural events.
+  - Access seamless links to YouTube, Instagram, and Facebook.
+  - **UPI & Donations:** Integrated donation gateways supporting instant UPI transactions.
+- 🎨 **Modern Interface:** Distraction-free content views, micro-animations, and dynamic gradient backgrounds optimized for all ages.
+- 🧱 **Clean Architecture:** Enterprise-grade structure cleanly separating Domain, Data, and Presentation layers using Bloc and GetIt dependency injection.
