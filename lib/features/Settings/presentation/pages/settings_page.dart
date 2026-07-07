@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../../core/widgets/gradient_background.dart';
 import '../../../../core/widgets/gradient_app_bar.dart';
@@ -15,6 +16,20 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  String _version = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPackageInfo();
+  }
+
+  Future<void> _loadPackageInfo() async {
+    final info = await PackageInfo.fromPlatform();
+    setState(() {
+      _version = 'v${info.version} (${info.buildNumber})';
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -139,19 +154,10 @@ class _SettingsPageState extends State<SettingsPage> {
                           Share.share('Check out Arjun Guruji app: https://play.google.com/store/apps/details?id=com.arjunguruji.app');
                         },
                       ),
-                      const Divider(),
                       ListTile(
-                        leading: const Icon(Icons.star, color: Colors.amber),
-                        title: const Text('Rate App'),
-                        onTap: () {
-                          // Implement rating logic or URL launch
-                        },
-                      ),
-                      const Divider(),
-                      const ListTile(
-                        leading: Icon(Icons.info, color: Colors.grey),
-                        title: Text('App Version'),
-                        trailing: Text('Version 1.0.0', style: TextStyle(color: Colors.grey)),
+                        leading: const Icon(Icons.info, color: Colors.grey),
+                        title: const Text('App Version'),
+                        trailing: Text(_version, style: const TextStyle(color: Colors.grey)),
                       ),
                     ],
                   ),

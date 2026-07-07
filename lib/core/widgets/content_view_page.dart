@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../features/Settings/presentation/pages/settings_page.dart';
 import '../../features/Settings/presentation/bloc/settings_bloc.dart';
 import '../../features/Settings/presentation/bloc/settings_event.dart';
 import '../../features/Settings/presentation/bloc/settings_state.dart';
@@ -72,22 +73,13 @@ class ContentViewPageState extends State<ContentViewPage> {
                 onPressed: () => _showSearchDialog(context, isDarkMode),
               ),
               IconButton(
-                icon: Icon(
-                  isDarkMode
-                      ? Icons.dark_mode
-                      : (isSepia ? Icons.menu_book : Icons.light_mode),
-                  color: textColor,
-                ),
+                icon: Icon(Icons.settings, color: textColor),
                 onPressed: () {
-                  String nextTheme;
-                  if (settings.readingTheme == 'light') {
-                    nextTheme = 'sepia';
-                  } else if (settings.readingTheme == 'sepia') {
-                    nextTheme = 'dark';
-                  } else {
-                    nextTheme = 'light';
-                  }
-                  context.read<SettingsBloc>().add(UpdateTheme(nextTheme));
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const SettingsPage(),
+                    ),
+                  );
                 },
               ),
             ],
@@ -96,15 +88,6 @@ class ContentViewPageState extends State<ContentViewPage> {
             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
             child: Column(
               children: [
-                Slider(
-                  min: 16,
-                  max: 32,
-                  value: settings.fontSize,
-                  activeColor: Colors.amber,
-                  onChanged: (value) {
-                    context.read<SettingsBloc>().add(UpdateFontSize(value));
-                  },
-                ),
                 Expanded(
                   child: widget.content.isEmpty
                       ? Center(
