@@ -3,13 +3,10 @@ import 'package:arjun_guruji/core/widgets/gradient_background.dart';
 import 'package:arjun_guruji/core/widgets/gradient_app_bar.dart';
 import 'package:arjun_guruji/core/widgets/image_grid_view.dart';
 import 'package:arjun_guruji/core/widgets/search_bar.dart';
-import 'package:arjun_guruji/features/Astottaras/data/model/astottara_model.dart';
-import 'package:arjun_guruji/features/Astottaras/domain/usecases/fetch_astottaras_usecase.dart';
 import 'package:arjun_guruji/features/Astottaras/presentation/bloc/astottara_bloc.dart';
 import 'package:arjun_guruji/injection_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hive/hive.dart';
 import 'package:shimmer/shimmer.dart';
 
 class AllAstottaraPage extends StatefulWidget {
@@ -26,11 +23,7 @@ class AllAstottaraPageState extends State<AllAstottaraPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => AstottarasBloc(
-        fetchAstottarasUseCase: sl<FetchAstottarasUseCase>(),
-        astottarasBox: Hive.box<AstottaraModel>('astottarasBox'),
-        connectivity: sl(),
-      )..add(const FetchAllAstottaras()),
+      create: (context) => sl<AstottarasBloc>()..add(const FetchAllAstottaras()),
       child: Scaffold(
         appBar: GradientAppBar(
           title: 'Astottaras',

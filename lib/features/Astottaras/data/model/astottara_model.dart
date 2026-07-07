@@ -18,19 +18,31 @@ class AstottaraModel extends HiveObject {
   @HiveField(3)
   final Uint8List? imageBytes;
 
+  @HiveField(4)
+  final DateTime? lastUpdated;
+
   AstottaraModel({
     required this.title,
     required this.imageUrl,
     this.content,
     this.imageBytes,
+    this.lastUpdated,
   });
 
   factory AstottaraModel.fromJson(Map<String, dynamic> json) {
+    DateTime? parsedDate;
+    if (json['lastUpdated'] is DateTime) {
+      parsedDate = json['lastUpdated'] as DateTime;
+    } else if (json['lastUpdated'] is String) {
+      parsedDate = DateTime.tryParse(json['lastUpdated'] as String);
+    }
+
     return AstottaraModel(
-      title: json['title'],
-      imageUrl: json['imageUrl'],
-      content: json['content'],
-      imageBytes: json['imageBytes'],
+      title: json['title'] ?? '',
+      imageUrl: json['imageUrl'] ?? '',
+      content: json['content'] as String?,
+      imageBytes: json['imageBytes'] as Uint8List?,
+      lastUpdated: parsedDate,
     );
   }
 
@@ -40,6 +52,7 @@ class AstottaraModel extends HiveObject {
       'imageUrl': imageUrl,
       'content': content,
       'imageBytes': imageBytes,
+      'lastUpdated': lastUpdated?.toIso8601String(),
     };
   }
 
@@ -49,6 +62,7 @@ class AstottaraModel extends HiveObject {
       imageUrl: astottara.imageUrl,
       content: astottara.content,
       imageBytes: astottara.imageBytes,
+      lastUpdated: astottara.lastUpdated,
     );
   }
 
@@ -58,6 +72,7 @@ class AstottaraModel extends HiveObject {
       imageUrl: astottaraModel.imageUrl,
       content: astottaraModel.content,
       imageBytes: astottaraModel.imageBytes,
+      lastUpdated: astottaraModel.lastUpdated,
     );
   }
 }

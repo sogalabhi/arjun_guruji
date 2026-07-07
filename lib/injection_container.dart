@@ -1,5 +1,6 @@
 import 'package:arjun_guruji/features/Admin/domain/usecases/upload_event_image_usecase.dart';
 import 'package:arjun_guruji/features/Astottaras/data/datasource/ast_remote_ds.dart';
+import 'package:arjun_guruji/features/Astottaras/data/datasource/ast_local_ds.dart';
 import 'package:arjun_guruji/features/Astottaras/data/model/astottara_model.dart';
 import 'package:arjun_guruji/features/Astottaras/data/repository/astottara_repository_impl.dart';
 import 'package:arjun_guruji/features/Astottaras/domain/repository/astottaras_repository.dart';
@@ -104,9 +105,20 @@ void books() async {
 }
 
 void astottaras() async {
+  // Register Hive Box instance first
+  final Box<AstottaraModel> astottaraBox =
+      await Hive.openBox<AstottaraModel>('astottarasBox');
+  sl.registerLazySingleton<Box<AstottaraModel>>(() => astottaraBox);
+
+  // Register local data source
+  sl.registerLazySingleton<AstottarasLocalDataSource>(
+    () => AstottarasLocalDataSourceImpl(astottaraBox: sl()),
+  );
+
   sl.registerLazySingleton<AstottaraRepository>(
     () => AstottarasRepositoryImpl(
       remoteDataSource: sl(),
+      localDataSource: sl(),
     ),
   );
 
@@ -115,13 +127,8 @@ void astottaras() async {
 
   sl.registerFactory(() => FetchAstottarasUseCase(sl()));
 
-  // Register Hive Box instance
-  final Box<AstottaraModel> astottaraBox =
-      await Hive.openBox<AstottaraModel>('astottarasBox');
-  sl.registerLazySingleton<Box<AstottaraModel>>(() => astottaraBox);
-
   sl.registerFactory(() => AstottarasBloc(
-      fetchAstottarasUseCase: sl(), astottarasBox: sl(), connectivity: sl()));
+      fetchAstottarasUseCase: sl(), localDataSource: sl(), connectivity: sl()));
 }
 
 void audio() async {

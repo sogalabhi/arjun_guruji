@@ -5,11 +5,13 @@ class Astottara {
   final String imageUrl;
   final String? content;
   final Uint8List? imageBytes;
+  final DateTime? lastUpdated;
 
   Astottara({
     required this.title,
     required this.imageUrl,
     this.content,
     this.imageBytes,
+    this.lastUpdated,
   });
 }

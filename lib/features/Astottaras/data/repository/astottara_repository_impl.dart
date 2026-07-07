@@ -1,35 +1,39 @@
 import 'package:arjun_guruji/features/Astottaras/data/datasource/ast_remote_ds.dart';
+import 'package:arjun_guruji/features/Astottaras/data/datasource/ast_local_ds.dart';
 import 'package:arjun_guruji/features/Astottaras/data/model/astottara_model.dart';
 import 'package:arjun_guruji/features/Astottaras/domain/entity/astottara.dart';
 import 'package:arjun_guruji/features/Astottaras/domain/repository/astottaras_repository.dart';
 import 'package:dartz/dartz.dart';
-import 'package:hive/hive.dart';
 import 'package:arjun_guruji/core/services/connectivity_service.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:typed_data';
 import 'package:dio/dio.dart';
 
+Future<Uint8List?> _downloadBytes(String url) async {
+  try {
+    final response = await Dio()
+        .get(url, options: Options(responseType: ResponseType.bytes));
+    return Uint8List.fromList(response.data);
+  } catch (_) {
+    return null;
+  }
+}
+
 class AstottarasRepositoryImpl implements AstottaraRepository {
   final AstottarasRemoteDataSource remoteDataSource;
-  const AstottarasRepositoryImpl({required this.remoteDataSource});
+  final AstottarasLocalDataSource localDataSource;
 
-  Future<Uint8List?> downloadBytes(String url) async {
-    try {
-      final response = await Dio()
-          .get(url, options: Options(responseType: ResponseType.bytes));
-      return Uint8List.fromList(response.data);
-    } catch (_) {
-      return null;
-    }
-  }
+  const AstottarasRepositoryImpl({
+    required this.remoteDataSource,
+    required this.localDataSource,
+  });
 
   @override
   Future<Either<String, List<Astottara>>> fetchAllAstottaras() async {
     try {
-      final box = Hive.box<AstottaraModel>('astottarasBox');
+      final cachedAstottaras = localDataSource.getCachedAstottaras();
+
       if (!ConnectivityService.isOnline.value) {
-        // Offline: load from Hive
-        final cachedAstottaras = box.values.toList();
+        // Offline: load from cache
         if (cachedAstottaras.isEmpty) {
           return const Left('No internet and no cached astottaras available');
         }
@@ -37,44 +41,111 @@ class AstottarasRepositoryImpl implements AstottaraRepository {
             .map((model) => AstottaraModel.toEntity(model))
             .toList());
       }
-      // Check local vs remote count
-      final localCount = box.length;
-      final firestore = FirebaseFirestore.instance;
-      final remoteCount =
-          (await firestore.collection('Astottaras').get()).docs.length;
-      if (localCount == remoteCount && localCount > 0) {
-        print('Astottaras: Local and remote counts match, loading from cache.');
-        final cachedAstottaras = box.values.toList();
+
+      // Build cache map for quick lookups
+      final existingCache = <String, AstottaraModel>{};
+      for (final ast in cachedAstottaras) {
+        existingCache[ast.title] = ast;
+      }
+
+      // Fetch remote timestamps from Firestore
+      List<Map<String, dynamic>> remoteTimestamps;
+      try {
+        remoteTimestamps = await remoteDataSource.fetchAstottaraTimestamps();
+      } catch (e) {
+        // Fallback to cache if remote timestamps fail to load
+        if (cachedAstottaras.isNotEmpty) {
+          return Right(cachedAstottaras.map((a) => AstottaraModel.toEntity(a)).toList());
+        }
+        return Left('Failed to fetch remote timestamps: $e');
+      }
+
+      // Determine if sync is needed (additions, deletions, updates)
+      bool needsSync = false;
+      final remoteTitles = remoteTimestamps.map((m) => m['title'] as String).toSet();
+
+      // Check for deletions
+      for (final cachedTitle in existingCache.keys) {
+        if (!remoteTitles.contains(cachedTitle)) {
+          needsSync = true;
+          break;
+        }
+      }
+
+      // Check for additions or updates
+      if (!needsSync) {
+        for (final remoteItem in remoteTimestamps) {
+          final title = remoteItem['title'] as String;
+          final remoteUpdated = remoteItem['lastUpdated'] as DateTime?;
+          final cachedAst = existingCache[title];
+
+          if (cachedAst == null) {
+            needsSync = true;
+            break;
+          }
+
+          if (remoteUpdated != null) {
+            if (cachedAst.lastUpdated == null || remoteUpdated.isAfter(cachedAst.lastUpdated!)) {
+              needsSync = true;
+              break;
+            }
+          } else {
+            if (cachedAst.lastUpdated != null) {
+              needsSync = true;
+              break;
+            }
+          }
+        }
+      }
+
+      // Check total count mismatch
+      if (!needsSync && cachedAstottaras.length != remoteTimestamps.length) {
+        needsSync = true;
+      }
+
+      if (!needsSync) {
         return Right(cachedAstottaras
             .map((model) => AstottaraModel.toEntity(model))
             .toList());
       }
-      print('Astottaras: Syncing from remote...');
-      final astottaras = await remoteDataSource.fetchAllAstottaras();
-      if (astottaras.isEmpty) {
-        return const Left('Astottaras Are Empty');
+
+      final remoteAstottaras = await remoteDataSource.fetchAllAstottaras();
+      if (remoteAstottaras.isEmpty) {
+        await localDataSource.clearCache();
+        return const Right([]);
       }
-      await box.clear();
-      for (final model in astottaras) {
-        Uint8List? imageBytes = model.imageBytes;
-        if ((imageBytes == null || imageBytes.isEmpty) &&
-            model.imageUrl.isNotEmpty) {
-          imageBytes = await downloadBytes(model.imageUrl);
+
+      // Download cover images in parallel and preserve cache fields
+      final List<Future<AstottaraModel>> downloadFutures = remoteAstottaras.map((remoteItem) async {
+        final cached = existingCache[remoteItem.title];
+        Uint8List? imageBytes = cached?.imageBytes;
+
+        final hasImageChanged = cached == null || cached.imageUrl != remoteItem.imageUrl;
+        if (imageBytes == null || imageBytes.isEmpty || hasImageChanged) {
+          if (remoteItem.imageUrl.isNotEmpty) {
+            imageBytes = await _downloadBytes(remoteItem.imageUrl);
+          }
         }
-        final updatedModel = AstottaraModel(
-          title: model.title,
-          imageUrl: model.imageUrl,
-          content: model.content,
+
+        return AstottaraModel(
+          title: remoteItem.title,
+          imageUrl: remoteItem.imageUrl,
+          content: remoteItem.content,
           imageBytes: imageBytes,
+          lastUpdated: remoteItem.lastUpdated,
         );
-        await box.put(model.title, updatedModel);
-      }
-      return Right(
-          box.values.map((model) => AstottaraModel.toEntity(model)).toList());
+      }).toList();
+
+      final List<AstottaraModel> syncedAstottaras = await Future.wait(downloadFutures);
+
+      // Save to local cache
+      await localDataSource.cacheAstottaras(syncedAstottaras);
+
+      return Right(syncedAstottaras
+          .map((model) => AstottaraModel.toEntity(model))
+          .toList());
     } catch (e) {
-      return left(
-        e.toString(),
-      );
+      return Left(e.toString());
     }
   }
 }
