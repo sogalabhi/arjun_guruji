@@ -2,15 +2,12 @@ import 'package:arjun_guruji/core/widgets/content_view_page.dart';
 import 'package:arjun_guruji/core/widgets/gradient_background.dart';
 import 'package:arjun_guruji/core/widgets/image_grid_view.dart';
 import 'package:arjun_guruji/core/widgets/search_bar.dart';
-import 'package:arjun_guruji/features/Books/data/model/book_model.dart';
-import 'package:arjun_guruji/features/Books/domain/usecases/books_usecase.dart';
 import 'package:arjun_guruji/features/Books/presentation/bloc/books_bloc.dart';
 import 'package:arjun_guruji/features/Books/presentation/pages/chapters_list_page.dart';
 import 'package:arjun_guruji/features/Books/presentation/pages/pdf_view_page.dart';
 import 'package:arjun_guruji/injection_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:arjun_guruji/core/widgets/gradient_app_bar.dart';
 
@@ -28,13 +25,7 @@ class AllBooksPageState extends State<AllBooksPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => BooksBloc(
-        fetchBookDetailsByTitleUseCase: sl<FetchBookDetailsByTitleUseCase>(),
-        fetchBookSummariesUseCase: sl<FetchBookSummariesUseCase>(),
-        fetchBooksUseCase: sl<FetchBooksUseCase>(),
-        booksBox: Hive.box<BookModel>('booksBox'),
-        connectivity: sl(),
-      )..add(const FetchAllBooks()),
+      create: (context) => sl<BooksBloc>()..add(const FetchAllBooks()),
       child: Scaffold(
         appBar: GradientAppBar(
           title: 'All Books',
@@ -108,14 +99,14 @@ class AllBooksPageState extends State<AllBooksPage> {
                                   );
                                 };
                               } else if (book.bookType == 'html' &&
-                                  book.content != null) {
+                                  book.htmlContent != null) {
                                 return () {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => ContentViewPage(
                                         title: book.title,
-                                        content: book.content!,
+                                        content: book.htmlContent!,
                                       ),
                                     ),
                                   );
@@ -153,13 +144,5 @@ class AllBooksPageState extends State<AllBooksPage> {
         ),
       ),
     );
-  }
-
-  Widget buildBookImage(BookModel book) {
-    if (book.imageBytes != null) {
-      return Image.memory(book.imageBytes!);
-    } else {
-      return Image.network(book.imageUrl);
-    }
   }
 }

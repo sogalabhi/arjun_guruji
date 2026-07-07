@@ -11,6 +11,7 @@ import 'package:arjun_guruji/features/AudioPlayer/domain/repository/audio_reposi
 import 'package:arjun_guruji/features/AudioPlayer/domain/usecases/audio_usecase.dart';
 import 'package:arjun_guruji/features/AudioPlayer/presentation/bloc/audio_bloc.dart';
 import 'package:arjun_guruji/features/Books/data/datasource/books_remote_ds.dart';
+import 'package:arjun_guruji/features/Books/data/datasource/books_local_ds.dart';
 import 'package:arjun_guruji/features/Books/data/model/book_model.dart';
 import 'package:arjun_guruji/features/Books/data/repository/books_repository_impl.dart';
 import 'package:arjun_guruji/features/Books/domain/repository/books_repository.dart';
@@ -70,9 +71,19 @@ void setupLocator() {
 }
 
 void books() async {
+  // Register Hive Box instance first
+  final Box<BookModel> booksBox = await Hive.openBox<BookModel>('booksBox');
+  sl.registerLazySingleton<Box<BookModel>>(() => booksBox);
+
+  // Register local data source
+  sl.registerLazySingleton<BooksLocalDataSource>(
+    () => BooksLocalDataSourceImpl(booksBox: sl()),
+  );
+
   sl.registerLazySingleton<BookRepository>(
     () => BooksRepositoryImpl(
       remoteDataSource: sl(),
+      localDataSource: sl(),
     ),
   );
 
@@ -83,15 +94,11 @@ void books() async {
   sl.registerFactory(() => FetchBookSummariesUseCase(sl()));
   sl.registerFactory(() => FetchBookDetailsByTitleUseCase(sl()));
 
-  // Register Hive Box instance
-  final Box<BookModel> booksBox = await Hive.openBox<BookModel>('booksBox');
-  sl.registerLazySingleton<Box<BookModel>>(() => booksBox);
-
   sl.registerFactory(() => BooksBloc(
         fetchBooksUseCase: sl(),
         fetchBookSummariesUseCase: sl(),
         fetchBookDetailsByTitleUseCase: sl(),
-        booksBox: sl(),
+        localDataSource: sl(),
         connectivity: sl(),
       ));
 }

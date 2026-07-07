@@ -20,19 +20,21 @@ class BookModelAdapter extends TypeAdapter<BookModel> {
       title: fields[0] as String,
       imageUrl: fields[1] as String,
       bookType: fields[2] as String,
-      content: fields[3] as String?,
+      htmlContent: fields[3] as String?,
+      pdfUrl: fields[8] as String?,
       chapters: (fields[4] as List?)
           ?.map((dynamic e) => (e as Map).cast<String, dynamic>())
-          .toList(),
+          ?.toList(),
       pdfFilePath: fields[5] as String?,
       imageBytes: fields[6] as Uint8List?,
+      lastUpdated: fields[7] as DateTime?,
     );
   }
 
   @override
   void write(BinaryWriter writer, BookModel obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.title)
       ..writeByte(1)
@@ -40,13 +42,17 @@ class BookModelAdapter extends TypeAdapter<BookModel> {
       ..writeByte(2)
       ..write(obj.bookType)
       ..writeByte(3)
-      ..write(obj.content)
+      ..write(obj.htmlContent)
       ..writeByte(4)
       ..write(obj.chapters)
       ..writeByte(5)
       ..write(obj.pdfFilePath)
       ..writeByte(6)
-      ..write(obj.imageBytes);
+      ..write(obj.imageBytes)
+      ..writeByte(7)
+      ..write(obj.lastUpdated)
+      ..writeByte(8)
+      ..write(obj.pdfUrl);
   }
 
   @override

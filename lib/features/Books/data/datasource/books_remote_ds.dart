@@ -5,6 +5,7 @@ abstract class BooksRemoteDataSource {
   Future<List<BookModel>> fetchAllBooks();
   Future<List<BookModel>> fetchBookSummaries();
   Future<BookModel?> fetchBookDetailsByTitle(String title);
+  Future<List<Map<String, dynamic>>> fetchBookTimestamps();
 }
 
 class BooksRemoteDataSourceImpl implements BooksRemoteDataSource {
@@ -16,11 +17,16 @@ class BooksRemoteDataSourceImpl implements BooksRemoteDataSource {
     final bookCollection = firestore.collection('Books');
     final querySnapshot = await bookCollection.get();
     var books = querySnapshot.docs
-        .map((doc) => BookModel.fromJson({
-              ...doc.data(),
-              'pdfFilePath': null,
-              'imageBytes': null,
-            }))
+        .map((doc) {
+          final data = doc.data();
+          final lastUpdated = data['lastUpdated'];
+          return BookModel.fromJson({
+            ...data,
+            'lastUpdated': lastUpdated is Timestamp ? lastUpdated.toDate() : null,
+            'pdfFilePath': null,
+            'imageBytes': null,
+          });
+        })
         .toList();
     return books;
   }
@@ -31,14 +37,17 @@ class BooksRemoteDataSourceImpl implements BooksRemoteDataSource {
     final querySnapshot = await bookCollection.get();
     return querySnapshot.docs.map((doc) {
       final data = doc.data();
+      final lastUpdated = data['lastUpdated'];
       return BookModel(
         title: data['title'] ?? '',
         imageUrl: data['imageUrl'] ?? '',
         bookType: data['bookType'] ?? '',
-        content: null, // Do not fetch content for summary
+        htmlContent: null,
+        pdfUrl: null,
         chapters: null,
         pdfFilePath: null,
         imageBytes: null,
+        lastUpdated: lastUpdated is Timestamp ? lastUpdated.toDate() : null,
       );
     }).toList();
   }
@@ -49,12 +58,29 @@ class BooksRemoteDataSourceImpl implements BooksRemoteDataSource {
     final querySnapshot =
         await bookCollection.where('title', isEqualTo: title).limit(1).get();
     if (querySnapshot.docs.isNotEmpty) {
+      final data = querySnapshot.docs.first.data();
+      final lastUpdated = data['lastUpdated'];
       return BookModel.fromJson({
-        ...querySnapshot.docs.first.data(),
+        ...data,
+        'lastUpdated': lastUpdated is Timestamp ? lastUpdated.toDate() : null,
         'pdfFilePath': null,
         'imageBytes': null,
       });
     }
     return null;
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> fetchBookTimestamps() async {
+    final bookCollection = firestore.collection('Books');
+    final querySnapshot = await bookCollection.get();
+    return querySnapshot.docs.map((doc) {
+      final data = doc.data();
+      final lastUpdated = data['lastUpdated'];
+      return {
+        'title': data['title'] as String? ?? '',
+        'lastUpdated': lastUpdated is Timestamp ? lastUpdated.toDate() : null,
+      };
+    }).toList();
   }
 }

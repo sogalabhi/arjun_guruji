@@ -16,7 +16,7 @@ class BookModel extends HiveObject {
   final String bookType;
 
   @HiveField(3)
-  final String? content;
+  final String? htmlContent;
 
   @HiveField(4)
   final List<Map<String, dynamic>>? chapters;
@@ -27,22 +27,44 @@ class BookModel extends HiveObject {
   @HiveField(6)
   final Uint8List? imageBytes;
 
+  @HiveField(7)
+  final DateTime? lastUpdated;
+
+  @HiveField(8)
+  final String? pdfUrl;
+
   BookModel({
     required this.title,
     required this.imageUrl,
     required this.bookType,
-    this.content,
+    String? htmlContent,
+    String? pdfUrl,
     this.chapters,
     this.pdfFilePath,
     this.imageBytes,
-  });
+    this.lastUpdated,
+  })  : htmlContent = bookType == 'html' ? (htmlContent ?? pdfUrl) : null,
+        pdfUrl = bookType != 'html' && bookType != 'chapters' ? (pdfUrl ?? htmlContent) : null;
 
   factory BookModel.fromJson(Map<String, dynamic> json) {
+    DateTime? parsedDate;
+    if (json['lastUpdated'] is DateTime) {
+      parsedDate = json['lastUpdated'] as DateTime;
+    } else if (json['lastUpdated'] is String) {
+      parsedDate = DateTime.tryParse(json['lastUpdated'] as String);
+    }
+    
+    final String bookType = json['bookType'] ?? '';
+    final String? contentStr = json['content'] as String?;
+    final String? htmlContent = bookType == 'html' ? contentStr : null;
+    final String? pdfUrl = (bookType != 'html' && bookType != 'chapters') ? contentStr : null;
+
     return BookModel(
-      title: json['title'],
-      imageUrl: json['imageUrl'],
-      bookType: json['bookType'],
-      content: json['content'],
+      title: json['title'] ?? '',
+      imageUrl: json['imageUrl'] ?? '',
+      bookType: bookType,
+      htmlContent: htmlContent,
+      pdfUrl: pdfUrl,
       chapters: (json['chapters'] as List<dynamic>?)
               ?.map((chapter) => {
                     'chapterName': chapter['chapterName'] as String? ?? '',
@@ -52,6 +74,7 @@ class BookModel extends HiveObject {
           [],
       pdfFilePath: json['pdfFilePath'] as String?,
       imageBytes: json['imageBytes'] as Uint8List?,
+      lastUpdated: parsedDate,
     );
   }
 
@@ -60,10 +83,11 @@ class BookModel extends HiveObject {
       'title': title,
       'imageUrl': imageUrl,
       'bookType': bookType,
-      'content': content,
+      'content': bookType == 'html' ? htmlContent : pdfUrl,
       'chapters': chapters,
       'pdfFilePath': pdfFilePath,
       'imageBytes': imageBytes,
+      'lastUpdated': lastUpdated?.toIso8601String(),
     };
   }
 
@@ -72,10 +96,12 @@ class BookModel extends HiveObject {
       title: book.title,
       imageUrl: book.imageUrl,
       bookType: book.bookType,
-      content: book.content,
+      htmlContent: book.htmlContent,
+      pdfUrl: book.pdfUrl,
       chapters: book.chapters,
       pdfFilePath: book.pdfFilePath,
       imageBytes: book.imageBytes,
+      lastUpdated: book.lastUpdated,
     );
   }
 
@@ -84,10 +110,12 @@ class BookModel extends HiveObject {
       title: bookModel.title,
       imageUrl: bookModel.imageUrl,
       bookType: bookModel.bookType,
-      content: bookModel.content,
+      htmlContent: bookModel.htmlContent,
+      pdfUrl: bookModel.pdfUrl,
       chapters: bookModel.chapters,
       pdfFilePath: bookModel.pdfFilePath,
       imageBytes: bookModel.imageBytes,
+      lastUpdated: bookModel.lastUpdated,
     );
   }
 }

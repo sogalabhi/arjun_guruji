@@ -10,9 +10,7 @@ class FetchBooksUseCase implements Usecase<List<Book>, NoParams, String> {
 
   @override
   Future<Either<String, List<Book>>> call(NoParams params) async {
-    var res = await bookRepository.fetchAllBooks();
-    print('res in usecase: $res');
-    return res;
+    return await bookRepository.fetchAllBooks();
   }
 }
 

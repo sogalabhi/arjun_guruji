@@ -66,9 +66,6 @@ class _$AstottarasEventCopyWithImpl<$Res, $Val extends AstottarasEvent>
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
-
-  /// Create a copy of AstottarasEvent
-  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -85,9 +82,6 @@ class __$$FetchAllAstottarasImplCopyWithImpl<$Res>
   __$$FetchAllAstottarasImplCopyWithImpl(_$FetchAllAstottarasImpl _value,
       $Res Function(_$FetchAllAstottarasImpl) _then)
       : super(_value, _then);
-
-  /// Create a copy of AstottarasEvent
-  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -240,9 +234,6 @@ class _$AstottarasStateCopyWithImpl<$Res, $Val extends AstottarasState>
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
-
-  /// Create a copy of AstottarasState
-  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -259,9 +250,6 @@ class __$$InitialImplCopyWithImpl<$Res>
   __$$InitialImplCopyWithImpl(
       _$InitialImpl _value, $Res Function(_$InitialImpl) _then)
       : super(_value, _then);
-
-  /// Create a copy of AstottarasState
-  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -376,9 +364,6 @@ class __$$LoadingImplCopyWithImpl<$Res>
   __$$LoadingImplCopyWithImpl(
       _$LoadingImpl _value, $Res Function(_$LoadingImpl) _then)
       : super(_value, _then);
-
-  /// Create a copy of AstottarasState
-  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -496,8 +481,6 @@ class __$$AstottarasLoadedImplCopyWithImpl<$Res>
       $Res Function(_$AstottarasLoadedImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of AstottarasState
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -544,9 +527,7 @@ class _$AstottarasLoadedImpl implements AstottarasLoaded {
   int get hashCode => Object.hash(
       runtimeType, const DeepCollectionEquality().hash(_astottaras));
 
-  /// Create a copy of AstottarasState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$AstottarasLoadedImplCopyWith<_$AstottarasLoadedImpl> get copyWith =>
@@ -633,10 +614,7 @@ abstract class AstottarasLoaded implements AstottarasState {
       _$AstottarasLoadedImpl;
 
   List<Astottara> get astottaras;
-
-  /// Create a copy of AstottarasState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$AstottarasLoadedImplCopyWith<_$AstottarasLoadedImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -658,8 +636,6 @@ class __$$ErrorImplCopyWithImpl<$Res>
       _$ErrorImpl _value, $Res Function(_$ErrorImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of AstottarasState
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -698,9 +674,7 @@ class _$ErrorImpl implements Error {
   @override
   int get hashCode => Object.hash(runtimeType, message);
 
-  /// Create a copy of AstottarasState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$ErrorImplCopyWith<_$ErrorImpl> get copyWith =>
@@ -785,10 +759,7 @@ abstract class Error implements AstottarasState {
   const factory Error(final String message) = _$ErrorImpl;
 
   String get message;
-
-  /// Create a copy of AstottarasState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$ErrorImplCopyWith<_$ErrorImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

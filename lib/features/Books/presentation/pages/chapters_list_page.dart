@@ -33,10 +33,11 @@ class ChaptersListPageState extends State<ChaptersListPage> {
 
   void _filterChapters() {
     final query = _searchController.text.toLowerCase();
+    final chapters = widget.book.chapters ?? [];
     setState(() {
-      _filteredChapters = widget.book.chapters!
+      _filteredChapters = chapters
           .where(
-              (chapter) => chapter['chapterName'].toLowerCase().contains(query))
+              (chapter) => (chapter['chapterName'] as String? ?? '').toLowerCase().contains(query))
           .toList();
     });
   }

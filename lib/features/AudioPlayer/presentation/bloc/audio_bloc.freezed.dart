@@ -66,9 +66,6 @@ class _$AudioEventCopyWithImpl<$Res, $Val extends AudioEvent>
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
-
-  /// Create a copy of AudioEvent
-  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -85,9 +82,6 @@ class __$$FetchAllAudioImplCopyWithImpl<$Res>
   __$$FetchAllAudioImplCopyWithImpl(
       _$FetchAllAudioImpl _value, $Res Function(_$FetchAllAudioImpl) _then)
       : super(_value, _then);
-
-  /// Create a copy of AudioEvent
-  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -248,9 +242,6 @@ class _$AudioStateCopyWithImpl<$Res, $Val extends AudioState>
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
-
-  /// Create a copy of AudioState
-  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -267,9 +258,6 @@ class __$$InitialImplCopyWithImpl<$Res>
   __$$InitialImplCopyWithImpl(
       _$InitialImpl _value, $Res Function(_$InitialImpl) _then)
       : super(_value, _then);
-
-  /// Create a copy of AudioState
-  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -390,9 +378,6 @@ class __$$LoadingImplCopyWithImpl<$Res>
   __$$LoadingImplCopyWithImpl(
       _$LoadingImpl _value, $Res Function(_$LoadingImpl) _then)
       : super(_value, _then);
-
-  /// Create a copy of AudioState
-  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -516,8 +501,6 @@ class __$$AudioLoadedImplCopyWithImpl<$Res>
       _$AudioLoadedImpl _value, $Res Function(_$AudioLoadedImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of AudioState
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -570,9 +553,7 @@ class _$AudioLoadedImpl with DiagnosticableTreeMixin implements AudioLoaded {
   int get hashCode =>
       Object.hash(runtimeType, const DeepCollectionEquality().hash(_audios));
 
-  /// Create a copy of AudioState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$AudioLoadedImplCopyWith<_$AudioLoadedImpl> get copyWith =>
@@ -658,10 +639,7 @@ abstract class AudioLoaded implements AudioState {
       _$AudioLoadedImpl;
 
   List<CategoryEntity> get audios;
-
-  /// Create a copy of AudioState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$AudioLoadedImplCopyWith<_$AudioLoadedImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -683,8 +661,6 @@ class __$$ErrorImplCopyWithImpl<$Res>
       _$ErrorImpl _value, $Res Function(_$ErrorImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of AudioState
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -731,9 +707,7 @@ class _$ErrorImpl with DiagnosticableTreeMixin implements Error {
   @override
   int get hashCode => Object.hash(runtimeType, message);
 
-  /// Create a copy of AudioState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$ErrorImplCopyWith<_$ErrorImpl> get copyWith =>
@@ -818,10 +792,7 @@ abstract class Error implements AudioState {
   const factory Error(final String message) = _$ErrorImpl;
 
   String get message;
-
-  /// Create a copy of AudioState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$ErrorImplCopyWith<_$ErrorImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

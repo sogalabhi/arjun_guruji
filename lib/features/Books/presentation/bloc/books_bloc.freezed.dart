@@ -79,9 +79,6 @@ class _$BooksEventCopyWithImpl<$Res, $Val extends BooksEvent>
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
-
-  /// Create a copy of BooksEvent
-  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -98,9 +95,6 @@ class __$$FetchAllBooksImplCopyWithImpl<$Res>
   __$$FetchAllBooksImplCopyWithImpl(
       _$FetchAllBooksImpl _value, $Res Function(_$FetchAllBooksImpl) _then)
       : super(_value, _then);
-
-  /// Create a copy of BooksEvent
-  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -210,9 +204,6 @@ class __$$FetchBookSummariesImplCopyWithImpl<$Res>
   __$$FetchBookSummariesImplCopyWithImpl(_$FetchBookSummariesImpl _value,
       $Res Function(_$FetchBookSummariesImpl) _then)
       : super(_value, _then);
-
-  /// Create a copy of BooksEvent
-  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -327,8 +318,6 @@ class __$$FetchBookDetailsByTitleImplCopyWithImpl<$Res>
       $Res Function(_$FetchBookDetailsByTitleImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of BooksEvent
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -367,9 +356,7 @@ class _$FetchBookDetailsByTitleImpl implements FetchBookDetailsByTitle {
   @override
   int get hashCode => Object.hash(runtimeType, title);
 
-  /// Create a copy of BooksEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$FetchBookDetailsByTitleImplCopyWith<_$FetchBookDetailsByTitleImpl>
@@ -451,10 +438,7 @@ abstract class FetchBookDetailsByTitle implements BooksEvent {
       _$FetchBookDetailsByTitleImpl;
 
   String get title;
-
-  /// Create a copy of BooksEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$FetchBookDetailsByTitleImplCopyWith<_$FetchBookDetailsByTitleImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -529,9 +513,6 @@ class _$BooksStateCopyWithImpl<$Res, $Val extends BooksState>
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
-
-  /// Create a copy of BooksState
-  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -548,9 +529,6 @@ class __$$InitialImplCopyWithImpl<$Res>
   __$$InitialImplCopyWithImpl(
       _$InitialImpl _value, $Res Function(_$InitialImpl) _then)
       : super(_value, _then);
-
-  /// Create a copy of BooksState
-  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -665,9 +643,6 @@ class __$$LoadingImplCopyWithImpl<$Res>
   __$$LoadingImplCopyWithImpl(
       _$LoadingImpl _value, $Res Function(_$LoadingImpl) _then)
       : super(_value, _then);
-
-  /// Create a copy of BooksState
-  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -785,8 +760,6 @@ class __$$BooksLoadedImplCopyWithImpl<$Res>
       _$BooksLoadedImpl _value, $Res Function(_$BooksLoadedImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of BooksState
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -831,9 +804,7 @@ class _$BooksLoadedImpl implements BooksLoaded {
   int get hashCode =>
       Object.hash(runtimeType, const DeepCollectionEquality().hash(_books));
 
-  /// Create a copy of BooksState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$BooksLoadedImplCopyWith<_$BooksLoadedImpl> get copyWith =>
@@ -918,10 +889,7 @@ abstract class BooksLoaded implements BooksState {
   const factory BooksLoaded(final List<Book> books) = _$BooksLoadedImpl;
 
   List<Book> get books;
-
-  /// Create a copy of BooksState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$BooksLoadedImplCopyWith<_$BooksLoadedImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -943,8 +911,6 @@ class __$$ErrorImplCopyWithImpl<$Res>
       _$ErrorImpl _value, $Res Function(_$ErrorImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of BooksState
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -983,9 +949,7 @@ class _$ErrorImpl implements Error {
   @override
   int get hashCode => Object.hash(runtimeType, message);
 
-  /// Create a copy of BooksState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$ErrorImplCopyWith<_$ErrorImpl> get copyWith =>
@@ -1070,10 +1034,7 @@ abstract class Error implements BooksState {
   const factory Error(final String message) = _$ErrorImpl;
 
   String get message;
-
-  /// Create a copy of BooksState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$ErrorImplCopyWith<_$ErrorImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

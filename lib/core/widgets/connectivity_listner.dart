@@ -23,7 +23,7 @@ class ConnectivityListenerState extends State<ConnectivityListener> {
 
   void _listenForConnectivityChanges() {
     _connectivity.onConnectivityChanged.listen((result) {
-      final online = result != ConnectivityResult.none;
+      final online = result.isNotEmpty && result.first != ConnectivityResult.none;
       ConnectivityService.isOnline.value = online;
       if (!online) {
         // No internet

@@ -95,9 +95,9 @@ class ContentViewPageState extends State<ContentViewPage> {
                       child: Html(
                         data: _searchQuery.isEmpty
                             ? widget.content
-                            : widget.content.replaceAll(
-                                RegExp(_searchQuery, caseSensitive: false),
-                                '<mark>$_searchQuery</mark>'),
+                            : widget.content.replaceAllMapped(
+                                RegExp(RegExp.escape(_searchQuery), caseSensitive: false),
+                                (match) => '<mark>${match.group(0)}</mark>'),
                         style: {
                           "body": Style(
                             fontSize: FontSize(_fontSize),
