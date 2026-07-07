@@ -1,124 +1,163 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../features/Settings/presentation/bloc/settings_bloc.dart';
+import '../../features/Settings/presentation/bloc/settings_event.dart';
+import '../../features/Settings/presentation/bloc/settings_state.dart';
 
 class ContentViewPage extends StatefulWidget {
   final String title;
   final String? chapterName;
   final String content;
-  const ContentViewPage(
-      {super.key,
-      required this.title,
-      required this.content,
-      this.chapterName});
+  const ContentViewPage({
+    super.key,
+    required this.title,
+    required this.content,
+    this.chapterName,
+  });
 
   @override
   ContentViewPageState createState() => ContentViewPageState();
 }
 
 class ContentViewPageState extends State<ContentViewPage> {
-  double _fontSize = 16.0;
-  bool _isDarkMode = false;
   String _searchQuery = "";
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: _isDarkMode ? Colors.black : Colors.white,
-      appBar: AppBar(
-        title: Text(
-          widget.title,
-          style: TextStyle(
-            color: _isDarkMode ? Colors.white : Colors.black,
-          ),
-        ),
-        backgroundColor: _isDarkMode ? Colors.black : Colors.white,
-        elevation: 0,
-        iconTheme: IconThemeData(
-          color: _isDarkMode ? Colors.white : Colors.black,
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search,
-                color: _isDarkMode ? Colors.white : Colors.black),
-            onPressed: _showSearchDialog,
-          ),
-          IconButton(
-            icon: Icon(_isDarkMode ? Icons.dark_mode : Icons.light_mode,
-                color: _isDarkMode ? Colors.white : Colors.black),
-            onPressed: () {
-              setState(() {
-                _isDarkMode = !_isDarkMode;
-              });
-            },
-          ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-        child: Column(
-          children: [
-            Slider(
-              min: 12,
-              max: 24,
-              value: _fontSize,
-              activeColor: Colors.blue,
-              onChanged: (value) {
-                setState(() {
-                  _fontSize = value;
-                });
-              },
+    return BlocBuilder<SettingsBloc, SettingsState>(
+      builder: (context, state) {
+        final settings = state.settings;
+        
+        final isDarkMode = settings.readingTheme == 'dark';
+        final isSepia = settings.readingTheme == 'sepia';
+
+        Color backgroundColor;
+        Color textColor;
+        
+        if (isDarkMode) {
+          backgroundColor = Colors.black;
+          textColor = Colors.white;
+        } else if (isSepia) {
+          backgroundColor = const Color(0xFFF4ECD8);
+          textColor = const Color(0xFF5B4636);
+        } else {
+          backgroundColor = Colors.white;
+          textColor = Colors.black;
+        }
+
+        final fontStyle = settings.fontStyle == 'serif' 
+            ? 'notoserifkannada' 
+            : 'notosanskannada';
+
+        return Scaffold(
+          backgroundColor: backgroundColor,
+          appBar: AppBar(
+            title: Text(
+              widget.title,
+              style: TextStyle(
+                color: textColor,
+              ),
             ),
-            Expanded(
-              child: widget.content.isEmpty
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(Icons.error, color: Colors.red, size: 40),
-                          const SizedBox(height: 8),
-                          const Text(
-                            'Failed to load content',
-                            style: TextStyle(color: Colors.red, fontSize: 16),
-                          ),
-                          const SizedBox(height: 8),
-                          ElevatedButton(
-                            onPressed: () => setState(() {}),
-                            child: const Text('Retry'),
-                          ),
-                        ],
-                      ),
-                    )
-                  : SingleChildScrollView(
-                      controller: _scrollController,
-                      child: Html(
-                        data: _searchQuery.isEmpty
-                            ? widget.content
-                            : widget.content.replaceAllMapped(
-                                RegExp(RegExp.escape(_searchQuery), caseSensitive: false),
-                                (match) => '<mark>${match.group(0)}</mark>'),
-                        style: {
-                          "body": Style(
-                            fontSize: FontSize(_fontSize),
-                            color: _isDarkMode ? Colors.white : Colors.black,
-                          ),
-                          "mark": Style(
-                            backgroundColor: Colors.yellow,
-                            color: _isDarkMode ? Colors.black : Colors.black,
-                          ),
-                        },
-                      ),
-                    ),
+            backgroundColor: backgroundColor,
+            elevation: 0,
+            iconTheme: IconThemeData(
+              color: textColor,
             ),
-          ],
-        ),
-      ),
+            actions: [
+              IconButton(
+                icon: Icon(Icons.search, color: textColor),
+                onPressed: () => _showSearchDialog(context, isDarkMode),
+              ),
+              IconButton(
+                icon: Icon(
+                  isDarkMode
+                      ? Icons.dark_mode
+                      : (isSepia ? Icons.menu_book : Icons.light_mode),
+                  color: textColor,
+                ),
+                onPressed: () {
+                  String nextTheme;
+                  if (settings.readingTheme == 'light') {
+                    nextTheme = 'sepia';
+                  } else if (settings.readingTheme == 'sepia') {
+                    nextTheme = 'dark';
+                  } else {
+                    nextTheme = 'light';
+                  }
+                  context.read<SettingsBloc>().add(UpdateTheme(nextTheme));
+                },
+              ),
+            ],
+          ),
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            child: Column(
+              children: [
+                Slider(
+                  min: 16,
+                  max: 32,
+                  value: settings.fontSize,
+                  activeColor: Colors.amber,
+                  onChanged: (value) {
+                    context.read<SettingsBloc>().add(UpdateFontSize(value));
+                  },
+                ),
+                Expanded(
+                  child: widget.content.isEmpty
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.error, color: Colors.red, size: 40),
+                              const SizedBox(height: 8),
+                              const Text(
+                                'Failed to load content',
+                                style: TextStyle(color: Colors.red, fontSize: 16),
+                              ),
+                              const SizedBox(height: 8),
+                              ElevatedButton(
+                                onPressed: () => setState(() {}),
+                                child: const Text('Retry'),
+                              ),
+                            ],
+                          ),
+                        )
+                      : SingleChildScrollView(
+                          controller: _scrollController,
+                          child: Html(
+                            data: _searchQuery.isEmpty
+                                ? widget.content
+                                : widget.content.replaceAllMapped(
+                                    RegExp(RegExp.escape(_searchQuery), caseSensitive: false),
+                                    (match) => '<mark>${match.group(0)}</mark>'),
+                            style: {
+                              "body": Style(
+                                fontSize: FontSize(settings.fontSize),
+                                color: textColor,
+                                lineHeight: const LineHeight(1.5),
+                                fontFamily: fontStyle,
+                              ),
+                              "mark": Style(
+                                backgroundColor: Colors.yellow,
+                                color: Colors.black,
+                              ),
+                            },
+                          ),
+                        ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
   // 🔍 Search Dialog
-  void _showSearchDialog() {
+  void _showSearchDialog(BuildContext context, bool isDarkMode) {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -126,7 +165,7 @@ class ContentViewPageState extends State<ContentViewPage> {
         return Container(
           padding: const EdgeInsets.all(15),
           decoration: BoxDecoration(
-            color: _isDarkMode ? Colors.grey[900] : Colors.white,
+            color: isDarkMode ? Colors.grey[900] : Colors.white,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
           ),
           child: Column(
@@ -143,7 +182,7 @@ class ContentViewPageState extends State<ContentViewPage> {
                 decoration: InputDecoration(
                   hintText: "Enter text...",
                   filled: true,
-                  fillColor: _isDarkMode ? Colors.grey[800] : Colors.grey[200],
+                  fillColor: isDarkMode ? Colors.grey[800] : Colors.grey[200],
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide.none),
@@ -181,7 +220,8 @@ class ContentViewPageState extends State<ContentViewPage> {
     if (index != -1) {
       final textBefore = content.substring(0, index);
       final linesBefore = textBefore.split('\n').length;
-      final offset = linesBefore * _fontSize * 1.5; // Approximate line height
+      final currentFontSize = context.read<SettingsBloc>().state.settings.fontSize;
+      final offset = linesBefore * currentFontSize * 1.5; // Approximate line height
       _scrollController.animateTo(
         offset,
         duration: const Duration(milliseconds: 300),

@@ -3,6 +3,7 @@ import 'package:arjun_guruji/features/Home/presentation/widgets/home_page_conten
 import 'package:arjun_guruji/features/Notifications/presentation/pages/notifications_page.dart';
 import 'package:arjun_guruji/features/Notifications/domain/notification.dart';
 import 'package:arjun_guruji/features/Notifications/domain/usecases/fetch_latest_notification_usecase.dart';
+import 'package:arjun_guruji/features/Settings/presentation/pages/settings_page.dart';
 import 'package:arjun_guruji/core/usecases/usecase.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -68,6 +69,14 @@ class _HomePageState extends State<HomePage> {
         appBar: GradientAppBar(
           title: "Arjun Guruji",
           actions: [
+            IconButton(
+              icon: const Icon(Icons.settings),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const SettingsPage(),
+                ),
+              ),
+            ),
             Stack(
               children: [
                 IconButton(

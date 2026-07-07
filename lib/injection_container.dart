@@ -32,6 +32,12 @@ import 'package:arjun_guruji/features/Notifications/data/repository/notification
 import 'package:arjun_guruji/features/Notifications/domain/usecases/fetch_notifications_usecase.dart';
 import 'package:arjun_guruji/features/Notifications/domain/usecases/fetch_latest_notification_usecase.dart';
 import 'package:arjun_guruji/features/Notifications/presentation/bloc/notification_bloc.dart' as user_notification;
+import 'package:arjun_guruji/features/Settings/data/datasource/settings_local_ds.dart';
+import 'package:arjun_guruji/features/Settings/data/repository/settings_repository_impl.dart';
+import 'package:arjun_guruji/features/Settings/domain/repository/settings_repository.dart';
+import 'package:arjun_guruji/features/Settings/domain/usecases/get_settings_usecase.dart';
+import 'package:arjun_guruji/features/Settings/domain/usecases/save_settings_usecase.dart';
+import 'package:arjun_guruji/features/Settings/presentation/bloc/settings_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get_it/get_it.dart';
@@ -80,6 +86,7 @@ void setupLocator() {
   adminNotifications();
   eventManagement();
   notifications();
+  settings();
 }
 
 void books() async {
@@ -270,4 +277,25 @@ void notifications() {
   sl.registerLazySingleton(() => FetchNotificationsUseCase(sl()));
   sl.registerLazySingleton(() => FetchLatestNotificationUseCase(sl()));
   sl.registerFactory(() => user_notification.NotificationBloc(sl()));
+}
+
+void settings() {
+  final settingsBox = Hive.box('settingsBox');
+  sl.registerLazySingleton<Box>(() => settingsBox, instanceName: 'settingsBox');
+
+  sl.registerLazySingleton<SettingsLocalDataSource>(
+    () => SettingsLocalDataSourceImpl(sl(instanceName: 'settingsBox')),
+  );
+
+  sl.registerLazySingleton<SettingsRepository>(
+    () => SettingsRepositoryImpl(sl()),
+  );
+
+  sl.registerLazySingleton(() => GetSettingsUseCase(sl()));
+  sl.registerLazySingleton(() => SaveSettingsUseCase(sl()));
+
+  sl.registerLazySingleton(() => SettingsBloc(
+        getSettingsUseCase: sl(),
+        saveSettingsUseCase: sl(),
+      ));
 }

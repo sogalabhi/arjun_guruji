@@ -6,9 +6,12 @@ import 'package:arjun_guruji/injection_container.dart';
 import 'package:arjun_guruji/screens/splash_screen.dart';
 import 'package:arjun_guruji/core/widgets/connectivity_listner.dart';
 import 'package:arjun_guruji/core/services/connectivity_service.dart';
+import 'package:arjun_guruji/features/Settings/presentation/bloc/settings_bloc.dart';
+import 'package:arjun_guruji/features/Settings/presentation/bloc/settings_event.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -142,6 +145,7 @@ Future<void> main() async {
   Hive.registerAdapter(ActivityModelAdapter());
   Hive.registerAdapter(Uint8ListAdapter());
   await Hive.openBox('interestedBox');
+  await Hive.openBox('settingsBox');
 
   // Set up dependency injection
   setupLocator();
@@ -187,25 +191,28 @@ class _MyAppState extends State<MyApp> {
       ),
     );
 
-    return MaterialApp(
-      navigatorKey: ConnectivityService.navigatorKey,
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.amber,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        fontFamily: 'poppins',
-        primaryColor: const Color.fromARGB(255, 1, 0, 54),
-        hintColor: const Color.fromARGB(255, 51, 47, 255),
-        appBarTheme: const AppBarTheme(
-          systemOverlayStyle: SystemUiOverlayStyle(
-            statusBarColor: Colors.transparent,
-            statusBarIconBrightness: Brightness.light,
-            statusBarBrightness: Brightness.dark,
+    return BlocProvider(
+      create: (_) => sl<SettingsBloc>()..add(LoadSettings()),
+      child: MaterialApp(
+        navigatorKey: ConnectivityService.navigatorKey,
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.amber,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          fontFamily: 'poppins',
+          primaryColor: const Color.fromARGB(255, 1, 0, 54),
+          hintColor: const Color.fromARGB(255, 51, 47, 255),
+          appBarTheme: const AppBarTheme(
+            systemOverlayStyle: SystemUiOverlayStyle(
+              statusBarColor: Colors.transparent,
+              statusBarIconBrightness: Brightness.light,
+              statusBarBrightness: Brightness.dark,
+            ),
           ),
         ),
+        builder: (context, child) => ConnectivityListener(child: child ?? const SizedBox()),
+        home: const SplashScreen(),
       ),
-      builder: (context, child) => ConnectivityListener(child: child ?? const SizedBox()),
-      home: const SplashScreen(),
     );
   }
 }

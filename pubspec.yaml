@@ -84,6 +84,7 @@ dependencies:
   upgrader: ^8.0.0
   permission_handler: ^11.3.1 
   googleapis_auth: ^1.4.0
+  package_info_plus: ^4.2.0
 
 dev_dependencies:
   flutter_test:
@@ -143,6 +144,12 @@ flutter:
     - family: poppins
       fonts:
         - asset: fonts/poppins_medium.ttf
+    - family: notosanskannada
+      fonts:
+        - asset: assets/Noto_Sans_Kannada/NotoSansKannada-VariableFont_wdth,wght.ttf
+    - family: notoserifkannada
+      fonts:
+        - asset: assets/Noto_Serif_Kannada/NotoSerifKannada-VariableFont_wght.ttf
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf
