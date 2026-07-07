@@ -77,11 +77,6 @@ class EventsRepositoryImpl implements EventsRepository {
               needsSync = true;
               break;
             }
-          } else {
-            if (cachedEvent.lastUpdated != null) {
-              needsSync = true;
-              break;
-            }
           }
         }
       }

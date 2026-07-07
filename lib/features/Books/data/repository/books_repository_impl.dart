@@ -89,11 +89,6 @@ class BooksRepositoryImpl implements BookRepository {
               needsSync = true;
               break;
             }
-          } else {
-            if (cachedBook.lastUpdated != null) {
-              needsSync = true;
-              break;
-            }
           }
         }
       }

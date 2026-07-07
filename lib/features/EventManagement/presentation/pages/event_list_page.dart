@@ -243,25 +243,81 @@ class EventListPage extends StatelessWidget {
                             ),
                           ),
                         ),
-                        const Padding(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                          child: Text(
-                            'Upcoming Events',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
+                        if (events.isEmpty) ...[
+                          const SizedBox(height: 40),
+                          const Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.event_note_outlined, size: 72, color: Colors.white60),
+                                SizedBox(height: 16),
+                                Text(
+                                  "No events available",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  "There are currently no events registered.",
+                                  style: TextStyle(fontSize: 14, color: Colors.white70),
+                                ),
+                              ],
                             ),
                           ),
-                        ),
-                        FeaturedEventsCarousel(
-                          events: upcomingEvents,
-                          interestedBox: interestedBox,
-                        ),
-                        const SizedBox(height: 16),
-                        PastEventsList(
-                            events: events, interestedBox: interestedBox),
+                        ] else ...[
+                          const Padding(
+                            padding:
+                                EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            child: Text(
+                              'Upcoming Events',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          if (upcomingEvents.isEmpty)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                              child: Center(
+                                child: Container(
+                                  width: double.infinity,
+                                  padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withAlpha((0.05 * 255).toInt()),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: const Column(
+                                    children: [
+                                      Icon(Icons.event_available_outlined, color: Colors.white60, size: 48),
+                                      SizedBox(height: 12),
+                                      Text(
+                                        "No upcoming events scheduled",
+                                        style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                                      ),
+                                      SizedBox(height: 4),
+                                      Text(
+                                        "Check back later for new programs.",
+                                        style: TextStyle(color: Colors.white70, fontSize: 12),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            )
+                          else
+                            FeaturedEventsCarousel(
+                              events: upcomingEvents,
+                              interestedBox: interestedBox,
+                            ),
+                          const SizedBox(height: 16),
+                          PastEventsList(
+                              events: events, interestedBox: interestedBox),
+                        ],
                       ],
                     ),
                   ),

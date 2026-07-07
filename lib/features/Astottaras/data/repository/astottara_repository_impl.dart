@@ -89,11 +89,6 @@ class AstottarasRepositoryImpl implements AstottaraRepository {
               needsSync = true;
               break;
             }
-          } else {
-            if (cachedAst.lastUpdated != null) {
-              needsSync = true;
-              break;
-            }
           }
         }
       }
