@@ -1,13 +1,10 @@
 import 'package:arjun_guruji/core/widgets/content_view_page.dart';
 import 'package:arjun_guruji/core/widgets/gradient_background.dart';
 import 'package:arjun_guruji/core/widgets/gradient_app_bar.dart';
-import 'package:arjun_guruji/features/Lyrics/data/model/lyrics_model.dart';
-import 'package:arjun_guruji/features/Lyrics/domain/usecases/fetch_astottaras_usecase.dart';
 import 'package:arjun_guruji/features/Lyrics/presentation/bloc/lyrics_bloc.dart';
 import 'package:arjun_guruji/injection_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:shimmer/shimmer.dart';
 
 class LyricsListPage extends StatefulWidget {
@@ -38,11 +35,7 @@ class LyricsListPageState extends State<LyricsListPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => LyricsBloc(
-        fetchLyricsUseCase: sl<FetchLyricsUseCase>(),
-        lyricsBox: Hive.box<LyricsModel>('lyricsBox'),
-        connectivity: sl(),
-      )..add(const LyricsEvent.fetchAllLyrics()),
+      create: (context) => sl<LyricsBloc>()..add(const LyricsEvent.fetchAllLyrics()),
       child: Scaffold(
         appBar: GradientAppBar(
           title: 'Lyrics',

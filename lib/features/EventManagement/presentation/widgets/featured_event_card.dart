@@ -31,64 +31,8 @@ class FeaturedEventCard extends StatelessWidget {
     return start == end ? start : "$start - $end";
   }
 
-  // Helper method to get the next occurrence date for recurring events
-  DateTime? _getNextOccurrenceDate() {
-    if (event.eventType != "Recurring" ||
-        event.day == null ||
-        event.frequency != "weekly") {
-      return null;
-    }
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final eventStart = DateTime(
-        event.startDate.year, event.startDate.month, event.startDate.day);
-    final eventEnd =
-        DateTime(event.endDate.year, event.endDate.month, event.endDate.day);
-    final targetWeekday = _dayStringToWeekday(event.day!);
-    final currentWeekday = today.weekday;
-    // If today is the event day and within the event's date range, return today
-    if (currentWeekday == targetWeekday &&
-        !today.isBefore(eventStart) &&
-        !today.isAfter(eventEnd)) {
-      return today;
-    }
-    int daysToAdd = targetWeekday - currentWeekday;
-    if (daysToAdd <= 0) {
-      daysToAdd += 7; // Move to next week
-    }
-    final nextOccurrence = today.add(Duration(days: daysToAdd));
-    // Check if this occurrence is within the event's date range
-    if (nextOccurrence.isAfter(eventEnd)) {
-      return null; // No future occurrences
-    }
-    return nextOccurrence;
-  }
-
-  // Helper method to convert day string to weekday number
-  int _dayStringToWeekday(String day) {
-    switch (day.toLowerCase()) {
-      case 'monday':
-        return DateTime.monday;
-      case 'tuesday':
-        return DateTime.tuesday;
-      case 'wednesday':
-        return DateTime.wednesday;
-      case 'thursday':
-        return DateTime.thursday;
-      case 'friday':
-        return DateTime.friday;
-      case 'saturday':
-        return DateTime.saturday;
-      case 'sunday':
-        return DateTime.sunday;
-      default:
-        return DateTime.monday;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    print("event: ${event.galleryLinks}");
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       width: double.infinity,

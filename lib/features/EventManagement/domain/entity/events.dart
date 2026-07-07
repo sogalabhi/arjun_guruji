@@ -21,6 +21,8 @@ class EventEntity {
   OrganizerInfoEntity? organizerInfo; // Organizer details for Non-Trust events
   List<String>? tags; // Event tags (Spiritual, Cultural, etc.)
   final bool isFeatured;
+  final DateTime? lastUpdated;
+
   EventEntity({
     required this.id,
     required this.title,
@@ -41,5 +43,6 @@ class EventEntity {
     this.organizerInfo,
     this.tags,
     this.isFeatured = false,
+    this.lastUpdated,
   });
 }

@@ -3,4 +3,5 @@ import 'package:dartz/dartz.dart';
 
 abstract class AstottaraRepository {
   Future<Either<String, List<Astottara>>> fetchAllAstottaras();
+  List<Astottara> getCachedAstottaras();
 }

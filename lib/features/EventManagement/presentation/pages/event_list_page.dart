@@ -8,6 +8,7 @@ import 'package:arjun_guruji/features/EventManagement/presentation/bloc/event_bl
 import 'package:arjun_guruji/features/EventManagement/domain/entity/events.dart';
 import 'package:hive/hive.dart';
 import 'package:arjun_guruji/core/widgets/gradient_app_bar.dart';
+import 'package:arjun_guruji/injection_container.dart';
 
 class EventListPage extends StatelessWidget {
   const EventListPage({super.key});
@@ -122,7 +123,7 @@ class EventListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final interestedBox = Hive.box('interestedBox');
     return BlocProvider(
-      create: (_) => EventBloc()..add(FetchEvents()),
+      create: (_) => sl<EventBloc>()..add(FetchEvents()),
       child: BlocBuilder<EventBloc, EventState>(
         builder: (context, state) {
           if (state is EventsLoading) {

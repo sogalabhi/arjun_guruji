@@ -180,4 +180,11 @@ class BooksRepositoryImpl implements BookRepository {
       return Left(e.toString());
     }
   }
+
+  @override
+  List<Book> getCachedBooks() {
+    return localDataSource.getCachedBooks()
+        .map((bookModel) => BookModel.toEntity(bookModel))
+        .toList();
+  }
 }

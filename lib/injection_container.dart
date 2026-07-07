@@ -5,6 +5,7 @@ import 'package:arjun_guruji/features/Astottaras/data/model/astottara_model.dart
 import 'package:arjun_guruji/features/Astottaras/data/repository/astottara_repository_impl.dart';
 import 'package:arjun_guruji/features/Astottaras/domain/repository/astottaras_repository.dart';
 import 'package:arjun_guruji/features/Astottaras/domain/usecases/fetch_astottaras_usecase.dart';
+import 'package:arjun_guruji/features/Astottaras/domain/usecases/get_cached_astottaras_usecase.dart';
 import 'package:arjun_guruji/features/Astottaras/presentation/bloc/astottara_bloc.dart';
 import 'package:arjun_guruji/features/AudioPlayer/data/datasource/audio_remote_datasource.dart';
 import 'package:arjun_guruji/features/AudioPlayer/data/repository/audio_repository_impl.dart';
@@ -17,6 +18,7 @@ import 'package:arjun_guruji/features/Books/data/model/book_model.dart';
 import 'package:arjun_guruji/features/Books/data/repository/books_repository_impl.dart';
 import 'package:arjun_guruji/features/Books/domain/repository/books_repository.dart';
 import 'package:arjun_guruji/features/Books/domain/usecases/books_usecase.dart';
+import 'package:arjun_guruji/features/Books/domain/usecases/get_cached_books_usecase.dart';
 import 'package:arjun_guruji/features/Books/presentation/bloc/books_bloc.dart';
 import 'package:arjun_guruji/features/Lyrics/data/datasource/lyrics_remote_datastructure.dart';
 import 'package:arjun_guruji/features/Lyrics/data/model/lyrics_model.dart';
@@ -43,6 +45,13 @@ import 'features/Admin/data/repository/notification_repository_impl.dart';
 import 'features/Admin/domain/repository/notification_repository.dart';
 import 'features/Admin/domain/usecases/get_notifications_usecase.dart';
 import 'features/Admin/domain/usecases/create_notification_usecase.dart';
+
+import 'package:arjun_guruji/features/EventManagement/data/datasource/events_remote_datastructure.dart' as em_remote;
+import 'package:arjun_guruji/features/EventManagement/data/datasource/events_local_ds.dart' as em_local;
+import 'package:arjun_guruji/features/EventManagement/data/model/events_model.dart' as em_model;
+import 'package:arjun_guruji/features/EventManagement/data/repository/events_repository_impl.dart' as em_repo_impl;
+import 'package:arjun_guruji/features/EventManagement/domain/repository/events_repository.dart' as em_repo;
+import 'package:arjun_guruji/features/EventManagement/presentation/bloc/event_bloc.dart' as em_bloc;
 import 'features/Admin/domain/usecases/update_notification_usecase.dart';
 import 'features/Admin/domain/usecases/delete_notification_usecase.dart';
 import 'features/Admin/domain/usecases/upload_notification_image_usecase.dart';
@@ -64,6 +73,7 @@ void setupLocator() {
   lyrics();
   adminEvents();
   adminNotifications();
+  eventManagement();
 
   // Register NotificationsRemoteDataSource
   sl.registerLazySingleton<NotificationsRemoteDataSource>(
@@ -94,12 +104,13 @@ void books() async {
   sl.registerFactory(() => FetchBooksUseCase(sl()));
   sl.registerFactory(() => FetchBookSummariesUseCase(sl()));
   sl.registerFactory(() => FetchBookDetailsByTitleUseCase(sl()));
-
+  sl.registerFactory(() => GetCachedBooksUseCase(sl()));
+ 
   sl.registerFactory(() => BooksBloc(
-        fetchBooksUseCase: sl(),
+        fetchAllBooksUseCase: sl(),
         fetchBookSummariesUseCase: sl(),
         fetchBookDetailsByTitleUseCase: sl(),
-        localDataSource: sl(),
+        getCachedBooksUseCase: sl(),
         connectivity: sl(),
       ));
 }
@@ -126,9 +137,10 @@ void astottaras() async {
       () => AstottarasRemoteDataSourceImpl(firestore: sl()));
 
   sl.registerFactory(() => FetchAstottarasUseCase(sl()));
-
+  sl.registerFactory(() => GetCachedAstottarasUseCase(sl()));
+ 
   sl.registerFactory(() => AstottarasBloc(
-      fetchAstottarasUseCase: sl(), localDataSource: sl(), connectivity: sl()));
+      fetchAstottarasUseCase: sl(), getCachedAstottarasUseCase: sl(), connectivity: sl()));
 }
 
 void audio() async {
@@ -165,7 +177,7 @@ void lyrics() async {
   sl.registerLazySingleton<Box<LyricsModel>>(() => lyricsBox);
 
   sl.registerFactory(() => LyricsBloc(
-      fetchLyricsUseCase: sl(), lyricsBox: sl(), connectivity: sl()));
+      fetchLyricsUseCase: sl(), connectivity: sl()));
 }
 
 void adminEvents() {
@@ -215,4 +227,34 @@ void adminNotifications() {
         deleteNotification: sl<DeleteNotificationUseCase>(),
         uploadNotificationImage: sl<UploadNotificationImageUseCase>(),
       ));
+}
+
+void eventManagement() async {
+  // Register Hive Box instance first
+  final Box<em_model.EventModel> eventsBox =
+      await Hive.openBox<em_model.EventModel>('eventsBox');
+  sl.registerLazySingleton<Box<em_model.EventModel>>(() => eventsBox);
+
+  // Register local datasource
+  sl.registerLazySingleton<em_local.EventsLocalDataSource>(
+    () => em_local.EventsLocalDataSourceImpl(eventsBox: sl()),
+  );
+
+  // Register remote datasource
+  sl.registerLazySingleton<em_remote.EventRemoteDataSource>(
+    () => em_remote.EventRemoteDataSourceImpl(sl()),
+  );
+
+  // Register repository
+  sl.registerLazySingleton<em_repo.EventsRepository>(
+    () => em_repo_impl.EventsRepositoryImpl(
+      remoteDataSource: sl(),
+      localDataSource: sl(),
+    ),
+  );
+
+  // Register Bloc
+  sl.registerFactory<em_bloc.EventBloc>(
+    () => em_bloc.EventBloc(repository: sl()),
+  );
 }

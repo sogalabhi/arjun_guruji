@@ -1,8 +1,7 @@
 import 'package:arjun_guruji/core/usecases/usecase.dart';
-import 'package:arjun_guruji/features/Books/data/datasource/books_local_ds.dart';
-import 'package:arjun_guruji/features/Books/data/model/book_model.dart';
 import 'package:arjun_guruji/features/Books/domain/entity/book.dart';
 import 'package:arjun_guruji/features/Books/domain/usecases/books_usecase.dart';
+import 'package:arjun_guruji/features/Books/domain/usecases/get_cached_books_usecase.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dartz/dartz.dart';
@@ -13,17 +12,17 @@ part 'books_states.dart';
 part 'books_bloc.freezed.dart';
 
 class BooksBloc extends Bloc<BooksEvent, BooksState> {
-  final FetchBooksUseCase fetchBooksUseCase;
+  final FetchBooksUseCase fetchAllBooksUseCase;
   final FetchBookSummariesUseCase fetchBookSummariesUseCase;
   final FetchBookDetailsByTitleUseCase fetchBookDetailsByTitleUseCase;
-  final BooksLocalDataSource localDataSource;
+  final GetCachedBooksUseCase getCachedBooksUseCase;
   final Connectivity connectivity;
 
   BooksBloc({
-    required this.fetchBooksUseCase,
+    required this.fetchAllBooksUseCase,
     required this.fetchBookSummariesUseCase,
     required this.fetchBookDetailsByTitleUseCase,
-    required this.localDataSource,
+    required this.getCachedBooksUseCase,
     required this.connectivity,
   }) : super(const BooksState.initial()) {
     on<FetchAllBooks>(_onFetchBooks);
@@ -35,10 +34,7 @@ class BooksBloc extends Bloc<BooksEvent, BooksState> {
       FetchAllBooks event, Emitter<BooksState> emit) async {
     List<Book> cachedBooks = [];
     try {
-      final List<BookModel> localBookModels = localDataSource.getCachedBooks();
-      cachedBooks = localBookModels
-          .map((bookModel) => BookModel.toEntity(bookModel))
-          .toList();
+      cachedBooks = getCachedBooksUseCase();
 
       if (cachedBooks.isNotEmpty) {
         emit(BooksState.booksLoaded(cachedBooks));
@@ -51,7 +47,7 @@ class BooksBloc extends Bloc<BooksEvent, BooksState> {
 
     try {
       final Either<String, List<Book>> result =
-          await fetchBooksUseCase.call(NoParams());
+          await fetchAllBooksUseCase.call(NoParams());
 
       await result.fold(
         (failure) async {

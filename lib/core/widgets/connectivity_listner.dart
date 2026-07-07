@@ -25,20 +25,23 @@ class ConnectivityListenerState extends State<ConnectivityListener> {
     _connectivity.onConnectivityChanged.listen((result) {
       final online = result.isNotEmpty && result.first != ConnectivityResult.none;
       ConnectivityService.isOnline.value = online;
-      if (!online) {
-        // No internet
-        TopSnackbar.show(
-          context: context,
-          message: 'No Internet Connection',
-          backgroundColor: Colors.red,
-        );
-      } else {
-        // Internet connected
-        TopSnackbar.show(
-          context: context,
-          message: 'Internet Connected',
-          backgroundColor: Colors.green,
-        );
+      final activeContext = ConnectivityService.navigatorKey.currentContext;
+      if (activeContext != null) {
+        if (!online) {
+          // No internet
+          TopSnackbar.show(
+            context: activeContext,
+            message: 'No Internet Connection',
+            backgroundColor: Colors.red,
+          );
+        } else {
+          // Internet connected
+          TopSnackbar.show(
+            context: activeContext,
+            message: 'Internet Connected',
+            backgroundColor: Colors.green,
+          );
+        }
       }
     });
   }

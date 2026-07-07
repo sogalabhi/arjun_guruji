@@ -1,12 +1,11 @@
 import 'package:arjun_guruji/core/usecases/usecase.dart';
-import 'package:arjun_guruji/features/Astottaras/data/model/astottara_model.dart';
 import 'package:arjun_guruji/features/Astottaras/domain/entity/astottara.dart';
 import 'package:arjun_guruji/features/Astottaras/domain/usecases/fetch_astottaras_usecase.dart';
+import 'package:arjun_guruji/features/Astottaras/domain/usecases/get_cached_astottaras_usecase.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
 part 'astottara_events.dart';
 part 'astottara_states.dart';
@@ -14,12 +13,12 @@ part 'astottara_bloc.freezed.dart';
 
 class AstottarasBloc extends Bloc<AstottarasEvent, AstottarasState> {
   final FetchAstottarasUseCase fetchAstottarasUseCase;
-  final Box<AstottaraModel> astottarasBox;
+  final GetCachedAstottarasUseCase getCachedAstottarasUseCase;
   final Connectivity connectivity;
 
   AstottarasBloc({
     required this.fetchAstottarasUseCase,
-    required this.astottarasBox,
+    required this.getCachedAstottarasUseCase,
     required this.connectivity,
   }) : super(const AstottarasState.initial()) {
     on<FetchAllAstottaras>(_onFetchAstottaras);
@@ -27,56 +26,56 @@ class AstottarasBloc extends Bloc<AstottarasEvent, AstottarasState> {
 
   Future<void> _onFetchAstottaras(
       FetchAllAstottaras event, Emitter<AstottarasState> emit) async {
-    emit(const AstottarasState.loading());
+    List<Astottara> cachedAstottaras = [];
+    try {
+      cachedAstottaras = getCachedAstottarasUseCase();
+
+      if (cachedAstottaras.isNotEmpty) {
+        emit(AstottarasState.astottarasLoaded(cachedAstottaras));
+      } else {
+        emit(const AstottarasState.loading());
+      }
+    } catch (e) {
+      emit(const AstottarasState.loading());
+    }
 
     try {
-      final List<ConnectivityResult> connectivityResults =
-          await connectivity.checkConnectivity();
-      final ConnectivityResult connectivityResult =
-          connectivityResults.isNotEmpty
-              ? connectivityResults.first
-              : ConnectivityResult.none;
-      if (connectivityResult == ConnectivityResult.none) {
-        try {
-          // No internet - Fetch from local Hive database
-          final List<AstottaraModel> localAstottaras =
-              astottarasBox.values.toList();
-          final List<Astottara> astottaras = localAstottaras
-              .map((astottaraModel) => AstottaraModel.toEntity(astottaraModel))
-              .toList();
-
-          emit(AstottarasState.astottarasLoaded(astottaras));
-        } catch (e) {
-          emit(AstottarasState.error(
-              "Failed to load astottaras from local database: $e"));
-        }
-        return;
-      }
-
-      // Internet is available - Fetch from Firestore
       final Either<String, List<Astottara>> result =
           await fetchAstottarasUseCase.call(NoParams());
 
       await result.fold(
-        (failure) async =>
-            emit(AstottarasState.error(failure)), // Handle failure properly
-        (astottaras) async {
-          final List<AstottaraModel> astottaraModels = astottaras
-              .map((astottara) => AstottaraModel.fromEntity(astottara))
-              .toList();
+        (failure) async {
+          if (cachedAstottaras.isEmpty) {
+            emit(AstottarasState.error(failure));
+          }
+        },
+        (freshAstottaras) async {
+          bool hasChanged = false;
+          if (freshAstottaras.length != cachedAstottaras.length) {
+            hasChanged = true;
+          } else {
+            for (int i = 0; i < freshAstottaras.length; i++) {
+              final remote = freshAstottaras[i];
+              final local = cachedAstottaras[i];
+              if (remote.title != local.title ||
+                  remote.imageUrl != local.imageUrl ||
+                  remote.content != local.content ||
+                  remote.lastUpdated != local.lastUpdated) {
+                hasChanged = true;
+                break;
+              }
+            }
+          }
 
-          // Store astottaras in Hive (await to ensure completion)
-          await astottarasBox.clear();
-          await astottarasBox.addAll(astottaraModels);
-
-          if (!emit.isDone) {
-            emit(AstottarasState.astottarasLoaded(astottaras));
+          if (hasChanged && !emit.isDone) {
+            emit(AstottarasState.astottarasLoaded(freshAstottaras));
           }
         },
       );
     } catch (e) {
-      print(
-          "Error in _onFetchAstottaras: $e"); // Print unexpected errors for debugging
+      if (cachedAstottaras.isEmpty) {
+        emit(AstottarasState.error("Failed to load astottaras: $e"));
+      }
     }
   }
 }

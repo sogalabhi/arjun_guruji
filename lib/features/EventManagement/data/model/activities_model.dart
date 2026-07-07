@@ -4,7 +4,7 @@ import 'package:hive/hive.dart';
 part 'activities_model.g.dart';
 
 @HiveType(typeId: 20)
-class ActivityModel extends ActivityEntity {
+class ActivityModel extends HiveObject {
   @HiveField(0)
   final String time;
   @HiveField(1)
@@ -16,7 +16,7 @@ class ActivityModel extends ActivityEntity {
     required this.time,
     required this.activity,
     required this.venue,
-  }) : super(time: time, activity: activity, venue: venue);
+  });
 
   factory ActivityModel.fromMap(Map<String, dynamic> map) {
     return ActivityModel(
@@ -32,5 +32,21 @@ class ActivityModel extends ActivityEntity {
       'activity': activity,
       'venue': venue,
     };
+  }
+
+  static ActivityModel fromEntity(ActivityEntity entity) {
+    return ActivityModel(
+      time: entity.time,
+      activity: entity.activity,
+      venue: entity.venue,
+    );
+  }
+
+  static ActivityEntity toEntity(ActivityModel model) {
+    return ActivityEntity(
+      time: model.time,
+      activity: model.activity,
+      venue: model.venue,
+    );
   }
 }

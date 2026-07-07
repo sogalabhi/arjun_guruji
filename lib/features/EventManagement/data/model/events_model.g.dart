@@ -35,13 +35,14 @@ class EventModelAdapter extends TypeAdapter<EventModel> {
       status: fields[15] as String,
       tags: (fields[19] as List?)?.cast<String>(),
       isFeatured: fields[16] as bool,
+      lastUpdated: fields[20] as DateTime?,
     );
   }
 
   @override
   void write(BinaryWriter writer, EventModel obj) {
     writer
-      ..writeByte(18)
+      ..writeByte(19)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -77,7 +78,9 @@ class EventModelAdapter extends TypeAdapter<EventModel> {
       ..writeByte(16)
       ..write(obj.isFeatured)
       ..writeByte(19)
-      ..write(obj.tags);
+      ..write(obj.tags)
+      ..writeByte(20)
+      ..write(obj.lastUpdated);
   }
 
   @override

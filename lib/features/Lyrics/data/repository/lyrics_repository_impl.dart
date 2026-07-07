@@ -6,6 +6,7 @@ import 'package:dartz/dartz.dart';
 import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:hive/hive.dart';
+import 'package:arjun_guruji/core/services/connectivity_service.dart';
 
 class LyricsRepositoryImpl implements LyricsRepository {
   final LyricsRemoteDataSource remoteDataSource;
@@ -15,6 +16,18 @@ class LyricsRepositoryImpl implements LyricsRepository {
   Future<Either<String, List<Lyrics>>> fetchAllLyrics() async {
     try {
       final box = Hive.box<LyricsModel>('lyricsBox');
+
+      if (!ConnectivityService.isOnline.value) {
+        // Offline: fetch from Hive
+        final cachedLyrics = box.values.toList();
+        if (cachedLyrics.isEmpty) {
+          return const Left('No internet and no cached lyrics available');
+        }
+        return Right(cachedLyrics
+            .map((model) => LyricsModel.toEntity(model))
+            .toList());
+      }
+
       final lyrics = await remoteDataSource.fetchAllLyrics();
       if (lyrics.isEmpty) {
         return const Left('Lyrics Are Empty');
@@ -46,9 +59,7 @@ class LyricsRepositoryImpl implements LyricsRepository {
       return Right(
           box.values.map((model) => LyricsModel.toEntity(model)).toList());
     } catch (e) {
-      return left(
-        e.toString(),
-      );
+      return Left(e.toString());
     }
   }
 }

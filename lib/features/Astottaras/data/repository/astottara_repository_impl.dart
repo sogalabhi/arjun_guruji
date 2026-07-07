@@ -148,4 +148,11 @@ class AstottarasRepositoryImpl implements AstottaraRepository {
       return Left(e.toString());
     }
   }
+
+  @override
+  List<Astottara> getCachedAstottaras() {
+    return localDataSource.getCachedAstottaras()
+        .map((model) => AstottaraModel.toEntity(model))
+        .toList();
+  }
 }

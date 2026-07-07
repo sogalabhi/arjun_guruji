@@ -5,6 +5,7 @@ import 'package:arjun_guruji/features/Lyrics/data/model/lyrics_model.dart';
 import 'package:arjun_guruji/injection_container.dart';
 import 'package:arjun_guruji/screens/splash_screen.dart';
 import 'package:arjun_guruji/core/widgets/connectivity_listner.dart';
+import 'package:arjun_guruji/core/services/connectivity_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -187,6 +188,7 @@ class _MyAppState extends State<MyApp> {
     );
 
     return MaterialApp(
+      navigatorKey: ConnectivityService.navigatorKey,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.amber,

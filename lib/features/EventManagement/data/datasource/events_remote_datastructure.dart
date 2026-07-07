@@ -5,6 +5,7 @@ abstract class EventRemoteDataSource {
   Future<List<EventModel>> getAllEvents();
   Future<void> updateInterestedCount(
       {required String eventId, required bool increment});
+  Future<List<Map<String, dynamic>>> fetchEventTimestamps();
 }
 
 class EventRemoteDataSourceImpl implements EventRemoteDataSource {
@@ -18,6 +19,20 @@ class EventRemoteDataSourceImpl implements EventRemoteDataSource {
     return snapshot.docs
         .map((doc) => EventModel.fromFirestore(doc.id, doc.data()))
         .toList();
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> fetchEventTimestamps() async {
+    final snapshot = await firestore.collection('events').get();
+    return snapshot.docs.map((doc) {
+      final data = doc.data();
+      final lastUpdated = data['lastUpdated'];
+      return {
+        'id': doc.id,
+        'title': data['title'] as String? ?? '',
+        'lastUpdated': lastUpdated is Timestamp ? lastUpdated.toDate() : null,
+      };
+    }).toList();
   }
 
   @override

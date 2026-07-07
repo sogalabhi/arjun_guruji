@@ -7,6 +7,7 @@ import 'package:arjun_guruji/features/EventManagement/presentation/bloc/event_bl
 import 'package:hive/hive.dart';
 import 'package:arjun_guruji/core/widgets/gradient_app_bar.dart';
 import 'package:arjun_guruji/features/Gallery/presentation/pages/full_page_viewer_page.dart';
+import 'package:arjun_guruji/injection_container.dart';
 
 class EventDetailsPage extends StatelessWidget {
   final EventEntity event;
@@ -19,7 +20,7 @@ class EventDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => EventBloc()..add(CheckInterestedStatus(event.id)),
+      create: (_) => sl<EventBloc>()..add(CheckInterestedStatus(event.id)),
       child: _EventDetailsView(event: event),
     );
   }
