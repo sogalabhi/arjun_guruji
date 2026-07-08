@@ -19,6 +19,7 @@ All notable changes to this project will be documented in this file.
 - **UPI & Donation Functionality:** Enhanced the Contact and Social Media pages with integrated donation options and UPI support.
 
 ### 🏗️ Architecture & Refactoring
+- **16 KB Library Alignment:** Configured packaging options to align native binaries to 16 KB boundaries, ensuring compliance and seamless launches on Android 15/16 devices.
 - **Settings Box Expansion:** Persisted the daily Panchang city setting (`panchangCity`) inside the existing Hive settings box, defaulting to Mysore.
 - **City Alias Resolution:** Implemented alias resolution (e.g., Bengaluru -> Bangalore, Mysuru -> Mysore) to safely resolve common user input spelling variations against internal astronomical keys.
 - **CI/CD Pipeline Optimization:** Hardened the GitHub Actions workflow for Play Store deployment, adding Dependency Caching, Gradle memory optimization (-Xmx4g), app obfuscation, and upgrading to the official Google Play upload action.
