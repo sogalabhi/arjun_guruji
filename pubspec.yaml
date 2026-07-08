@@ -86,6 +86,7 @@ dependencies:
   googleapis_auth: ^1.4.0
   package_info_plus: ^4.2.0
   audio_session: ^0.1.25
+  tithi_engine: ^5.1.1
 
 dev_dependencies:
   flutter_test:

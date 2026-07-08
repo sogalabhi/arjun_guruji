@@ -10,7 +10,7 @@ abstract class SettingsEvent extends Equatable {
 class LoadSettings extends SettingsEvent {}
 
 class UpdateTheme extends SettingsEvent {
-  final String theme; // 'light' | 'dark' | 'sepia'
+  final String theme;
   const UpdateTheme(this.theme);
 
   @override
@@ -41,4 +41,13 @@ class ToggleNotifications extends SettingsEvent {
   List<Object> get props => [enable];
 }
 
+class UpdatePanchangCity extends SettingsEvent {
+  final String city;
+  const UpdatePanchangCity(this.city);
+
+  @override
+  List<Object> get props => [city];
+}
+
 class ResetSettings extends SettingsEvent {}
+

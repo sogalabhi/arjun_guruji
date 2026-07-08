@@ -1,16 +1,18 @@
 import 'package:equatable/equatable.dart';
 
 class SettingsEntity extends Equatable {
-  final String readingTheme; // 'light' | 'dark' | 'sepia'
-  final double fontSize;     // 16.0 to 32.0
-  final String fontStyle;    // 'sans-serif' | 'serif'
+  final String readingTheme;
+  final double fontSize;
+  final String fontStyle;
   final bool enableNotifications;
+  final String panchangCity;
 
   const SettingsEntity({
     required this.readingTheme,
     required this.fontSize,
     required this.fontStyle,
     required this.enableNotifications,
+    required this.panchangCity,
   });
 
   factory SettingsEntity.initial() {
@@ -19,6 +21,7 @@ class SettingsEntity extends Equatable {
       fontSize: 20.0,
       fontStyle: 'sans-serif',
       enableNotifications: true,
+      panchangCity: 'Mysore',
     );
   }
 
@@ -27,12 +30,14 @@ class SettingsEntity extends Equatable {
     double? fontSize,
     String? fontStyle,
     bool? enableNotifications,
+    String? panchangCity,
   }) {
     return SettingsEntity(
       readingTheme: readingTheme ?? this.readingTheme,
       fontSize: fontSize ?? this.fontSize,
       fontStyle: fontStyle ?? this.fontStyle,
       enableNotifications: enableNotifications ?? this.enableNotifications,
+      panchangCity: panchangCity ?? this.panchangCity,
     );
   }
 
@@ -42,5 +47,7 @@ class SettingsEntity extends Equatable {
         fontSize,
         fontStyle,
         enableNotifications,
+        panchangCity,
       ];
 }
+

@@ -17,12 +17,14 @@ class SettingsLocalDataSourceImpl implements SettingsLocalDataSource {
     final fontSize = settingsBox.get('fontSize', defaultValue: 20.0) as double;
     final fontStyle = settingsBox.get('fontStyle', defaultValue: 'sans-serif') as String;
     final enableNotifications = settingsBox.get('enableNotifications', defaultValue: true) as bool;
-    
+    final panchangCity = settingsBox.get('panchangCity', defaultValue: 'Mysore') as String;
+
     return SettingsModel(
       readingTheme: readingTheme,
       fontSize: fontSize,
       fontStyle: fontStyle,
       enableNotifications: enableNotifications,
+      panchangCity: panchangCity,
     );
   }
 
@@ -32,5 +34,7 @@ class SettingsLocalDataSourceImpl implements SettingsLocalDataSource {
     await settingsBox.put('fontSize', settings.fontSize);
     await settingsBox.put('fontStyle', settings.fontStyle);
     await settingsBox.put('enableNotifications', settings.enableNotifications);
+    await settingsBox.put('panchangCity', settings.panchangCity);
   }
 }
+

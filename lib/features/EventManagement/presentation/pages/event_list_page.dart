@@ -1,5 +1,4 @@
 import 'package:arjun_guruji/core/widgets/gradient_background.dart';
-import 'package:arjun_guruji/features/EventManagement/presentation/pages/calendar_page.dart';
 import 'package:arjun_guruji/features/EventManagement/presentation/widgets/featured_events_carousel.dart';
 import 'package:arjun_guruji/features/EventManagement/presentation/widgets/past_events_list.dart';
 import 'package:flutter/material.dart';
@@ -13,40 +12,34 @@ import 'package:arjun_guruji/injection_container.dart';
 class EventListPage extends StatelessWidget {
   const EventListPage({super.key});
 
-  // Helper method to get the next occurrence date for an event
   DateTime _getNextOccurrenceDate(EventEntity event, DateTime today) {
     if (event.eventType == "Recurring" &&
         event.day != null &&
         event.frequency == "weekly") {
-      // For recurring events, calculate the next occurrence
       return _getNextWeeklyOccurrence(event, today);
     } else {
-      // For non-recurring events, return the start date
       return event.startDate;
     }
   }
 
-  // Helper method to get the next weekly occurrence
   DateTime _getNextWeeklyOccurrence(EventEntity event, DateTime today) {
     final targetWeekday = _dayStringToWeekday(event.day!);
     final currentWeekday = today.weekday;
 
     int daysToAdd = targetWeekday - currentWeekday;
     if (daysToAdd <= 0) {
-      daysToAdd += 7; // Move to next week
+      daysToAdd += 7;
     }
 
     final nextOccurrence = today.add(Duration(days: daysToAdd));
 
-    // Check if this occurrence is within the event's date range
     if (nextOccurrence.isAfter(event.endDate)) {
-      return event.startDate; // Return start date if no future occurrences
+      return event.startDate;
     }
 
     return nextOccurrence;
   }
 
-  // Helper method to convert day string to weekday number
   int _dayStringToWeekday(String day) {
     switch (day.toLowerCase()) {
       case 'monday':
@@ -68,7 +61,6 @@ class EventListPage extends StatelessWidget {
     }
   }
 
-  // Helper method to convert weekday number to string
   String _weekdayToString(int weekday) {
     switch (weekday) {
       case DateTime.monday:
@@ -90,7 +82,6 @@ class EventListPage extends StatelessWidget {
     }
   }
 
-  // Helper method to get the next occurrence date for a recurring event (including today)
   DateTime? _getNextOrTodayOccurrence(EventEntity event, DateTime today) {
     if (event.eventType == "Recurring" &&
         event.day != null &&
@@ -105,7 +96,6 @@ class EventListPage extends StatelessWidget {
       if (weekdayString == event.day!.toLowerCase()) {
         return today;
       }
-      // Find the next occurrence after today
       for (int i = 1; i <= 7; i++) {
         final nextDay = today.add(Duration(days: i));
         final nextWeekdayString =
@@ -135,20 +125,16 @@ class EventListPage extends StatelessWidget {
             final now = DateTime.now();
             final today = DateTime(now.year, now.month, now.day);
 
-            // Get upcoming events (future + today) including recurring events
             final upcomingEvents = events.where((event) {
               if (event.eventType == "Recurring") {
-                // For recurring events, include if today or any future date matches recurrence day
                 return _getNextOrTodayOccurrence(event, today) != null;
               } else {
-                // For non-recurring events, check if they start today or in the future (ignore time)
                 final eventDate = DateTime(event.startDate.year,
                     event.startDate.month, event.startDate.day);
-                return !eventDate.isBefore(today); // include today
+                return !eventDate.isBefore(today);
               }
             }).toList();
 
-            // Sort upcoming events by their next occurrence date
             upcomingEvents.sort((a, b) {
               final aNextDate = a.eventType == "Recurring"
                   ? _getNextOrTodayOccurrence(a, today) ?? DateTime(2100)
@@ -160,96 +146,28 @@ class EventListPage extends StatelessWidget {
             });
 
             return Scaffold(
-              appBar: GradientAppBar(
-                title: 'Events',
-                actions: [
-                  IconButton(
-                    icon: const Icon(Icons.calendar_today),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => CalendarPage(events: events),
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
+              appBar: const GradientAppBar(title: 'All Events'),
               body: GradientBackground(
                 child: RefreshIndicator(
                   onRefresh: () async {
-                    // Dispatch FetchEvents and wait for reload
                     final bloc = BlocProvider.of<EventBloc>(context);
                     bloc.add(FetchEvents());
-                    // Wait for EventsLoaded state
-                    await bloc.stream.firstWhere((state) =>
-                        state is EventsLoaded || state is EventsError);
+                    await bloc.stream.firstWhere(
+                        (state) => state is EventsLoaded || state is EventsError);
                   },
                   child: SingleChildScrollView(
                     physics: const AlwaysScrollableScrollPhysics(),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Trust Calendar Card
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 12),
-                          child: Card(
-                            color: Colors.amber[50],
-                            elevation: 2,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Expanded(
-                                    child: Text(
-                                      'View the full Trust Calendar for all events and important dates.',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 12),
-                                  ElevatedButton.icon(
-                                    icon: const Icon(Icons.calendar_month,
-                                        color: Colors.black),
-                                    label: const Text('Trust Calendar'),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.amber[700],
-                                      foregroundColor: Colors.black,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                    ),
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              CalendarPage(events: events),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
                         if (events.isEmpty) ...[
                           const SizedBox(height: 40),
                           const Center(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.event_note_outlined, size: 72, color: Colors.white60),
+                                Icon(Icons.event_note_outlined,
+                                    size: 72, color: Colors.white60),
                                 SizedBox(height: 16),
                                 Text(
                                   "No events available",
@@ -262,15 +180,16 @@ class EventListPage extends StatelessWidget {
                                 SizedBox(height: 8),
                                 Text(
                                   "There are currently no events registered.",
-                                  style: TextStyle(fontSize: 14, color: Colors.white70),
+                                  style: TextStyle(
+                                      fontSize: 14, color: Colors.white70),
                                 ),
                               ],
                             ),
                           ),
                         ] else ...[
                           const Padding(
-                            padding:
-                                EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 8),
                             child: Text(
                               'Upcoming Events',
                               style: TextStyle(
@@ -282,27 +201,36 @@ class EventListPage extends StatelessWidget {
                           ),
                           if (upcomingEvents.isEmpty)
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 12),
                               child: Center(
                                 child: Container(
                                   width: double.infinity,
-                                  padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 24, horizontal: 16),
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withAlpha((0.05 * 255).toInt()),
+                                    color: Colors.white
+                                        .withAlpha((0.05 * 255).toInt()),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: const Column(
                                     children: [
-                                      Icon(Icons.event_available_outlined, color: Colors.white60, size: 48),
+                                      Icon(Icons.event_available_outlined,
+                                          color: Colors.white60, size: 48),
                                       SizedBox(height: 12),
                                       Text(
                                         "No upcoming events scheduled",
-                                        style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold),
                                       ),
                                       SizedBox(height: 4),
                                       Text(
                                         "Check back later for new programs.",
-                                        style: TextStyle(color: Colors.white70, fontSize: 12),
+                                        style: TextStyle(
+                                            color: Colors.white70,
+                                            fontSize: 12),
                                       ),
                                     ],
                                   ),
@@ -326,9 +254,7 @@ class EventListPage extends StatelessWidget {
             );
           } else if (state is EventsError) {
             return Scaffold(
-              appBar: GradientAppBar(
-                title: 'Events',
-              ),
+              appBar: const GradientAppBar(title: 'All Events'),
               body: Center(child: Text(state.message)),
             );
           } else {

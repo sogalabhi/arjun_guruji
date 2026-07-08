@@ -20,6 +20,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     on<UpdateFontSize>(_onUpdateFontSize);
     on<UpdateFontStyle>(_onUpdateFontStyle);
     on<ToggleNotifications>(_onToggleNotifications);
+    on<UpdatePanchangCity>(_onUpdatePanchangCity);
     on<ResetSettings>(_onResetSettings);
   }
 
@@ -55,6 +56,11 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     final updatedSettings = state.settings.copyWith(enableNotifications: event.enable);
     await _updateAndSave(updatedSettings, emit);
     _handleFCMSubscription(event.enable);
+  }
+
+  Future<void> _onUpdatePanchangCity(UpdatePanchangCity event, Emitter<SettingsState> emit) async {
+    final updatedSettings = state.settings.copyWith(panchangCity: event.city);
+    await _updateAndSave(updatedSettings, emit);
   }
 
   Future<void> _onResetSettings(ResetSettings event, Emitter<SettingsState> emit) async {

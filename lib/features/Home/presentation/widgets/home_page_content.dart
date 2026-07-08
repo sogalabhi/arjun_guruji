@@ -4,10 +4,11 @@ import 'package:arjun_guruji/features/Astottaras/presentation/pages/all_astottar
 import 'package:arjun_guruji/features/AudioPlayer/presentation/pages/audio_categories_page.dart';
 import 'package:arjun_guruji/features/Books/presentation/pages/all_books_page.dart';
 import 'package:arjun_guruji/features/Contact/presentation/pages/connect_page.dart';
-import 'package:arjun_guruji/features/EventManagement/presentation/pages/event_list_page.dart';
+import 'package:arjun_guruji/features/EventManagement/presentation/pages/calendar_event_page.dart';
 import 'package:arjun_guruji/features/Home/presentation/widgets/animated_grid_item.dart';
 import 'package:arjun_guruji/features/Lyrics/presentation/pages/lyrics_categories_page.dart';
 import 'package:flutter/material.dart';
+
 
 class HomePageContent extends StatelessWidget {
   const HomePageContent({super.key});
@@ -53,7 +54,7 @@ class HomePageContent extends StatelessWidget {
         "subtitle": "Events",
         "imagePath": 'assets/maingallery.png',
         "route": () => Navigator.push(
-            context, MaterialPageRoute(builder: (_) => EventListPage())),
+            context, MaterialPageRoute(builder: (_) => const CalendarEventPage())),
       },
       {
         "title": "Connect",

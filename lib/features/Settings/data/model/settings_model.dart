@@ -6,6 +6,7 @@ class SettingsModel extends SettingsEntity {
     required super.fontSize,
     required super.fontStyle,
     required super.enableNotifications,
+    required super.panchangCity,
   });
 
   factory SettingsModel.fromEntity(SettingsEntity entity) {
@@ -14,6 +15,8 @@ class SettingsModel extends SettingsEntity {
       fontSize: entity.fontSize,
       fontStyle: entity.fontStyle,
       enableNotifications: entity.enableNotifications,
+      panchangCity: entity.panchangCity,
     );
   }
 }
+

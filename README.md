@@ -5,7 +5,7 @@
 **Arjun Guruji** is a devotional mobile application built to spread spirituality, knowledge, and event awareness in a seamless and modern experience.
 
 ### 🌟 Core Features:
-- 🎵 **Audio Player:** High-quality devotional songs and chants with synced lyrics and offline fallback UI.
+- 🎵 **Audio Player:** High-quality devotional songs and chants with synced lyrics, persistent background playback, smart exit navigation, and a global "Now Playing" mini-player overlay.
 - 📖 **Books & Astottaras Library:** Full offline access to text content via a robust Hive local caching layer, actively synchronized with Firestore.
 - ⚙️ **Global Reading Settings:** Centralized, reactive state management allowing users to customize font size (16-32px), switch themes (Light, Sepia, Dark), and toggle classic/modern font styles globally across the app.
 - 🔠 **Premium Offline Typography:** Built-in Kannada script optimization using `Noto Sans Kannada` and `Noto Serif Kannada` for stunning, distraction-free reading without internet requirements.

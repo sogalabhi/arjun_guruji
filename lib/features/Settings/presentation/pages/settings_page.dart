@@ -4,6 +4,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../../core/widgets/gradient_background.dart';
 import '../../../../core/widgets/gradient_app_bar.dart';
+import '../../../../features/EventManagement/domain/services/panchang_service.dart';
 import '../bloc/settings_bloc.dart';
 import '../bloc/settings_event.dart';
 import '../bloc/settings_state.dart';
@@ -143,6 +144,18 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
 
                 const SizedBox(height: 24),
+                _buildSectionHeader('Panchang'),
+                _buildCard(
+                  child: ListTile(
+                    leading: const Icon(Icons.location_city, color: Colors.deepOrange),
+                    title: const Text('City for Panchang'),
+                    subtitle: Text(settings.panchangCity, style: TextStyle(color: Colors.amber[700])),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () => _showCityPicker(context, settings.panchangCity),
+                  ),
+                ),
+
+                const SizedBox(height: 24),
                 _buildSectionHeader('About'),
                 _buildCard(
                   child: Column(
@@ -244,6 +257,84 @@ class _SettingsPageState extends State<SettingsPage> {
           color: isSelected ? Colors.amber[800] : Colors.grey,
         ),
       ),
+    );
+  }
+
+  void _showCityPicker(BuildContext context, String currentCity) {
+    final cities = PanchangService.supportedCities;
+    String searchQuery = '';
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            final filteredCities = cities
+                .where((c) => c.toLowerCase().contains(searchQuery.toLowerCase()))
+                .toList();
+
+            return DraggableScrollableSheet(
+              expand: false,
+              initialChildSize: 0.6,
+              maxChildSize: 0.9,
+              builder: (_, scrollController) => Column(
+                children: [
+                  const SizedBox(height: 12),
+                  Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  const Text('Select City', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Search city...',
+                        prefixIcon: const Icon(Icons.search),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                      ),
+                      onChanged: (val) {
+                        setState(() {
+                          searchQuery = val;
+                        });
+                      },
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                      controller: scrollController,
+                      itemCount: filteredCities.length,
+                      itemBuilder: (_, i) {
+                        final city = filteredCities[i];
+                        final isSelected = city == currentCity;
+                        return ListTile(
+                          title: Text(city),
+                          trailing: isSelected ? Icon(Icons.check, color: Colors.amber[700]) : null,
+                          onTap: () {
+                            context.read<SettingsBloc>().add(UpdatePanchangCity(city));
+                            Navigator.pop(ctx);
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }
