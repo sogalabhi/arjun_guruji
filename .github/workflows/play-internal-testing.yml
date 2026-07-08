@@ -87,7 +87,35 @@ jobs:
           fi
           echo "AAB file exists: $(ls -lh build/app/outputs/bundle/release/app-release.aab)"
 
-      # 12. Upload to Play Store (r0adkll Action)
+      # 12. Verify 16KB Alignment for Native Libraries
+      - name: Verify 16KB Alignment for Native Libraries
+        run: |
+          echo "Installing tools..."
+          sudo apt-get update && sudo apt-get install -y unzip binutils
+
+          echo "Extracting the AAB..."
+          mkdir extracted_aab
+          # Update this path if your AAB is generated in a different directory
+          unzip build/app/outputs/bundle/release/app-release.aab -d extracted_aab
+
+          echo "Scanning .so files for alignment..."
+          # Find all .so files and check their ELF program headers
+          find extracted_aab -name "*.so" | while read -r so_file; do
+            echo "========================================"
+            echo "File: $so_file"
+            
+            # Extract the LOAD segments and their alignment
+            objdump -p "$so_file" | grep -A1 "LOAD" | grep "align"
+            
+            # Check specifically for the failing 4KB alignment
+            if objdump -p "$so_file" | grep -A1 "LOAD" | grep -q "2\*\*12"; then
+              echo "❌ FAILED: This library is 4KB aligned (2**12)!"
+            else
+              echo "✅ PASSED: This library looks correctly aligned (2**14 or higher)."
+            fi
+          done
+
+      # 13. Upload to Play Store (r0adkll Action)
       - name: Upload to Play Store
         uses: r0adkll/upload-google-play@v1
         with:
