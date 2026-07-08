@@ -70,14 +70,13 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
 
-      # 10. Build App Bundle with build cache enabled
+      # 10. Build App Bundle
       - name: Build App Bundle
         run: |
           flutter build appbundle \
             --release \
             --obfuscate \
-            --split-debug-info=build/app/outputs/symbols \
-            --build-cache
+            --split-debug-info=build/app/outputs/symbols
 
       # 11. Validate AAB file
       - name: Validate AAB file
