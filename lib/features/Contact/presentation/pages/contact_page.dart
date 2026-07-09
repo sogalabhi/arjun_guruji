@@ -136,7 +136,7 @@ class ContactPage extends StatelessWidget {
                 const Padding(
                   padding: EdgeInsets.only(left: 4.0, bottom: 12.0),
                   child: Text(
-                    "Our Locations",
+                    "Locations",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,
