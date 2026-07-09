@@ -33,6 +33,12 @@ class PanchangInfoEntity {
   final String ritu;
   final DateTime sunriseUtc;
   final DateTime sunsetUtc;
+  final DateTime rahuStartUtc;
+  final DateTime rahuEndUtc;
+  final DateTime yamagandamStartUtc;
+  final DateTime yamagandamEndUtc;
+  final DateTime gulikaStartUtc;
+  final DateTime gulikaEndUtc;
   final String cityName;
   final List<PanchangSegmentEntity> segments;
 
@@ -46,12 +52,21 @@ class PanchangInfoEntity {
     required this.ritu,
     required this.sunriseUtc,
     required this.sunsetUtc,
+    required this.rahuStartUtc,
+    required this.rahuEndUtc,
+    required this.yamagandamStartUtc,
+    required this.yamagandamEndUtc,
+    required this.gulikaStartUtc,
+    required this.gulikaEndUtc,
     required this.cityName,
     required this.segments,
   });
 
   String get formattedSunriseIst => _formatIst(sunriseUtc);
   String get formattedSunsetIst => _formatIst(sunsetUtc);
+  String get formattedRahuIst => '${_formatIst(rahuStartUtc)} - ${_formatIst(rahuEndUtc)}';
+  String get formattedYamagandamIst => '${_formatIst(yamagandamStartUtc)} - ${_formatIst(yamagandamEndUtc)}';
+  String get formattedGulikaIst => '${_formatIst(gulikaStartUtc)} - ${_formatIst(gulikaEndUtc)}';
 
   static String _formatIst(DateTime utc) {
     final ist = utc.add(const Duration(hours: 5, minutes: 30));

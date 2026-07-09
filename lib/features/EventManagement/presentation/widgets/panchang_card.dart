@@ -36,9 +36,11 @@ class PanchangCard extends StatelessWidget {
                   children: [
                     Icon(Icons.brightness_7, color: Colors.amber[400], size: 20),
                     const SizedBox(width: 8),
-                    const Text(
-                      'Today\'s Panchang',
-                      style: TextStyle(
+                    Text(
+                      info != null && DateUtils.isSameDay(info!.date, DateTime.now())
+                          ? 'Today\'s Panchang'
+                          : 'Panchang — ${info != null ? _formattedDay(info!.date) : ""}',
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -134,11 +136,40 @@ class PanchangCard extends StatelessWidget {
                   ),
                 ],
               ),
+              const SizedBox(height: 16),
+              _PanchangRow(
+                icon: Icons.access_time_outlined,
+                iconColor: Colors.white70,
+                label: 'Rahu Kaala',
+                value: info!.formattedRahuIst,
+              ),
+              const SizedBox(height: 10),
+              _PanchangRow(
+                icon: Icons.access_time_outlined,
+                iconColor: Colors.white70,
+                label: 'Yamaganda',
+                value: info!.formattedYamagandamIst,
+              ),
+              const SizedBox(height: 10),
+              _PanchangRow(
+                icon: Icons.access_time_outlined,
+                iconColor: Colors.white70,
+                label: 'Gulika Kaala',
+                value: info!.formattedGulikaIst,
+              ),
             ],
           ],
         ),
       ),
     );
+  }
+
+  String _formattedDay(DateTime date) {
+    const months = [
+      '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+    return '${date.day} ${months[date.month]}';
   }
 }
 

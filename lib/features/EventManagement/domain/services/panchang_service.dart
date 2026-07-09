@@ -47,6 +47,48 @@ class PanchangService {
       );
     }).toList();
 
+    final dayDuration = sunset.difference(sunrise);
+    final segmentMs = dayDuration.inMilliseconds ~/ 8;
+    final segmentDuration = Duration(milliseconds: segmentMs);
+
+    final weekday = date.weekday;
+    final sundayBasedWeekday = weekday == 7 ? 1 : weekday + 1;
+
+    // Mapping: weekday (Sunday=1 ... Saturday=7) -> (rahuSegment, yamaSegment, gulikaSegment)
+    const segmentMap = {
+      1: (8, 4, 6), // Sunday
+      2: (2, 3, 5), // Monday
+      3: (7, 2, 4), // Tuesday
+      4: (5, 1, 3), // Wednesday
+      5: (6, 5, 2), // Thursday
+      6: (4, 6, 1), // Friday
+      7: (3, 7, 8), // Saturday
+    };
+
+    final segmentsMapping = segmentMap[sundayBasedWeekday] ?? (8, 4, 6);
+    final (rahuSeg, yamaSeg, gulikaSeg) = segmentsMapping;
+
+    DateTime segmentTimesStart(int segNum) {
+      return sunrise.add(Duration(
+        milliseconds: (segNum - 1) * segmentDuration.inMilliseconds,
+      ));
+    }
+
+    DateTime segmentTimesEnd(int segNum) {
+      return sunrise.add(Duration(
+        milliseconds: segNum * segmentDuration.inMilliseconds,
+      ));
+    }
+
+    final rahuStartUtc = segmentTimesStart(rahuSeg);
+    final rahuEndUtc = segmentTimesEnd(rahuSeg);
+
+    final yamagandamStartUtc = segmentTimesStart(yamaSeg);
+    final yamagandamEndUtc = segmentTimesEnd(yamaSeg);
+
+    final gulikaStartUtc = segmentTimesStart(gulikaSeg);
+    final gulikaEndUtc = segmentTimesEnd(gulikaSeg);
+
     return PanchangInfoEntity(
       date: date,
       tithiName: info.tithiName,
@@ -57,6 +99,12 @@ class PanchangService {
       ritu: '',
       sunriseUtc: sunrise,
       sunsetUtc: sunset,
+      rahuStartUtc: rahuStartUtc,
+      rahuEndUtc: rahuEndUtc,
+      yamagandamStartUtc: yamagandamStartUtc,
+      yamagandamEndUtc: yamagandamEndUtc,
+      gulikaStartUtc: gulikaStartUtc,
+      gulikaEndUtc: gulikaEndUtc,
       cityName: cityName,
       segments: segments,
     );
