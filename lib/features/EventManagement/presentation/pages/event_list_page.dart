@@ -114,154 +114,171 @@ class EventListPage extends StatelessWidget {
     final interestedBox = Hive.box('interestedBox');
     return BlocProvider(
       create: (_) => sl<EventBloc>()..add(FetchEvents()),
-      child: BlocBuilder<EventBloc, EventState>(
-        builder: (context, state) {
-          if (state is EventsLoading) {
-            return const Scaffold(
-              body: Center(child: CircularProgressIndicator()),
-            );
-          } else if (state is EventsLoaded) {
-            final events = state.events;
-            final now = DateTime.now();
-            final today = DateTime(now.year, now.month, now.day);
+      child: Scaffold(
+        appBar: const GradientAppBar(title: 'All Events'),
+        body: GradientBackground(
+          child: BlocBuilder<EventBloc, EventState>(
+            builder: (context, state) {
+              return RefreshIndicator(
+                onRefresh: () async {
+                  final bloc = context.read<EventBloc>();
+                  bloc.add(FetchEvents());
+                  await bloc.stream.firstWhere(
+                      (s) => s is EventsLoaded || s is EventsError)
+                      .timeout(const Duration(seconds: 4), onTimeout: () => EventsLoading());
+                },
+                child: _buildBody(context, state, interestedBox),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
 
-            final upcomingEvents = events.where((event) {
-              if (event.eventType == "Recurring") {
-                return _getNextOrTodayOccurrence(event, today) != null;
-              } else {
-                final eventDate = DateTime(event.startDate.year,
-                    event.startDate.month, event.startDate.day);
-                return !eventDate.isBefore(today);
-              }
-            }).toList();
+  Widget _buildBody(BuildContext context, EventState state, Box interestedBox) {
+    if (state is EventsLoading) {
+      return const SingleChildScrollView(
+        physics: AlwaysScrollableScrollPhysics(),
+        child: SizedBox(
+          height: 400,
+          child: Center(child: CircularProgressIndicator()),
+        ),
+      );
+    } else if (state is EventsLoaded) {
+      final events = state.events;
+      final now = DateTime.now();
+      final today = DateTime(now.year, now.month, now.day);
 
-            upcomingEvents.sort((a, b) {
-              final aNextDate = a.eventType == "Recurring"
-                  ? _getNextOrTodayOccurrence(a, today) ?? DateTime(2100)
-                  : _getNextOccurrenceDate(a, today);
-              final bNextDate = b.eventType == "Recurring"
-                  ? _getNextOrTodayOccurrence(b, today) ?? DateTime(2100)
-                  : _getNextOccurrenceDate(b, today);
-              return aNextDate.compareTo(bNextDate);
-            });
+      final upcomingEvents = events.where((event) {
+        if (event.eventType == "Recurring") {
+          return _getNextOrTodayOccurrence(event, today) != null;
+        } else {
+          final eventDate = DateTime(event.startDate.year,
+              event.startDate.month, event.startDate.day);
+          return !eventDate.isBefore(today);
+        }
+      }).toList();
 
-            return Scaffold(
-              appBar: const GradientAppBar(title: 'All Events'),
-              body: GradientBackground(
-                child: RefreshIndicator(
-                  onRefresh: () async {
-                    final bloc = BlocProvider.of<EventBloc>(context);
-                    bloc.add(FetchEvents());
-                    await bloc.stream.firstWhere(
-                        (state) => state is EventsLoaded || state is EventsError);
-                  },
-                  child: SingleChildScrollView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (events.isEmpty) ...[
-                          const SizedBox(height: 40),
-                          const Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.event_note_outlined,
-                                    size: 72, color: Colors.white60),
-                                SizedBox(height: 16),
-                                Text(
-                                  "No events available",
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                SizedBox(height: 8),
-                                Text(
-                                  "There are currently no events registered.",
-                                  style: TextStyle(
-                                      fontSize: 14, color: Colors.white70),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ] else ...[
-                          const Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 8),
-                            child: Text(
-                              'Upcoming Events',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          if (upcomingEvents.isEmpty)
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 12),
-                              child: Center(
-                                child: Container(
-                                  width: double.infinity,
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 24, horizontal: 16),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white
-                                        .withAlpha((0.05 * 255).toInt()),
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: const Column(
-                                    children: [
-                                      Icon(Icons.event_available_outlined,
-                                          color: Colors.white60, size: 48),
-                                      SizedBox(height: 12),
-                                      Text(
-                                        "No upcoming events scheduled",
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      SizedBox(height: 4),
-                                      Text(
-                                        "Check back later for new programs.",
-                                        style: TextStyle(
-                                            color: Colors.white70,
-                                            fontSize: 12),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            )
-                          else
-                            FeaturedEventsCarousel(
-                              events: upcomingEvents,
-                              interestedBox: interestedBox,
-                            ),
-                          const SizedBox(height: 16),
-                          PastEventsList(
-                              events: events, interestedBox: interestedBox),
-                        ],
-                      ],
+      upcomingEvents.sort((a, b) {
+        final aNextDate = a.eventType == "Recurring"
+            ? _getNextOrTodayOccurrence(a, today) ?? DateTime(2100)
+            : _getNextOccurrenceDate(a, today);
+        final bNextDate = b.eventType == "Recurring"
+            ? _getNextOrTodayOccurrence(b, today) ?? DateTime(2100)
+            : _getNextOccurrenceDate(b, today);
+        return aNextDate.compareTo(bNextDate);
+      });
+
+      return SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (events.isEmpty) ...[
+              const SizedBox(height: 40),
+              const Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.event_note_outlined,
+                        size: 72, color: Colors.white60),
+                    SizedBox(height: 16),
+                    Text(
+                      "No events available",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
+                    SizedBox(height: 8),
+                    Text(
+                      "There are currently no events registered.",
+                      style: TextStyle(
+                          fontSize: 14, color: Colors.white70),
+                    ),
+                  ],
+                ),
+              ),
+            ] else ...[
+              const Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: 16, vertical: 8),
+                child: Text(
+                  'Upcoming Events',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-            );
-          } else if (state is EventsError) {
-            return Scaffold(
-              appBar: const GradientAppBar(title: 'All Events'),
-              body: Center(child: Text(state.message)),
-            );
-          } else {
-            return const SizedBox.shrink();
-          }
-        },
-      ),
-    );
+              if (upcomingEvents.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16, vertical: 12),
+                  child: Center(
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 24, horizontal: 16),
+                      decoration: BoxDecoration(
+                        color: Colors.white
+                            .withAlpha((0.05 * 255).toInt()),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Column(
+                        children: [
+                          Icon(Icons.event_available_outlined,
+                              color: Colors.white60, size: 48),
+                          SizedBox(height: 12),
+                          Text(
+                            "No upcoming events scheduled",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            "Check back later for new programs.",
+                            style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 12),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+              else
+                FeaturedEventsCarousel(
+                  events: upcomingEvents,
+                  interestedBox: interestedBox,
+                ),
+              const SizedBox(height: 16),
+              PastEventsList(
+                  events: events, interestedBox: interestedBox),
+            ],
+          ],
+        ),
+      );
+    } else if (state is EventsError) {
+      return SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: SizedBox(
+          height: 400,
+          child: Center(
+            child: Text(
+              state.message,
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
+        ),
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
   }
 }

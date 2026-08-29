@@ -48,7 +48,11 @@ class AllBooksPageState extends State<AllBooksPage> {
                 Expanded(
                   child: RefreshIndicator(
                     onRefresh: () async {
-                      context.read<BooksBloc>().add(const FetchAllBooks());
+                      final bloc = context.read<BooksBloc>();
+                      bloc.add(const FetchAllBooks());
+                      await bloc.stream.firstWhere(
+                        (state) => state is BooksLoaded || state is Error,
+                      ).timeout(const Duration(seconds: 4), onTimeout: () => const BooksState.initial());
                     },
                     child: BlocBuilder<BooksBloc, BooksState>(
                       builder: (context, state) {
@@ -125,14 +129,31 @@ class AllBooksPageState extends State<AllBooksPage> {
                             },
                           );
                         } else if (state is Error) {
-                          return Center(
-                            child: Text(
-                              state.message,
-                              style: const TextStyle(color: Colors.white),
+                          return SingleChildScrollView(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            child: SizedBox(
+                              height: 400,
+                              child: Center(
+                                child: Text(
+                                  state.message,
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                              ),
                             ),
                           );
                         } else {
-                          return const Center(child: Text('No data available'));
+                          return const SingleChildScrollView(
+                            physics: AlwaysScrollableScrollPhysics(),
+                            child: SizedBox(
+                              height: 400,
+                              child: Center(
+                                child: Text(
+                                  'No data available',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          );
                         }
                       },
                     ),

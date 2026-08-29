@@ -1,42 +1,77 @@
-name: Flutter Release to Play Store
+name: Deploy to Google Play
 
 on:
-  workflow_dispatch:  # Manual trigger only
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      track:
+        description: 'Target Play Store Track (internal, alpha = Closed Testing, beta = Open Testing, production)'
+        required: true
+        default: 'internal'
+        type: choice
+        options:
+        - internal
+        - alpha
+        - beta
+        - production
+      versionName:
+        description: 'Version Name (leave blank to use from pubspec.yaml)'
+        required: false
+        type: string
+      usePubspecBuildNumber:
+        description: 'Use Build Number from pubspec.yaml (if false, uses GitHub Run Number + Offset)'
+        required: false
+        default: false
+        type: boolean
+      buildOffset:
+        description: 'Build Number Offset (only used if Use Pubspec Build Number is false)'
+        required: false
+        default: '0'
+        type: string
+      releaseNotes:
+        description: 'Release Notes (What changed?)'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
-  build-and-release:
+  deploy:
     runs-on: ubuntu-latest
-    
+    timeout-minutes: 30
     steps:
-      # 1. Checkout code
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
-      # 2. Set up Java 17
-      - name: Set up Java
-        uses: actions/setup-java@v4
+      - name: Setup Java
+        uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4
         with:
-          java-version: '17'
           distribution: 'temurin'
+          java-version: '17'
 
-      # 3. Set up Flutter
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
+      - name: Setup Flutter
+        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
         with:
           channel: 'stable'
+          cache: true
 
-      # 4. Cache dependencies
       - name: Cache Pub dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: ~/.pub-cache
           key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
           restore-keys: |
             ${{ runner.os }}-pub-
 
-      # 5. Cache Gradle dependencies
       - name: Cache Gradle dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: |
             ~/.gradle/caches
@@ -45,19 +80,43 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      # 6. Decode keystore (writing to android/app/ where it's expected)
-      - name: Decode keystore file
-        run: echo "${{ secrets.KEYSTORE_FILE }}" | base64 --decode > android/app/release.keystore
-
-      # 7. Create key.properties (with correct paths)
-      - name: Create keystore.properties
+      # 1. Decode Keystore from base64 GitHub Secret
+      - name: Decode Keystore
+        env:
+          KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
         run: |
-          echo "storeFile=release.keystore" > android/key.properties
-          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> android/key.properties
-          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
-          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+          if [ -z "$KEYSTORE_FILE" ]; then
+            echo "Error: KEYSTORE_FILE secret is not set!"
+            exit 1
+          fi
+          echo "$KEYSTORE_FILE" | base64 --decode > android/app/release.keystore
 
-      # 8. Optimize Gradle memory and enable caching
+      # 2. Create key.properties dynamically
+      - name: Create key.properties
+        env:
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: |
+          if [ -z "$KEY_ALIAS" ] || [ -z "$KEY_PASSWORD" ]; then
+            echo "Error: KEY_ALIAS or KEY_PASSWORD secret is not set!"
+            exit 1
+          fi
+
+          # Fail loudly if the store password is missing rather than silently
+          # reusing KEY_PASSWORD — a missing secret should surface immediately,
+          # not produce a build with unexpected signing config.
+          if [ -z "$KEYSTORE_PASSWORD" ]; then
+            echo "Error: KEYSTORE_PASSWORD secret is not set!"
+            exit 1
+          fi
+
+          echo "storeFile=release.keystore" > android/key.properties
+          echo "storePassword=$KEYSTORE_PASSWORD" >> android/key.properties
+          echo "keyAlias=$KEY_ALIAS" >> android/key.properties
+          echo "keyPassword=$KEY_PASSWORD" >> android/key.properties
+
+      # 3. Optimize Gradle memory and enable caching
       - name: Optimize Gradle build
         run: |
           echo "org.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=512m" >> android/gradle.properties
@@ -66,19 +125,83 @@ jobs:
           echo "org.gradle.caching=true" >> android/gradle.properties
           echo "org.gradle.parallel=true" >> android/gradle.properties
 
-      # 9. Get dependencies
-      - name: Get dependencies
+      - name: Get Dependencies
         run: flutter pub get
 
-      # 10. Build App Bundle
-      - name: Build App Bundle
+      # 4. Calculate Build Number and Build App Bundle (.aab)
+      - name: Build App Bundle (.aab)
+        env:
+          BUILD_OFFSET: ${{ inputs.buildOffset }}
+          VERSION_NAME_INPUT: ${{ inputs.versionName }}
+          USE_PUBSPEC_BUILD: ${{ inputs.usePubspecBuildNumber }}
+          TRACK_INPUT: ${{ inputs.track }}
         run: |
+          # Extract version details from pubspec.yaml
+          PUBSPEC_VERSION=$(grep "^version: " pubspec.yaml | sed 's/version: //')
+          PUBSPEC_NAME=$(echo "$PUBSPEC_VERSION" | cut -d'+' -f1)
+          PUBSPEC_NUMBER=$(echo "$PUBSPEC_VERSION" | cut -d'+' -f2)
+
+          # When a pubspec version has no '+' separator, `cut -f1` and `cut -f2`
+          # both return the whole string. Detect this by comparing the two halves
+          # and fall back to build number 1 so arithmetic below stays valid.
+          if [ "$PUBSPEC_NAME" = "$PUBSPEC_NUMBER" ]; then
+            PUBSPEC_NUMBER="1"
+          fi
+
+          # Print explicit execution metadata
+          echo "Track: ${TRACK_INPUT:-internal}"
+          echo "Event: ${{ github.event_name }}"
+          echo "Ref: $GITHUB_REF"
+
+          # Determine final Version Name
+          if [ "${{ github.event_name }}" = "push" ]; then
+            # Tag-push trigger: extract version from tag (e.g. refs/tags/v1.2.3 → 1.2.3).
+            # 'inputs.track' is unavailable on push events, so the upload step
+            # falls back to 'internal' — intentional as a safe default for tag builds.
+            TAG_NAME="${GITHUB_REF#refs/tags/}"
+            FINAL_VERSION_NAME="${TAG_NAME#v}"
+          else
+            FINAL_VERSION_NAME="$VERSION_NAME_INPUT"
+            if [ -z "$FINAL_VERSION_NAME" ]; then
+              FINAL_VERSION_NAME="$PUBSPEC_NAME"
+            fi
+          fi
+
+          # Validate version name before passing to flutter build. Accepts X.Y.Z
+          # and X.Y.Z-prerelease (e.g. 1.2.3-rc1) to support alpha/beta tracks,
+          # but rejects anything clearly malformed (e.g. bare 'v1.2' or stray metadata).
+          if ! [[ "$FINAL_VERSION_NAME" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9.]+)?$ ]]; then
+            echo "Error: Version name '$FINAL_VERSION_NAME' is not a valid version (X.Y.Z or X.Y.Z-pre)!"
+            exit 1
+          fi
+
+          # Determine final Build Number
+          if [ "$USE_PUBSPEC_BUILD" = "true" ]; then
+            FINAL_BUILD_NUMBER="$PUBSPEC_NUMBER"
+          else
+            OFFSET="${BUILD_OFFSET}"
+            if [ -z "$OFFSET" ]; then
+              OFFSET=0
+            fi
+
+            # Verify OFFSET is a safe integer to prevent shell injection or syntax errors
+            if ! [[ "$OFFSET" =~ ^[0-9]+$ ]]; then
+              echo "Error: buildOffset must be an integer!"
+              exit 1
+            fi
+
+            FINAL_BUILD_NUMBER=$(( ${{ github.run_number }} + OFFSET ))
+          fi
+
+          echo "Building app-release.aab with version $FINAL_VERSION_NAME+$FINAL_BUILD_NUMBER..."
           flutter build appbundle \
             --release \
+            --build-name="$FINAL_VERSION_NAME" \
+            --build-number="$FINAL_BUILD_NUMBER" \
             --obfuscate \
             --split-debug-info=build/app/outputs/symbols
 
-      # 11. Validate AAB file
+      # 5. Validate AAB file
       - name: Validate AAB file
         run: |
           if [ ! -f build/app/outputs/bundle/release/app-release.aab ]; then
@@ -87,7 +210,7 @@ jobs:
           fi
           echo "AAB file exists: $(ls -lh build/app/outputs/bundle/release/app-release.aab)"
 
-      # 12. Verify 16KB Alignment for Native Libraries
+      # 6. Verify 16KB Alignment for Native Libraries
       - name: Verify 16KB Alignment for Native Libraries
         run: |
           echo "Installing tools..."
@@ -95,32 +218,82 @@ jobs:
 
           echo "Extracting the AAB..."
           mkdir extracted_aab
-          # Update this path if your AAB is generated in a different directory
           unzip build/app/outputs/bundle/release/app-release.aab -d extracted_aab
 
           echo "Scanning .so files for alignment..."
-          # Find all .so files and check their ELF program headers
-          find extracted_aab -name "*.so" | while read -r so_file; do
+          ALIGNMENT_FAILED=0
+          # Use process substitution (not pipe) so ALIGNMENT_FAILED is set in the
+          # current shell, not a subshell — a pipe would silently reset it to 0.
+          while read -r so_file; do
             echo "========================================"
             echo "File: $so_file"
-            
-            # Extract the LOAD segments and their alignment
+
             objdump -p "$so_file" | grep -A1 "LOAD" | grep "align"
-            
-            # Check specifically for the failing 4KB alignment
+
             if objdump -p "$so_file" | grep -A1 "LOAD" | grep -q "2\*\*12"; then
               echo "❌ FAILED: This library is 4KB aligned (2**12)!"
+              ALIGNMENT_FAILED=1
             else
               echo "✅ PASSED: This library looks correctly aligned (2**14 or higher)."
             fi
-          done
+          done < <(find extracted_aab -name "*.so")
 
-      # 13. Upload to Play Store (r0adkll Action)
-      - name: Upload to Play Store
-        uses: r0adkll/upload-google-play@v1
+          if [ "$ALIGNMENT_FAILED" -eq 1 ]; then
+            echo "❌ ERROR: One or more native libraries are 4KB aligned. Not compatible with Android devices requiring 16KB page alignment."
+            exit 1
+          fi
+
+      # 7. Generate the release notes file if provided
+      - name: Create Release Notes
+        id: release_notes
+        env:
+          RELEASE_NOTES: ${{ inputs.releaseNotes }}
+        run: |
+          if [ -n "$RELEASE_NOTES" ]; then
+            mkdir -p distribution/whatsnew
+            printf "%s" "$RELEASE_NOTES" > distribution/whatsnew/whatsnew-en-US
+            echo "whatsnew_dir=distribution/whatsnew/" >> "$GITHUB_OUTPUT"
+          else
+            echo "whatsnew_dir=" >> "$GITHUB_OUTPUT"
+          fi
+
+      # 8. Upload to Google Play
+      - name: Upload to Google Play
+        uses: r0adkll/upload-google-play@935ef9c68bb393a8e6116b1575626a7f5be3a7fb # v1.1.3
         with:
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
           packageName: org.snsds.arjunguruji
           releaseFiles: build/app/outputs/bundle/release/app-release.aab
-          tracks: internal
+          track: ${{ inputs.track || 'internal' }}
           status: draft
+          whatsNewDirectory: ${{ steps.release_notes.outputs.whatsnew_dir }}
+
+      # 9. Upload the .aab as a workflow artifact for traceability / debugging
+      - name: Upload AAB Artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: app-release-${{ github.run_number }}
+          path: build/app/outputs/bundle/release/app-release.aab
+          retention-days: 30
+
+      # 10. Upload debug symbols so crash reports can be de-obfuscated later.
+      #     These MUST be retained; without them, stack traces from obfuscated
+      #     builds cannot be decoded in Crashlytics / Play Console.
+      #     NOTE: GitHub artifacts expire after 90 days, but crashes can be
+      #     reported against much older builds. For permanent retention, also
+      #     upload these symbols to Crashlytics / Firebase App Distribution
+      #     or Play Console's native symbol upload — those do not expire.
+      - name: Upload Debug Symbols
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: debug-symbols-${{ github.run_number }}
+          path: build/app/outputs/symbols/
+          retention-days: 90
+
+      # 11. Clean up credentials and temporary files
+      - name: Clean up Credentials
+        if: always()
+        run: |
+          rm -f android/app/release.keystore
+          rm -f android/key.properties
+          rm -rf extracted_aab

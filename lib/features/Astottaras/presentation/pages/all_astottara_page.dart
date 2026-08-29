@@ -44,71 +44,97 @@ class AllAstottaraPageState extends State<AllAstottaraPage> {
                 ),
                 const SizedBox(height: 20),
                 Expanded(
-                  child: BlocBuilder<AstottarasBloc, AstottarasState>(
-                    builder: (context, state) {
-                      if (state is Loading) {
-                        return GridView.builder(
-                          itemCount: 6,
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 10,
-                            mainAxisSpacing: 10,
-                            childAspectRatio: 0.7,
-                          ),
-                          itemBuilder: (context, index) {
-                            return Shimmer.fromColors(
-                              baseColor: Colors.grey[300]!,
-                              highlightColor: Colors.grey[100]!,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10),
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      final bloc = context.read<AstottarasBloc>();
+                      bloc.add(const FetchAllAstottaras());
+                      await bloc.stream.firstWhere(
+                        (state) => state is AstottarasLoaded || state is Error,
+                      ).timeout(const Duration(seconds: 4), onTimeout: () => const AstottarasState.initial());
+                    },
+                    child: BlocBuilder<AstottarasBloc, AstottarasState>(
+                      builder: (context, state) {
+                        if (state is Loading) {
+                          return GridView.builder(
+                            itemCount: 6,
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 10,
+                              mainAxisSpacing: 10,
+                              childAspectRatio: 0.7,
+                            ),
+                            itemBuilder: (context, index) {
+                              return Shimmer.fromColors(
+                                baseColor: Colors.grey[300]!,
+                                highlightColor: Colors.grey[100]!,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        } else if (state is AstottarasLoaded) {
+                          final filteredAstottara = state.astottaras
+                              .where((astottara) => astottara.title
+                                  .toLowerCase()
+                                  .contains(_searchQuery))
+                              .toList()
+                            ..sort((a, b) => a.title.compareTo(b.title));
+                          return ImageGridView(
+                            items: filteredAstottara,
+                            getImageUrl: (astottara) => astottara.imageUrl,
+                            getImageBytes: (astottara) => astottara.imageBytes,
+                            getTitle: (astottara) => astottara.title,
+                            getOnTap: (astottara) {
+                              if (astottara.content != null) {
+                                return () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ContentViewPage(
+                                        title: astottara.title,
+                                        content: astottara.content!,
+                                      ),
+                                    ),
+                                  );
+                                };
+                              }
+                              return null;
+                            },
+                          );
+                        } else if (state is Error) {
+                          return SingleChildScrollView(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            child: SizedBox(
+                              height: 400,
+                              child: Center(
+                                child: Text(
+                                  state.message,
+                                  style: const TextStyle(color: Colors.white),
                                 ),
                               ),
-                            );
-                          },
-                        );
-                      } else if (state is AstottarasLoaded) {
-                        final filteredAstottara = state.astottaras
-                            .where((astottara) => astottara.title
-                                .toLowerCase()
-                                .contains(_searchQuery))
-                            .toList()
-                          ..sort((a, b) => a.title.compareTo(b.title));
-                        return ImageGridView(
-                          items: filteredAstottara,
-                          getImageUrl: (astottara) => astottara.imageUrl,
-                          getImageBytes: (astottara) => astottara.imageBytes,
-                          getTitle: (astottara) => astottara.title,
-                          getOnTap: (astottara) {
-                            if (astottara.content != null) {
-                              return () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ContentViewPage(
-                                      title: astottara.title,
-                                      content: astottara.content!,
-                                    ),
-                                  ),
-                                );
-                              };
-                            }
-                            return null;
-                          },
-                        );
-                      } else if (state is Error) {
-                        return Center(
-                          child: Text(
-                            state.message,
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                        );
-                      } else {
-                        return const Center(child: Text('No data available'));
-                      }
-                    },
+                            ),
+                          );
+                        } else {
+                          return const SingleChildScrollView(
+                            physics: AlwaysScrollableScrollPhysics(),
+                            child: SizedBox(
+                              height: 400,
+                              child: Center(
+                                child: Text(
+                                  'No data available',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                    ),
                   ),
                 ),
               ],

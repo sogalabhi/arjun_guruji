@@ -67,82 +67,108 @@ class LyricsListPageState extends State<LyricsListPage> {
                 ),
                 const SizedBox(height: 20),
                 Expanded(
-                  child: BlocBuilder<LyricsBloc, LyricsState>(
-                    builder: (context, state) {
-                      if (state is Loading) {
-                        return Center(
-                          child: Shimmer.fromColors(
-                            baseColor: Colors.grey[300]!,
-                            highlightColor: Colors.grey[100]!,
-                            child: Container(
-                              width: double.infinity,
-                              height: 60,
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 8),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                          ),
-                        );
-                      } else if (state is LyricsLoaded) {
-                        final filteredLyrics = state.lyrics
-                            .where(
-                              (lyrics) =>
-                                  lyrics.category.toLowerCase() ==
-                                      widget.category.toLowerCase() &&
-                                  lyrics.title
-                                      .toLowerCase()
-                                      .contains(_searchQuery),
-                            )
-                            .toList();
-
-                        return ListView.separated(
-                          itemCount: filteredLyrics.length,
-                          separatorBuilder: (context, index) => const Divider(),
-                          itemBuilder: (context, index) {
-                            final data = filteredLyrics[index];
-                            return ListTile(
-                              leading: Image.network(
-                                _getImageForCategory(data.category),
-                                width: 48,
-                                height: 48,
-                                fit: BoxFit.cover,
-                              ),
-                              title: Text(
-                                data.title,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      final bloc = context.read<LyricsBloc>();
+                      bloc.add(const LyricsEvent.fetchAllLyrics());
+                      await bloc.stream.firstWhere(
+                        (state) => state is LyricsLoaded || state is Error,
+                      ).timeout(const Duration(seconds: 4), onTimeout: () => const LyricsState.initial());
+                    },
+                    child: BlocBuilder<LyricsBloc, LyricsState>(
+                      builder: (context, state) {
+                        if (state is Loading) {
+                          return Center(
+                            child: Shimmer.fromColors(
+                              baseColor: Colors.grey[300]!,
+                              highlightColor: Colors.grey[100]!,
+                              child: Container(
+                                width: double.infinity,
+                                height: 60,
+                                margin: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
+                                decoration: BoxDecoration(
                                   color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ContentViewPage(
-                                      content: data.content ?? '',
-                                      title: data.title,
-                                    ),
+                            ),
+                          );
+                        } else if (state is LyricsLoaded) {
+                          final filteredLyrics = state.lyrics
+                              .where(
+                                (lyrics) =>
+                                    lyrics.category.toLowerCase() ==
+                                        widget.category.toLowerCase() &&
+                                    lyrics.title
+                                        .toLowerCase()
+                                        .contains(_searchQuery),
+                              )
+                              .toList();
+
+                          return ListView.separated(
+                            itemCount: filteredLyrics.length,
+                            separatorBuilder: (context, index) => const Divider(),
+                            itemBuilder: (context, index) {
+                              final data = filteredLyrics[index];
+                              return ListTile(
+                                leading: Image.network(
+                                  _getImageForCategory(data.category),
+                                  width: 48,
+                                  height: 48,
+                                  fit: BoxFit.cover,
+                                ),
+                                title: Text(
+                                  data.title,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
                                   ),
-                                );
-                              },
-                            );
-                          },
-                        );
-                      } else if (state is Error) {
-                        return Center(
-                          child: Text(
-                            state.toString(),
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                        );
-                      } else {
-                        return const Center(child: Text('No data available'));
-                      }
-                    },
+                                ),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ContentViewPage(
+                                        content: data.content ?? '',
+                                        title: data.title,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                          );
+                        } else if (state is Error) {
+                          return SingleChildScrollView(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            child: SizedBox(
+                              height: 400,
+                              child: Center(
+                                child: Text(
+                                  state.toString(),
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          );
+                        } else {
+                          return const SingleChildScrollView(
+                            physics: AlwaysScrollableScrollPhysics(),
+                            child: SizedBox(
+                              height: 400,
+                              child: Center(
+                                child: Text(
+                                  'No data available',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                    ),
                   ),
                 ),
               ],

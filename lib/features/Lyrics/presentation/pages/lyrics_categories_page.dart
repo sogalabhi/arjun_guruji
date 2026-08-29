@@ -42,122 +42,147 @@ class AllLyricsPageState extends State<AllLyricsPage> {
             child: Column(
               children: [
                 Expanded(
-                  child: BlocBuilder<LyricsBloc, LyricsState>(
-                    builder: (context, state) {
-                      if (state is Loading) {
-                        return GridView.builder(
-                          itemCount: 6,
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 10,
-                            mainAxisSpacing: 10,
-                            childAspectRatio: 0.7,
-                          ),
-                          itemBuilder: (context, index) {
-                            return Shimmer.fromColors(
-                              baseColor: Colors.grey[300]!,
-                              highlightColor: Colors.grey[100]!,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                            );
-                          },
-                        );
-                      } else if (state is LyricsLoaded) {
-                        final filteredLyrics = state.lyrics
-                            .map((e) => e.category)
-                            .toSet()
-                            .toList()
-                          ..sort((a, b) => a.compareTo(b));
-                        return GridView.builder(
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 10,
-                            mainAxisSpacing: 10,
-                            childAspectRatio: 0.7,
-                          ),
-                          itemCount: filteredLyrics.length,
-                          itemBuilder: (context, index) {
-                            final category = filteredLyrics[index];
-                            return InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => LyricsListPage(
-                                      category: category,
-                                    ),
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      final bloc = context.read<LyricsBloc>();
+                      bloc.add(const LyricsEvent.fetchAllLyrics());
+                      await bloc.stream.firstWhere(
+                        (state) => state is LyricsLoaded || state is Error,
+                      ).timeout(const Duration(seconds: 4), onTimeout: () => const LyricsState.initial());
+                    },
+                    child: BlocBuilder<LyricsBloc, LyricsState>(
+                      builder: (context, state) {
+                        if (state is Loading) {
+                          return GridView.builder(
+                            itemCount: 6,
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 10,
+                              mainAxisSpacing: 10,
+                              childAspectRatio: 0.7,
+                            ),
+                            itemBuilder: (context, index) {
+                              return Shimmer.fromColors(
+                                baseColor: Colors.grey[300]!,
+                                highlightColor: Colors.grey[100]!,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
-                                );
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                        color: Colors.black26,
-                                        blurRadius: 5,
-                                        offset: Offset(2, 2))
-                                  ],
                                 ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: Stack(
-                                    fit: StackFit.expand,
-                                    children: [
-                                      Image.network(
-                                        _getImageForCategory(category),
-                                        fit: BoxFit.cover,
+                              );
+                            },
+                          );
+                        } else if (state is LyricsLoaded) {
+                          final filteredLyrics = state.lyrics
+                              .map((e) => e.category)
+                              .toSet()
+                              .toList()
+                            ..sort((a, b) => a.compareTo(b));
+                          return GridView.builder(
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 10,
+                              mainAxisSpacing: 10,
+                              childAspectRatio: 0.7,
+                            ),
+                            itemCount: filteredLyrics.length,
+                            itemBuilder: (context, index) {
+                              final category = filteredLyrics[index];
+                              return InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => LyricsListPage(
+                                        category: category,
                                       ),
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          gradient: LinearGradient(
-                                            colors: [
-                                              Colors.black.withAlpha(
-                                                  (0.6 * 255).toInt()),
-                                              Colors.transparent
-                                            ],
-                                            begin: Alignment.bottomCenter,
-                                            end: Alignment.topCenter,
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        bottom: 10,
-                                        left: 10,
-                                        child: Text(
-                                          category,
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                          color: Colors.black26,
+                                          blurRadius: 5,
+                                          offset: Offset(2, 2))
                                     ],
                                   ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: Stack(
+                                      fit: StackFit.expand,
+                                      children: [
+                                        Image.network(
+                                          _getImageForCategory(category),
+                                          fit: BoxFit.cover,
+                                        ),
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              colors: [
+                                                Colors.black.withAlpha(
+                                                    (0.6 * 255).toInt()),
+                                                Colors.transparent
+                                              ],
+                                              begin: Alignment.bottomCenter,
+                                              end: Alignment.topCenter,
+                                            ),
+                                          ),
+                                        ),
+                                        Positioned(
+                                          bottom: 10,
+                                          left: 10,
+                                          child: Text(
+                                            category,
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        } else if (state is Error) {
+                          return SingleChildScrollView(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            child: SizedBox(
+                              height: 400,
+                              child: Center(
+                                child: Text(
+                                  state.toString(),
+                                  style: const TextStyle(color: Colors.white),
                                 ),
                               ),
-                            );
-                          },
-                        );
-                      } else if (state is Error) {
-                        return Center(
-                          child: Text(
-                            state.toString(),
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                        );
-                      } else {
-                        return const Center(
-                            child: Text('No Category available'));
-                      }
-                    },
+                            ),
+                          );
+                        } else {
+                          return const SingleChildScrollView(
+                            physics: AlwaysScrollableScrollPhysics(),
+                            child: SizedBox(
+                              height: 400,
+                              child: Center(
+                                child: Text(
+                                  'No Category available',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                    ),
                   ),
                 ),
               ],

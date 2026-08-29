@@ -108,13 +108,14 @@ class _CalendarEventViewState extends State<_CalendarEventView> {
               body: GradientBackground(
                 child: eventState is EventsLoading
                     ? const Center(child: CircularProgressIndicator())
-                    : RefreshIndicator(
-                        onRefresh: () async {
-                          final bloc = context.read<EventBloc>();
-                          bloc.add(FetchEvents());
-                          await bloc.stream.firstWhere(
-                              (s) => s is EventsLoaded || s is EventsError);
-                        },
+                      : RefreshIndicator(
+                          onRefresh: () async {
+                            final bloc = context.read<EventBloc>();
+                            bloc.add(FetchEvents());
+                            await bloc.stream.firstWhere(
+                                (s) => s is EventsLoaded || s is EventsError)
+                                .timeout(const Duration(seconds: 4), onTimeout: () => EventsLoading());
+                          },
                         child: SingleChildScrollView(
                           physics: const AlwaysScrollableScrollPhysics(),
                           child: Column(

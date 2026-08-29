@@ -16,3 +16,7 @@
   - **UPI & Donations:** Integrated donation gateways supporting instant UPI transactions.
 - 🎨 **Modern Interface:** Distraction-free content views, micro-animations, and dynamic gradient backgrounds optimized for all ages.
 - 🧱 **Clean Architecture:** Enterprise-grade structure cleanly separating Domain, Data, and Presentation layers using Bloc and GetIt dependency injection.
+
+## 🚀 CI/CD & Deployment
+
+The application features an automated Google Play Release pipeline using GitHub Actions. Check out the [CI/CD Pipeline Documentation](file:///home/abhijith/coding/arjun_guruji/docs/google_play_cicd.md) for configuration instructions, secrets setup, and troubleshooting steps.
