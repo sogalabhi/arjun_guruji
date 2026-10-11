@@ -217,18 +217,16 @@ class _DonatePageState extends State<DonatePage> {
                               }
                               final double parsedAmount = double.parse(_amountController.text.trim());
                               final String amount = parsedAmount.toStringAsFixed(2);
-                              final String uniqueTxnId = 'TXN${DateTime.now().millisecondsSinceEpoch}';
 
+                              // Keep this to the core UPI params only. The QR code
+                              // also carries mc/orgid/mode/purpose, but those mark
+                              // the link as a signed merchant/QR payment; an
+                              // unsigned intent carrying them (or a made-up tr) gets
+                              // declined by GPay/PhonePe.
                               final String upiUri =
-                                  'upi://pay?ver=01'
-                                  '&pa=9448843939@iob'
+                                  'upi://pay?pa=9448843939@iob'
                                   '&pn=Swarna%20Nrisimha%20Datta%20Sai%20Peethika%20Seva%20Trust'
-                                  '&mc=5099'
-                                  '&orgid=159020'
-                                  '&mode=02'
-                                  '&purpose=00'
                                   '&am=$amount'
-                                  '&tr=$uniqueTxnId'
                                   '&cu=INR'
                                   '&tn=Donation%20to%20Trust';
 
