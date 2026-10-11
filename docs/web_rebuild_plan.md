@@ -4,7 +4,7 @@ Rebuild the `arjun-guruji-web` website so it uses the same Firebase data as the 
 
 Related: [plan.md](../plan.md) (app UX and motion plan) and [reader_plan.md](reader_plan.md) (long-book reader). The website should follow both, so the app and the website change together.
 
-Current status (11 Oct 2026): Phase 0 is committed and the Phase 1 reading implementation is ready to commit. All content is available, confirmed by the project owner; the content-upload dependency is resolved. Real-device acceptance checks and the chapter-reader parity decision remain open. Donations are deferred.
+Current status (11 Oct 2026): Phases 0 and 1 are committed and pushed. All content is available, confirmed by the project owner; the content-upload dependency is resolved. Phase 2 implements Home and Contact, with a next-programme summary on Home and placeholders for Events and Bhajans until their own phases. Notifications and donations are deferred. Build, lint, Chromium layout/navigation checks and event-scheduling tests pass; real-iPhone acceptance checks and the chapter-reader parity decision remain open.
 
 ---
 
@@ -23,7 +23,8 @@ The website is currently cloned inside the app repo at `arjun_guruji/arjun-guruj
 
 ### 1.2 Decisions already made
 - **Keep React + Vite** and rebuild in place. Don't use Flutter web, which is too heavy and too weak at text and scrolling on iPhone Safari.
-- **Bring the app's content features to the website:** reading, audio, events and Panchang, contact, notifications.
+- **Bring the app's content features to the website:** reading, audio, events and Panchang, contact.
+- **Notifications are deferred for now.** Skip the notification page, home bell, unread indicator and notification data loading in this revamp phase.
 - **Donations are deferred for now.** The current web revamp excludes the Donate page, home Donate / Seva button, UPI payments, bank details and donation QR code. Revisit them in a later phase.
 - **No new repo and no big-bang delete.** Work on a branch, replace pages one at a time, and delete old files only after their replacement works.
 - **Gallery is dropped.** It was removed from the app in commit `c2f7250`, and on the website it's "Coming soon".
@@ -99,7 +100,6 @@ Data issues to clean up at the same time:
 | Events & calendar | `lib/features/EventManagement/presentation/pages/*` | `/events`, `/events/calendar`, `/events/:id` |
 | Panchang | `lib/features/EventManagement/presentation/widgets/panchang_card.dart` | `/panchang` |
 | Contact | `lib/features/Contact/presentation/pages/connect_page.dart`, `contact_page.dart` | `/contact` |
-| Notifications | `lib/features/Notifications/presentation/pages/notifications_page.dart` | `/notifications` |
 | Settings | `lib/features/Settings/presentation/pages/settings_page.dart` | `/settings` (reader settings only) |
 
 ### 1.8 App visual language to copy
@@ -138,13 +138,13 @@ src/
   main.jsx, App.jsx          router + layout
   firebase.js                initializeApp + getFirestore (lite)
   data/                      one module per collection: books.js, astottara.js, lyrics.js,
-                             audio.js, events.js, notifications.js (fetch + map to plain objects)
+                             audio.js, events.js (fetch + map to plain objects)
   hooks/useCollection.js     load + cache (memory, then sessionStorage), loading / error states
   layout/                    AppBar, Page, BackButton, BottomSafeArea
   components/                Tile, Card, ListRow, Skeleton, EmptyState, ErrorState
   reader/                    Reader, ReaderSettings, sections (port of reader_plan.md parser), search
   features/                  home/, books/, astottara/, lyrics/, audio/, events/, panchang/,
-                             contact/, notifications/, settings/
+                             contact/, settings/
   settings/                  reader settings context (stored in localStorage)
 public/
   fonts/                     Poppins, Noto Sans Kannada, Noto Serif Kannada, Samarkan (self-hosted)
@@ -215,20 +215,23 @@ Done when
 - There's no horizontal scroll at 320px, 375px, 430px, iPhone landscape or iPad.
 - The text matches the app's reader for 3 sample items.
 
-### Phase 2: Home, Contact, Notifications
+### Phase 2: Home and Contact
 
 Tasks
 1. **Home** as in plan.md §2:
    - a smaller Guruji image;
    - the **Today** card (tithi, Rahu Kaala, next event); until Phase 3 it shows only the next event;
    - 6 tiles: Bhajans, Books, Astottara, Lyrics, Events, Contact;
-   - a bell that opens Notifications.
+   - a labelled Settings link; notifications and the home bell are deferred;
+   - labelled placeholders for Bhajans and Events until Phases 4 and 3 respectively.
 2. **Contact:** call, WhatsApp and directions first, then Website, YouTube, Facebook, Instagram and Threads (the app's 6 links), plus the ashram address and bus directions from the current website.
-3. **Notifications:** only those with `isVisible` true, sorted by `dateTime`, newest first. Show the image if there is one, and open `onTapLink` if there is one.
-4. Delete the old `home.jsx`, `contact.jsx`, `sideBar.jsx`, `gallery.jsx` and `songs.jsx`.
+3. Fetch event summaries for Home now, ahead of Phase 3. Compute the next occurrence of active weekly programmes, exclude expired/cancelled/completed events, and use IST regardless of the device's time zone. Revalidate event data after five minutes and refresh the date when Safari returns to the foreground.
+4. Delete the old `home.jsx`, `contact.jsx`, `sideBar.jsx`, `gallery.jsx` and `songs.jsx`. Redirect legacy `/songs` and `/gallery` links to `/audio` and `/events`.
 
 Done when
-- Every screen is reachable from home in at most 2 taps.
+- Every available top-level content screen and Settings is reachable from Home in one tap. Bhajans and Events lead to clear placeholders; notifications and donations have no navigation entry.
+- Home and Contact survive refresh and shared links, have no horizontal scroll at 320px or above, and clear the notch and home indicator.
+- Phone, WhatsApp channel, email, social and map links match the app; the existing Kannada bus directions remain available.
 
 ### Phase 3: Events and Panchang
 
@@ -320,7 +323,7 @@ Done when
 |---|---|---|
 | 0 Groundwork | — | Small |
 | 1 Reading | 0 | Large |
-| 2 Home, Contact, Notifications | 0 | Medium |
+| 2 Home and Contact | 0; event summaries for Home | Medium |
 | 3 Events, Panchang | 0; app bug fix in parallel | Large |
 | 4 Audio | 0 | Medium |
 | 5 Polish and launch | 1–4 | Medium |
