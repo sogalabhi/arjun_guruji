@@ -17,51 +17,44 @@ class HomePageContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
+    final int columns = screenWidth < 600 ? 2 : 4;
 
     final List<Map<String, dynamic>> menuItems = [
       {
         "title": "Books",
         "subtitle": "Books",
         "imagePath": 'assets/mainbook.png',
-        "route": () => Navigator.push(
-            context, MaterialPageRoute(builder: (_) => const AllBooksPage())),
+        "page": const AllBooksPage(),
       },
       {
         "title": "Astottara",
         "subtitle": "Astottara",
         "imagePath": 'assets/mainastottaras.png',
-        "route": () => Navigator.push(context,
-            MaterialPageRoute(builder: (_) => const AllAstottaraPage())),
+        "page": const AllAstottaraPage(),
       },
       {
         "title": "Audio",
         "subtitle": "Audio",
         "imagePath": 'assets/mainaudio.png',
-        "route": () => Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const AudioCategoriesPage())),
+        "page": const AudioCategoriesPage(),
       },
       {
         "title": "Lyrics",
         "subtitle": "Lyrics",
         "imagePath": 'assets/mainlyrics.png',
-        "route": () => Navigator.push(
-            context, MaterialPageRoute(builder: (_) => const AllLyricsPage())),
+        "page": const AllLyricsPage(),
       },
       {
         "title": "Events",
         "subtitle": "Events",
         "imagePath": 'assets/maingallery.png',
-        "route": () => Navigator.push(
-            context, MaterialPageRoute(builder: (_) => const CalendarEventPage())),
+        "page": const CalendarEventPage(),
       },
       {
         "title": "Connect",
         "subtitle": "Connect",
         "imagePath": 'assets/mainlinks.png',
-        "route": () => Navigator.push(context,
-            MaterialPageRoute(builder: (_) => const ConnectPage())),
+        "page": const ConnectPage(),
       },
     ];
 
@@ -92,7 +85,7 @@ class HomePageContent extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 60),
                 child: GridView.builder(
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: screenWidth < 600 ? 2 : 4,
+                    crossAxisCount: columns,
                     crossAxisSpacing: 5,
                     mainAxisSpacing: 5,
                     childAspectRatio: 1,
@@ -101,8 +94,11 @@ class HomePageContent extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final item = menuItems[index];
 
-                    // Animation controllers would be managed here in a StatefulWidget
-                    return buildAnimatedGridItem(item, index);
+                    return AnimatedGridItem(
+                      item: item,
+                      index: index,
+                      columns: columns,
+                    );
                   },
                 ),
               ),

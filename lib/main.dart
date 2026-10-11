@@ -6,12 +6,14 @@ import 'package:arjun_guruji/features/AudioPlayer/presentation/bloc/global_audio
 import 'package:arjun_guruji/features/AudioPlayer/presentation/widgets/now_playing_snackbar.dart';
 import 'package:arjun_guruji/injection_container.dart';
 import 'package:arjun_guruji/screens/splash_screen.dart';
+import 'package:arjun_guruji/core/motion/page_transitions.dart';
 import 'package:arjun_guruji/core/widgets/connectivity_listner.dart';
 import 'package:arjun_guruji/core/services/connectivity_service.dart';
 import 'package:arjun_guruji/features/Settings/presentation/bloc/settings_bloc.dart';
 import 'package:arjun_guruji/features/Settings/presentation/bloc/settings_event.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart' show CupertinoPageTransitionsBuilder;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/services.dart';
@@ -217,6 +219,13 @@ class _MyAppState extends State<MyApp> {
               statusBarIconBrightness: Brightness.light,
               statusBarBrightness: Brightness.dark,
             ),
+          ),
+          // iOS keeps its native transition so swipe-back still works.
+          pageTransitionsTheme: const PageTransitionsTheme(
+            builders: {
+              TargetPlatform.android: MotionPageTransitionsBuilder(),
+              TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+            },
           ),
         ),
         builder: (context, child) => Stack(

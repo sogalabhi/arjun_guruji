@@ -39,18 +39,22 @@ class ConnectivityListenerState extends State<ConnectivityListener> {
         final overlayState = ConnectivityService.navigatorKey.currentState?.overlay;
         if (overlayState != null) {
           if (!online) {
-            // No internet
+            // No internet: stay visible until connectivity returns.
             TopSnackbar.show(
               overlayState: overlayState,
-              message: 'No Internet Connection',
-              backgroundColor: Colors.red,
+              message: 'No internet connection',
+              backgroundColor: Colors.red.shade700,
+              icon: Icons.wifi_off,
+              autoDismiss: null,
             );
           } else {
-            // Internet connected
+            // Back online: the same pill turns green, then slides away.
             TopSnackbar.show(
               overlayState: overlayState,
-              message: 'Internet Connected',
-              backgroundColor: Colors.green,
+              message: 'Back online',
+              backgroundColor: Colors.green.shade800,
+              icon: Icons.check_circle,
+              autoDismiss: const Duration(seconds: 2),
             );
           }
         }

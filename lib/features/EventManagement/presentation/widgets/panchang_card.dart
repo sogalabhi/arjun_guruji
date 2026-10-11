@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:arjun_guruji/features/EventManagement/domain/entity/panchang_info.dart';
+import 'package:arjun_guruji/features/EventManagement/presentation/widgets/panchang_day_arc.dart';
 
 class PanchangCard extends StatelessWidget {
   final PanchangInfoEntity? info;
@@ -117,6 +118,8 @@ class PanchangCard extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 12),
                 child: Divider(color: Colors.white24, height: 1),
               ),
+              PanchangDayArc(info: info!),
+              const SizedBox(height: 12),
               Row(
                 children: [
                   Expanded(

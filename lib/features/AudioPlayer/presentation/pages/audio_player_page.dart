@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:arjun_guruji/core/motion/motion.dart';
 import 'package:arjun_guruji/core/widgets/gradient_app_bar.dart';
 import 'package:arjun_guruji/features/AudioPlayer/domain/entity/audio.dart';
 import 'package:arjun_guruji/features/AudioPlayer/domain/entity/category.dart';
@@ -39,9 +40,11 @@ class AudioPlayerPageState extends State<AudioPlayerPage>
     super.initState();
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 300),
+      duration: Motion.standard,
+      // Start on "pause" if audio is already playing (e.g. reopening the player).
+      value: context.read<GlobalAudioPlayerBloc>().state.isPlaying ? 1.0 : 0.0,
     );
-    
+
     // Notify the global bloc that the player page is now visible (hides the snackbar)
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
@@ -68,7 +71,10 @@ class AudioPlayerPageState extends State<AudioPlayerPage>
   Widget build(BuildContext context) {
     return BlocConsumer<GlobalAudioPlayerBloc, GlobalAudioPlayerState>(
       listener: (context, state) {
-        if (state.isPlaying) {
+        final target = state.isPlaying ? 1.0 : 0.0;
+        if (Motion.reduced(context)) {
+          _animationController.value = target;
+        } else if (state.isPlaying) {
           _animationController.forward();
         } else {
           _animationController.reverse();
@@ -204,27 +210,50 @@ class AudioPlayerPageState extends State<AudioPlayerPage>
                               .add(PlayPreviousAudio()),
                         ),
                         AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 300),
+                          duration: Motion.duration(context, Motion.standard),
                           child: state.isLoading
-                              ? const CircularProgressIndicator(
-                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                )
-                              : IconButton(
-                                  key: ValueKey<bool>(state.isPlaying),
-                                  icon: Icon(
-                                    state.isPlaying
-                                        ? Icons.pause_circle_filled
-                                        : Icons.play_circle_fill,
-                                    color: Colors.white,
-                                    size: 60,
+                              ? const SizedBox(
+                                  key: ValueKey('loading'),
+                                  width: 60,
+                                  height: 60,
+                                  child: Padding(
+                                    padding: EdgeInsets.all(12),
+                                    child: CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                    ),
                                   ),
-                                  onPressed: () {
-                                    if (state.isPlaying) {
-                                      context.read<GlobalAudioPlayerBloc>().add(PauseAudio());
-                                    } else {
-                                      context.read<GlobalAudioPlayerBloc>().add(ResumeAudio());
-                                    }
-                                  },
+                                )
+                              : Semantics(
+                                  key: const ValueKey('play-pause'),
+                                  button: true,
+                                  label: state.isPlaying ? 'Pause' : 'Play',
+                                  child: Material(
+                                    color: Colors.white,
+                                    shape: const CircleBorder(),
+                                    child: InkWell(
+                                      customBorder: const CircleBorder(),
+                                      onTap: () {
+                                        Haptics.tap();
+                                        if (state.isPlaying) {
+                                          context.read<GlobalAudioPlayerBloc>().add(PauseAudio());
+                                        } else {
+                                          context.read<GlobalAudioPlayerBloc>().add(ResumeAudio());
+                                        }
+                                      },
+                                      child: SizedBox(
+                                        width: 60,
+                                        height: 60,
+                                        child: Center(
+                                          child: AnimatedIcon(
+                                            icon: AnimatedIcons.play_pause,
+                                            progress: _animationController,
+                                            color: Colors.black87,
+                                            size: 36,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                 ),
                         ),
                         IconButton(
