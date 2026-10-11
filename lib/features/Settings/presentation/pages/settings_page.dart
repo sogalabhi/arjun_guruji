@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:share_plus/share_plus.dart';
+import '../../../../core/reader/reading_palette.dart';
 import '../../../../core/widgets/gradient_background.dart';
 import '../../../../core/widgets/gradient_app_bar.dart';
 import '../../../../features/EventManagement/domain/services/panchang_service.dart';
@@ -105,7 +106,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             Container(
                               padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                color: settings.readingTheme == 'dark' ? Colors.black : (settings.readingTheme == 'sepia' ? const Color(0xFFF4ECD8) : Colors.white),
+                                color: ReadingPalette.of(settings.readingTheme).background,
                                 borderRadius: BorderRadius.circular(8),
                                 border: Border.all(color: Colors.grey.shade300),
                               ),
@@ -117,7 +118,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                       ? 'notoserifkannada' 
                                       : 'notosanskannada',
                                   height: 1.5,
-                                  color: settings.readingTheme == 'dark' ? Colors.white : (settings.readingTheme == 'sepia' ? const Color(0xFF5B4636) : Colors.black),
+                                  color: ReadingPalette.of(settings.readingTheme).ink,
                                 ),
                                 textAlign: TextAlign.center,
                               ),

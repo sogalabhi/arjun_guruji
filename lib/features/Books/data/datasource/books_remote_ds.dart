@@ -16,18 +16,16 @@ class BooksRemoteDataSourceImpl implements BooksRemoteDataSource {
   Future<List<BookModel>> fetchAllBooks() async {
     final bookCollection = firestore.collection('Books');
     final querySnapshot = await bookCollection.get();
-    var books = querySnapshot.docs
-        .map((doc) {
-          final data = doc.data();
-          final lastUpdated = data['lastUpdated'];
-          return BookModel.fromJson({
-            ...data,
-            'lastUpdated': lastUpdated is Timestamp ? lastUpdated.toDate() : null,
-            'pdfFilePath': null,
-            'imageBytes': null,
-          });
-        })
-        .toList();
+    var books = querySnapshot.docs.map((doc) {
+      final data = doc.data();
+      final lastUpdated = data['lastUpdated'];
+      return BookModel.fromJson({
+        ...data,
+        'lastUpdated': lastUpdated is Timestamp ? lastUpdated.toDate() : null,
+        'pdfFilePath': null,
+        'imageBytes': null,
+      });
+    }).toList();
     return books;
   }
 

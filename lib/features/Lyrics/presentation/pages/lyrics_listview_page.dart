@@ -1,4 +1,4 @@
-import 'package:arjun_guruji/core/widgets/content_view_page.dart';
+import 'package:arjun_guruji/core/reader/reader_page.dart';
 import 'package:arjun_guruji/core/widgets/gradient_background.dart';
 import 'package:arjun_guruji/core/widgets/gradient_app_bar.dart';
 import 'package:arjun_guruji/features/Lyrics/presentation/bloc/lyrics_bloc.dart';
@@ -130,7 +130,8 @@ class LyricsListPageState extends State<LyricsListPage> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => ContentViewPage(
+                                      builder: (context) => ReaderPage(
+                                        kind: 'lyrics',
                                         content: data.content ?? '',
                                         title: data.title,
                                       ),

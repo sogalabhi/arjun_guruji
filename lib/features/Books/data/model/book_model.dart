@@ -44,7 +44,9 @@ class BookModel extends HiveObject {
     this.imageBytes,
     this.lastUpdated,
   })  : htmlContent = bookType == 'html' ? (htmlContent ?? pdfUrl) : null,
-        pdfUrl = bookType != 'html' && bookType != 'chapters' ? (pdfUrl ?? htmlContent) : null;
+        pdfUrl = bookType != 'html' && bookType != 'chapters'
+            ? (pdfUrl ?? htmlContent)
+            : null;
 
   factory BookModel.fromJson(Map<String, dynamic> json) {
     DateTime? parsedDate;
@@ -53,11 +55,12 @@ class BookModel extends HiveObject {
     } else if (json['lastUpdated'] is String) {
       parsedDate = DateTime.tryParse(json['lastUpdated'] as String);
     }
-    
+
     final String bookType = json['bookType'] ?? '';
     final String? contentStr = json['content'] as String?;
     final String? htmlContent = bookType == 'html' ? contentStr : null;
-    final String? pdfUrl = (bookType != 'html' && bookType != 'chapters') ? contentStr : null;
+    final String? pdfUrl =
+        (bookType != 'html' && bookType != 'chapters') ? contentStr : null;
 
     return BookModel(
       title: json['title'] ?? '',

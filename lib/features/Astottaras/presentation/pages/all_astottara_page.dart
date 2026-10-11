@@ -1,4 +1,4 @@
-import 'package:arjun_guruji/core/widgets/content_view_page.dart';
+import 'package:arjun_guruji/core/reader/reader_page.dart';
 import 'package:arjun_guruji/core/widgets/gradient_background.dart';
 import 'package:arjun_guruji/core/widgets/gradient_app_bar.dart';
 import 'package:arjun_guruji/core/widgets/image_grid_view.dart';
@@ -95,7 +95,8 @@ class AllAstottaraPageState extends State<AllAstottaraPage> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => ContentViewPage(
+                                      builder: (context) => ReaderPage(
+                                        kind: 'astottara',
                                         title: astottara.title,
                                         content: astottara.content!,
                                       ),

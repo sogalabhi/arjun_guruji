@@ -65,9 +65,11 @@ class PdfViewerPageState extends State<PDFViewerPage> {
             localFilePath = filePath;
             _errorMessage = null;
           });
-          await sl<BooksLocalDataSource>().updatePdfFilePath(widget.book.title, filePath);
+          await sl<BooksLocalDataSource>()
+              .updatePdfFilePath(widget.book.title, filePath);
         } else {
-          debugPrint('[PDF] Downloading from remote URL: ${widget.book.pdfUrl}');
+          debugPrint(
+              '[PDF] Downloading from remote URL: ${widget.book.pdfUrl}');
           setState(() {
             localFilePath = null;
             _errorMessage = null;
@@ -75,7 +77,8 @@ class PdfViewerPageState extends State<PDFViewerPage> {
           await downloadAndSavePDF(filePath);
         }
       } else {
-        debugPrint('[PDF] No local file or remote URL available for this book.');
+        debugPrint(
+            '[PDF] No local file or remote URL available for this book.');
         setState(() => _errorMessage = 'No PDF URL available for this book.');
       }
     } catch (e) {
@@ -86,9 +89,11 @@ class PdfViewerPageState extends State<PDFViewerPage> {
   Future<void> downloadAndSavePDF(String filePath) async {
     try {
       final connectivityResult = await Connectivity().checkConnectivity();
-      final isOffline = connectivityResult.isEmpty || connectivityResult.first == ConnectivityResult.none;
+      final isOffline = connectivityResult.isEmpty ||
+          connectivityResult.first == ConnectivityResult.none;
       if (isOffline) {
-        setState(() => _errorMessage = 'No internet connection. Please connect to download the PDF.');
+        setState(() => _errorMessage =
+            'No internet connection. Please connect to download the PDF.');
         return;
       }
       if (widget.book.pdfUrl != null && widget.book.pdfUrl!.isNotEmpty) {
@@ -113,14 +118,16 @@ class PdfViewerPageState extends State<PDFViewerPage> {
           _errorMessage = null;
           _isDownloading = false;
         });
-        await sl<BooksLocalDataSource>().updatePdfFilePath(widget.book.title, filePath);
+        await sl<BooksLocalDataSource>()
+            .updatePdfFilePath(widget.book.title, filePath);
       } else {
         debugPrint('[PDF] Error: Book PDF URL is null');
         throw Exception("Book PDF URL is null");
       }
     } catch (e) {
       debugPrint('[PDF] Error downloading PDF: $e');
-      setState(() => _errorMessage = 'Failed to download PDF. Please try again.');
+      setState(
+          () => _errorMessage = 'Failed to download PDF. Please try again.');
     }
   }
 
@@ -210,95 +217,96 @@ class PdfViewerPageState extends State<PDFViewerPage> {
                 )
               : Column(
                   children: [
-                // Horizontal slider and controls at the top
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Slider(
-                          min: 0,
-                          max: (_totalPages > 0)
-                              ? (_totalPages - 1).toDouble()
-                              : 1,
-                          value: _currentPage.toDouble().clamp(
-                              0,
-                              (_totalPages > 0 ? _totalPages - 1 : 1)
-                                  .toDouble()),
-                          onChanged: (value) {
-                            if (_pdfController != null) {
-                              _pdfController!.setPage(value.toInt());
-                            }
-                          },
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        '${_currentPage + 1} / ${_totalPages > 0 ? _totalPages : "-"}',
-                        style: const TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(width: 8),
-                      SizedBox(
-                        width: 48,
-                        child: TextField(
-                          controller: _jumpController,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            hintText: 'Pg',
-                            isDense: true,
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 4, horizontal: 4),
+                    // Horizontal slider and controls at the top
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Slider(
+                              min: 0,
+                              max: (_totalPages > 0)
+                                  ? (_totalPages - 1).toDouble()
+                                  : 1,
+                              value: _currentPage.toDouble().clamp(
+                                  0,
+                                  (_totalPages > 0 ? _totalPages - 1 : 1)
+                                      .toDouble()),
+                              onChanged: (value) {
+                                if (_pdfController != null) {
+                                  _pdfController!.setPage(value.toInt());
+                                }
+                              },
+                            ),
                           ),
-                          style: const TextStyle(fontSize: 12),
-                        ),
+                          const SizedBox(width: 8),
+                          Text(
+                            '${_currentPage + 1} / ${_totalPages > 0 ? _totalPages : "-"}',
+                            style: const TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(width: 8),
+                          SizedBox(
+                            width: 48,
+                            child: TextField(
+                              controller: _jumpController,
+                              keyboardType: TextInputType.number,
+                              decoration: const InputDecoration(
+                                hintText: 'Pg',
+                                isDense: true,
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 4, horizontal: 4),
+                              ),
+                              style: const TextStyle(fontSize: 12),
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          ElevatedButton(
+                            onPressed: () {
+                              final page = int.tryParse(_jumpController.text);
+                              if (page != null &&
+                                  page > 0 &&
+                                  page <= _totalPages &&
+                                  _pdfController != null) {
+                                _pdfController!.setPage(page - 1);
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                                minimumSize: const Size(40, 28),
+                                padding: EdgeInsets.zero),
+                            child: const Text('Go',
+                                style: TextStyle(fontSize: 12)),
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 4),
-                      ElevatedButton(
-                        onPressed: () {
-                          final page = int.tryParse(_jumpController.text);
-                          if (page != null &&
-                              page > 0 &&
-                              page <= _totalPages &&
-                              _pdfController != null) {
-                            _pdfController!.setPage(page - 1);
-                          }
+                    ),
+                    // PDF view
+                    Expanded(
+                      child: PDFView(
+                        filePath: localFilePath!,
+                        enableSwipe: true,
+                        swipeHorizontal: false,
+                        autoSpacing: true,
+                        pageFling: true,
+                        onRender: (pages) {
+                          setState(() {
+                            _totalPages = pages ?? 0;
+                          });
                         },
-                        style: ElevatedButton.styleFrom(
-                            minimumSize: const Size(40, 28),
-                            padding: EdgeInsets.zero),
-                        child: const Text('Go', style: TextStyle(fontSize: 12)),
+                        onViewCreated: (controller) {
+                          _pdfController = controller;
+                        },
+                        onPageChanged: (page, total) {
+                          setState(() {
+                            _currentPage = page ?? 0;
+                            _totalPages = total ?? _totalPages;
+                          });
+                        },
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                // PDF view
-                Expanded(
-                  child: PDFView(
-                    filePath: localFilePath!,
-                    enableSwipe: true,
-                    swipeHorizontal: false,
-                    autoSpacing: true,
-                    pageFling: true,
-                    onRender: (pages) {
-                      setState(() {
-                        _totalPages = pages ?? 0;
-                      });
-                    },
-                    onViewCreated: (controller) {
-                      _pdfController = controller;
-                    },
-                    onPageChanged: (page, total) {
-                      setState(() {
-                        _currentPage = page ?? 0;
-                        _totalPages = total ?? _totalPages;
-                      });
-                    },
-                  ),
-                ),
-              ],
-            ),
     );
   }
 }

@@ -62,7 +62,8 @@ class BooksRepositoryImpl implements BookRepository {
 
       // Determine if sync is needed (additions, deletions, updates)
       bool needsSync = false;
-      final remoteTitles = remoteTimestamps.map((m) => m['title'] as String).toSet();
+      final remoteTitles =
+          remoteTimestamps.map((m) => m['title'] as String).toSet();
 
       // Check for deletions
       for (final cachedTitle in existingCache.keys) {
@@ -85,7 +86,8 @@ class BooksRepositoryImpl implements BookRepository {
           }
 
           if (remoteUpdated != null) {
-            if (cachedBook.lastUpdated == null || remoteUpdated.isAfter(cachedBook.lastUpdated!)) {
+            if (cachedBook.lastUpdated == null ||
+                remoteUpdated.isAfter(cachedBook.lastUpdated!)) {
               needsSync = true;
               break;
             }
@@ -111,12 +113,14 @@ class BooksRepositoryImpl implements BookRepository {
       }
 
       // Download cover images in parallel and preserve cache fields
-      final List<Future<BookModel>> downloadFutures = remoteBooks.map((remoteBook) async {
+      final List<Future<BookModel>> downloadFutures =
+          remoteBooks.map((remoteBook) async {
         final cached = existingCache[remoteBook.title];
         String? pdfFilePath = cached?.pdfFilePath;
         Uint8List? imageBytes = cached?.imageBytes;
 
-        final hasImageChanged = cached == null || cached.imageUrl != remoteBook.imageUrl;
+        final hasImageChanged =
+            cached == null || cached.imageUrl != remoteBook.imageUrl;
         if (imageBytes == null || imageBytes.isEmpty || hasImageChanged) {
           if (remoteBook.imageUrl.isNotEmpty) {
             imageBytes = await _downloadBytes(remoteBook.imageUrl);
@@ -178,7 +182,8 @@ class BooksRepositoryImpl implements BookRepository {
 
   @override
   List<Book> getCachedBooks() {
-    return localDataSource.getCachedBooks()
+    return localDataSource
+        .getCachedBooks()
         .map((bookModel) => BookModel.toEntity(bookModel))
         .toList();
   }

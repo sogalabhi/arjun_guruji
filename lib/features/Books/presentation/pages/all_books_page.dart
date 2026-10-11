@@ -1,9 +1,8 @@
-import 'package:arjun_guruji/core/widgets/content_view_page.dart';
+import 'package:arjun_guruji/core/reader/reader_page.dart';
 import 'package:arjun_guruji/core/widgets/gradient_background.dart';
 import 'package:arjun_guruji/core/widgets/image_grid_view.dart';
 import 'package:arjun_guruji/core/widgets/search_bar.dart';
 import 'package:arjun_guruji/features/Books/presentation/bloc/books_bloc.dart';
-import 'package:arjun_guruji/features/Books/presentation/pages/chapters_list_page.dart';
 import 'package:arjun_guruji/features/Books/presentation/pages/pdf_view_page.dart';
 import 'package:arjun_guruji/injection_container.dart';
 import 'package:flutter/material.dart';
@@ -50,9 +49,12 @@ class AllBooksPageState extends State<AllBooksPage> {
                     onRefresh: () async {
                       final bloc = context.read<BooksBloc>();
                       bloc.add(const FetchAllBooks());
-                      await bloc.stream.firstWhere(
-                        (state) => state is BooksLoaded || state is Error,
-                      ).timeout(const Duration(seconds: 4), onTimeout: () => const BooksState.initial());
+                      await bloc.stream
+                          .firstWhere(
+                            (state) => state is BooksLoaded || state is Error,
+                          )
+                          .timeout(const Duration(seconds: 4),
+                              onTimeout: () => const BooksState.initial());
                     },
                     child: BlocBuilder<BooksBloc, BooksState>(
                       builder: (context, state) {
@@ -93,12 +95,32 @@ class AllBooksPageState extends State<AllBooksPage> {
                             getOnTap: (book) {
                               if (book.bookType == 'chapters' &&
                                   book.chapters != null) {
+                                // Each chapter is a section of one reader, so
+                                // chapter books get the same contents screen.
+                                final chapters = [
+                                  for (final c in book.chapters!)
+                                    (
+                                      name: c['chapterName'] as String? ?? '',
+                                      content: c['content'] as String? ?? '',
+                                    ),
+                                ];
                                 return () {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                          ChaptersListPage(book: book),
+                                      builder: (context) => ReaderPage(
+                                        kind: 'book',
+                                        title: book.title,
+                                        chapterName: chapters.length == 1
+                                            ? chapters.single.name
+                                            : null,
+                                        content: chapters.length == 1
+                                            ? chapters.single.content
+                                            : '',
+                                        chapters: chapters.length > 1
+                                            ? chapters
+                                            : null,
+                                      ),
                                     ),
                                   );
                                 };
@@ -108,7 +130,8 @@ class AllBooksPageState extends State<AllBooksPage> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => ContentViewPage(
+                                      builder: (context) => ReaderPage(
+                                        kind: 'book',
                                         title: book.title,
                                         content: book.htmlContent!,
                                       ),
