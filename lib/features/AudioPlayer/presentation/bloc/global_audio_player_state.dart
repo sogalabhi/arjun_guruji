@@ -39,6 +39,7 @@ class GlobalAudioPlayerState extends Equatable {
     Duration? currentPosition,
     Duration? totalDuration,
     CategoryEntity? currentCategory,
+    bool clearCurrentCategory = false,
     int? currentIndex,
     LoopMode? loopMode,
     bool? isShuffleEnabled,
@@ -49,7 +50,8 @@ class GlobalAudioPlayerState extends Equatable {
       isLoading: isLoading ?? this.isLoading,
       currentPosition: currentPosition ?? this.currentPosition,
       totalDuration: totalDuration ?? this.totalDuration,
-      currentCategory: currentCategory ?? this.currentCategory,
+      // Passing null alone keeps the current category; clearCurrentCategory is needed to remove it.
+      currentCategory: clearCurrentCategory ? null : (currentCategory ?? this.currentCategory),
       currentIndex: currentIndex ?? this.currentIndex,
       loopMode: loopMode ?? this.loopMode,
       isShuffleEnabled: isShuffleEnabled ?? this.isShuffleEnabled,

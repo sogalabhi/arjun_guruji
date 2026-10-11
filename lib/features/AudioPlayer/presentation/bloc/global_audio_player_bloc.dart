@@ -152,9 +152,8 @@ class GlobalAudioPlayerBloc
     emit(state.copyWith(
       currentPosition: Duration.zero,
       isPlaying: false,
-      // We don't nullify currentCategory so the UI can still show what was last playing,
-      // or we can nullify it if we want the player snackbar to disappear.
-      currentCategory: null,
+      // Clears the track so the mini player hides. copyWith ignores a plain null.
+      clearCurrentCategory: true,
     ));
   }
 

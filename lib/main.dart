@@ -94,6 +94,9 @@ Future<void> showNotification(RemoteMessage message) async {
     importance: Importance.max,
     priority: Priority.high,
     showWhen: false,
+    // White diya in the status bar; a full-colour icon shows as a white blob.
+    icon: 'ic_stat_notify',
+    color: Color(0xFFFFA000),
   );
 
   const NotificationDetails platformChannelSpecifics =
@@ -111,7 +114,7 @@ Future<void> showNotification(RemoteMessage message) async {
 // Initialize Flutter Local Notifications
 void initializeNotifications() {
   const AndroidInitializationSettings initializationSettingsAndroid =
-      AndroidInitializationSettings('@mipmap/ic_launcher'); // App icon
+      AndroidInitializationSettings('ic_stat_notify'); // res/drawable/ic_stat_notify.xml
 
   const InitializationSettings initializationSettings = InitializationSettings(
     android: initializationSettingsAndroid,
@@ -165,6 +168,7 @@ Future<void> main() async {
     androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
     androidNotificationChannelName: 'Audio playback',
     androidNotificationOngoing: true,
+    androidNotificationIcon: 'drawable/ic_stat_notify',
   );
 
   // Initialize Flutter Local Notifications

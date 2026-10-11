@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Status-bar and notification icon: a diya (oil lamp), as in the trust's logo.
+     Android shows small icons as a white shape, so this must stay one solid colour
+     on a transparent background. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Flame -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M12,2.5C14,5.3 15,7.3 15,9C15,10.6 13.7,11.8 12,11.8C10.3,11.8 9,10.6 9,9C9,7.3 10,5.3 12,2.5Z" />
+    <!-- Wick -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M11.4,11.5h1.2v1.1h-1.2z" />
+    <!-- Lamp bowl with a spout on the right -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M2.5,12.5H19.2L22,11.2L20.6,13.6C19.9,17.6 16.4,20.2 12,20.2C7.1,20.2 3.1,17.1 2.5,12.5Z" />
+    <!-- Base -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M8.5,21h7l-0.6,1.5h-5.8z" />
+</vector>
